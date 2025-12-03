@@ -1,0 +1,122 @@
+ĐỀ THI TRẮC NGHIỆM SQL - 20 CÂU
+Dựa trên bài thực hành SQL trên Access 2010
+
+Câu 1: Để mở môi trường viết lệnh SQL trong Access 2010, sau khi vào Query Design, ta chọn gì?
+A. SQL View
+B. Design View
+C. Datasheet View
+D. Form View
+
+Câu 2: Lệnh nào dùng để tạo bảng Lop trong Access?
+A. CREATE TABLE Lop (MaLop TEXT(10) PRIMARY KEY, TenLop TEXT(50) NOT NULL)
+B. NEW TABLE Lop (MaLop TEXT(10), TenLop TEXT(50))
+C. MAKE TABLE Lop (MaLop, TenLop)
+D. ADD TABLE Lop (MaLop TEXT(10), TenLop TEXT(50))
+
+Câu 3: Từ khóa PRIMARY KEY trong câu lệnh CREATE TABLE có ý nghĩa gì?
+A. Xác định cột là khóa chính, không được trùng lặp
+B. Xác định cột là khóa ngoại
+C. Xác định cột có thể để trống
+D. Xác định cột là số nguyên
+
+Câu 4: Từ khóa NOT NULL có ý nghĩa gì?
+A. Cột không được để trống
+B. Cột phải là số 0
+C. Cột không có giá trị
+D. Cột là khóa chính
+
+Câu 5: Kiểu dữ liệu TEXT(50) trong Access có nghĩa là gì?
+A. Chuỗi ký tự tối đa 50 ký tự
+B. Số nguyên 50 chữ số
+C. 50 bản ghi
+D. Số thực 50 bit
+
+Câu 6: Để tạo khóa ngoại liên kết bảng HocSinh với bảng Lop, ta dùng cú pháp nào?
+A. FOREIGN KEY (MaLop) REFERENCES Lop(MaLop)
+B. LINK KEY (MaLop) TO Lop(MaLop)
+C. EXTERNAL KEY (MaLop) CONNECT Lop(MaLop)
+D. RELATION (MaLop) WITH Lop(MaLop)
+
+Câu 7: Lệnh nào thêm một lớp mới có MaLop là 'L01' và TenLop là 'Lớp 10A1'?
+A. INSERT INTO Lop (MaLop, TenLop) VALUES ('L01', 'Lớp 10A1')
+B. ADD TO Lop (MaLop, TenLop) VALUES ('L01', 'Lớp 10A1')
+C. PUT INTO Lop VALUES ('L01', 'Lớp 10A1')
+D. INSERT Lop SET MaLop='L01', TenLop='Lớp 10A1'
+
+Câu 8: Trong Access, giá trị ngày tháng được đặt trong ký tự gì?
+A. Dấu thăng #
+B. Dấu nháy đơn '
+C. Dấu nháy kép "
+D. Dấu ngoặc vuông []
+
+Câu 9: Lệnh nào thêm học sinh với NgaySinh là 12/05/2005?
+A. INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', #2005-05-12#)
+B. INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', '2005-05-12')
+C. INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', 2005-05-12)
+D. INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', [2005-05-12])
+
+Câu 10: Lệnh nào cập nhật tên học sinh có MaHS = 1 thành 'Nguyen Van B'?
+A. UPDATE HocSinh SET HoTen = 'Nguyen Van B' WHERE MaHS = 1
+B. MODIFY HocSinh SET HoTen = 'Nguyen Van B' WHERE MaHS = 1
+C. CHANGE HocSinh HoTen = 'Nguyen Van B' WHERE MaHS = 1
+D. UPDATE HocSinh HoTen = 'Nguyen Van B' IF MaHS = 1
+
+Câu 11: Lệnh DELETE FROM HocSinh WHERE MaHS = 1 sẽ làm gì?
+A. Xóa học sinh có mã số 1
+B. Xóa tất cả học sinh
+C. Xóa bảng HocSinh
+D. Xóa cột MaHS
+
+Câu 12: Lệnh nào thêm cột NamKinhNghiem vào bảng GiaoVien?
+A. ALTER TABLE GiaoVien ADD COLUMN NamKinhNghiem INT
+B. UPDATE TABLE GiaoVien ADD COLUMN NamKinhNghiem INT
+C. MODIFY TABLE GiaoVien ADD NamKinhNghiem INT
+D. ADD COLUMN NamKinhNghiem INT TO GiaoVien
+
+Câu 13: Lệnh nào xóa cột NamKinhNghiem khỏi bảng GiaoVien?
+A. ALTER TABLE GiaoVien DROP COLUMN NamKinhNghiem
+B. DELETE COLUMN NamKinhNghiem FROM GiaoVien
+C. REMOVE COLUMN NamKinhNghiem FROM GiaoVien
+D. UPDATE TABLE GiaoVien DROP NamKinhNghiem
+
+Câu 14: Lệnh DROP TABLE HocSinh sẽ làm gì?
+A. Xóa hoàn toàn bảng HocSinh khỏi cơ sở dữ liệu
+B. Xóa tất cả dữ liệu trong bảng HocSinh
+C. Xóa khóa chính của bảng HocSinh
+D. Ẩn bảng HocSinh
+
+Câu 15: Lệnh nào lấy danh sách họ tên học sinh thuộc lớp 'L01'?
+A. SELECT HoTen FROM HocSinh WHERE MaLop = 'L01'
+B. GET HoTen FROM HocSinh WHERE MaLop = 'L01'
+C. FIND HoTen IN HocSinh WHERE MaLop = 'L01'
+D. SHOW HoTen FROM HocSinh IF MaLop = 'L01'
+
+Câu 16: Lệnh SELECT * FROM GiaoVien WHERE MonDay = 'Toán' sẽ trả về gì?
+A. Tất cả thông tin của giáo viên dạy môn Toán
+B. Chỉ tên giáo viên dạy môn Toán
+C. Số lượng giáo viên dạy môn Toán
+D. Danh sách tất cả giáo viên
+
+Câu 17: Dấu * trong câu lệnh SELECT * FROM có nghĩa là gì?
+A. Lấy tất cả các cột
+B. Lấy cột đầu tiên
+C. Lấy cột cuối cùng
+D. Đếm số bản ghi
+
+Câu 18: Lệnh INNER JOIN dùng để làm gì?
+A. Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết
+B. Xóa dữ liệu trùng lặp
+C. Thêm dữ liệu vào nhiều bảng
+D. Sắp xếp dữ liệu
+
+Câu 19: Trong lệnh INNER JOIN, từ khóa ON dùng để làm gì?
+A. Chỉ định điều kiện liên kết giữa hai bảng
+B. Bật chế độ kết nối
+C. Sắp xếp kết quả
+D. Giới hạn số bản ghi
+
+Câu 20: Lệnh nào đúng để kết hợp bảng HocSinh và Lop lấy tên học sinh và tên lớp?
+A. SELECT HocSinh.HoTen, Lop.TenLop FROM HocSinh INNER JOIN Lop ON HocSinh.MaLop = Lop.MaLop
+B. SELECT HoTen, TenLop FROM HocSinh, Lop WHERE HocSinh.MaLop = Lop.MaLop
+C. SELECT HoTen, TenLop FROM HocSinh JOIN Lop
+D. GET HoTen, TenLop FROM HocSinh LINK Lop ON MaLop

@@ -1,0 +1,17 @@
+{
+  "name": "trac-nghiem-lan",
+  "version": "1.0.0",
+  "description": "Phần mềm trắc nghiệm cho mạng LAN",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "docx": "^9.5.1",
+    "express": "^4.18.2",
+    "mammoth": "^1.11.0",
+    "multer": "^2.0.2",
+    "socket.io": "^4.7.2",
+    "xlsx": "^0.18.5"
+  }
+}

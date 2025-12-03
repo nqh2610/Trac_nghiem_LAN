@@ -1,0 +1,122 @@
+[
+  {
+    "question": "Để mở môi trường viết lệnh SQL trong Access 2010, sau khi vào Query Design, ta chọn gì?",
+    "options": ["SQL View", "Design View", "Datasheet View", "Form View"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào dùng để tạo bảng Lop trong Access?",
+    "options": ["CREATE TABLE Lop (MaLop TEXT(10) PRIMARY KEY, TenLop TEXT(50) NOT NULL)", "NEW TABLE Lop (MaLop TEXT(10), TenLop TEXT(50))", "MAKE TABLE Lop (MaLop, TenLop)", "ADD TABLE Lop (MaLop TEXT(10), TenLop TEXT(50))"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Từ khóa PRIMARY KEY trong câu lệnh CREATE TABLE có ý nghĩa gì?",
+    "options": ["Xác định cột là khóa chính, không được trùng lặp", "Xác định cột là khóa ngoại", "Xác định cột có thể để trống", "Xác định cột là số nguyên"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Từ khóa NOT NULL có ý nghĩa gì?",
+    "options": ["Cột không được để trống", "Cột phải là số 0", "Cột không có giá trị", "Cột là khóa chính"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Kiểu dữ liệu TEXT(50) trong Access có nghĩa là gì?",
+    "options": ["Chuỗi ký tự tối đa 50 ký tự", "Số nguyên 50 chữ số", "50 bản ghi", "Số thực 50 bit"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Để tạo khóa ngoại liên kết bảng HocSinh với bảng Lop, ta dùng cú pháp nào?",
+    "options": ["FOREIGN KEY (MaLop) REFERENCES Lop(MaLop)", "LINK KEY (MaLop) TO Lop(MaLop)", "EXTERNAL KEY (MaLop) CONNECT Lop(MaLop)", "RELATION (MaLop) WITH Lop(MaLop)"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào thêm một lớp mới có MaLop là 'L01' và TenLop là 'Lớp 10A1'?",
+    "options": ["INSERT INTO Lop (MaLop, TenLop) VALUES ('L01', 'Lớp 10A1')", "ADD TO Lop (MaLop, TenLop) VALUES ('L01', 'Lớp 10A1')", "PUT INTO Lop VALUES ('L01', 'Lớp 10A1')", "INSERT Lop SET MaLop='L01', TenLop='Lớp 10A1'"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Trong Access, giá trị ngày tháng được đặt trong ký tự gì?",
+    "options": ["Dấu thăng #", "Dấu nháy đơn '", "Dấu nháy kép \"", "Dấu ngoặc vuông []"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào thêm học sinh với NgaySinh là 12/05/2005 trong Access?",
+    "options": ["INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', #2005-05-12#)", "INSERT INTO HocSinh (MaHS, HoTen, NgaySinh) VALUES (1, 'Nguyen Van A', '2005-05-12')", "INSERT INTO HocSinh VALUES (1, 'Nguyen Van A', 2005-05-12)", "INSERT INTO HocSinh VALUES (1, 'Nguyen Van A', [2005-05-12])"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào cập nhật tên học sinh có MaHS = 1 thành 'Nguyen Van B'?",
+    "options": ["UPDATE HocSinh SET HoTen = 'Nguyen Van B' WHERE MaHS = 1", "MODIFY HocSinh SET HoTen = 'Nguyen Van B' WHERE MaHS = 1", "CHANGE HocSinh HoTen = 'Nguyen Van B' WHERE MaHS = 1", "UPDATE HocSinh HoTen = 'Nguyen Van B' IF MaHS = 1"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh DELETE FROM HocSinh WHERE MaHS = 1 sẽ làm gì?",
+    "options": ["Xóa học sinh có mã số 1", "Xóa tất cả học sinh", "Xóa bảng HocSinh", "Xóa cột MaHS"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào thêm cột NamKinhNghiem vào bảng GiaoVien?",
+    "options": ["ALTER TABLE GiaoVien ADD COLUMN NamKinhNghiem INT", "UPDATE TABLE GiaoVien ADD COLUMN NamKinhNghiem INT", "MODIFY TABLE GiaoVien ADD NamKinhNghiem INT", "ADD COLUMN NamKinhNghiem INT TO GiaoVien"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào xóa cột NamKinhNghiem khỏi bảng GiaoVien?",
+    "options": ["ALTER TABLE GiaoVien DROP COLUMN NamKinhNghiem", "DELETE COLUMN NamKinhNghiem FROM GiaoVien", "REMOVE COLUMN NamKinhNghiem FROM GiaoVien", "UPDATE TABLE GiaoVien DROP NamKinhNghiem"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh DROP TABLE HocSinh sẽ làm gì?",
+    "options": ["Xóa hoàn toàn bảng HocSinh khỏi cơ sở dữ liệu", "Xóa tất cả dữ liệu trong bảng HocSinh", "Xóa khóa chính của bảng HocSinh", "Ẩn bảng HocSinh"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào lấy danh sách họ tên học sinh thuộc lớp 'L01'?",
+    "options": ["SELECT HoTen FROM HocSinh WHERE MaLop = 'L01'", "GET HoTen FROM HocSinh WHERE MaLop = 'L01'", "FIND HoTen IN HocSinh WHERE MaLop = 'L01'", "SHOW HoTen FROM HocSinh IF MaLop = 'L01'"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh SELECT * FROM GiaoVien WHERE MonDay = 'Toán' sẽ trả về gì?",
+    "options": ["Tất cả thông tin của giáo viên dạy môn Toán", "Chỉ tên giáo viên dạy môn Toán", "Số lượng giáo viên dạy môn Toán", "Danh sách tất cả giáo viên"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Dấu * trong câu lệnh SELECT * FROM có nghĩa là gì?",
+    "options": ["Lấy tất cả các cột", "Lấy cột đầu tiên", "Lấy cột cuối cùng", "Đếm số bản ghi"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh INNER JOIN dùng để làm gì?",
+    "options": ["Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết", "Xóa dữ liệu trùng lặp", "Thêm dữ liệu vào nhiều bảng", "Sắp xếp dữ liệu"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Trong lệnh INNER JOIN, từ khóa ON dùng để làm gì?",
+    "options": ["Chỉ định điều kiện liên kết giữa hai bảng", "Bật chế độ kết nối", "Sắp xếp kết quả", "Giới hạn số bản ghi"],
+    "correct": 0,
+    "image": null
+  },
+  {
+    "question": "Lệnh nào kết hợp bảng HocSinh và Lop để lấy tên học sinh và tên lớp?",
+    "options": ["SELECT HocSinh.HoTen, Lop.TenLop FROM HocSinh INNER JOIN Lop ON HocSinh.MaLop = Lop.MaLop", "SELECT HoTen, TenLop FROM HocSinh, Lop", "SELECT HoTen, TenLop FROM HocSinh JOIN Lop", "GET HoTen, TenLop FROM HocSinh LINK Lop ON MaLop"],
+    "correct": 0,
+    "image": null
+  }
+]

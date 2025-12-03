@@ -1,0 +1,14 @@
+{
+  "currentSession": {
+    "classId": "class_1764766952564",
+    "className": "11A4",
+    "examId": "exam_1764766674551",
+    "examName": "Kiểm tra 15 phút"
+  },
+  "examSettings": {
+    "title": "Kiểm tra 15 phút",
+    "timeLimit": 30,
+    "isOpen": true,
+    "showScore": true
+  }
+}

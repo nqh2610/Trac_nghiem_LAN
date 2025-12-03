@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Làm bài trắc nghiệm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px 15px 15px;
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header .icon {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.8em;
+        }
+        
+        .login-header .subtitle {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        /* Legacy support */
+        .login-box h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-align: center;
+        }
+        
+        .login-box .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        /* Steps indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .step-dot.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scale(1.2);
+        }
+        
+        .step-dot.completed {
+            background: #28a745;
+        }
+        
+        /* Search box for student list */
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 0.95em;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+        }
+        
+        .login-box .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .login-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .login-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-box select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: #fafafa;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        .login-box select:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-box select option:disabled {
+            color: #999;
+            background: #f5f5f5;
+        }
+        
+        .login-box select option.completed {
+            color: #28a745;
+        }
+        
+        .login-box select option.selected-by-other {
+            color: #dc3545;
+        }
+        
+        /* Student confirmation card */
+        .student-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #4caf50;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .student-card .label {
+            font-size: 0.85em;
+            color: #388e3c;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .student-card .name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 4px;
+        }
+        
+        .student-card .stt {
+            font-size: 0.9em;
+            color: #558b2f;
+        }
+        
+        .student-card.confirmed {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #2196f3;
+        }
+        
+        .student-card.confirmed .label {
+            color: #1565c0;
+        }
+        
+        .student-card.confirmed .name {
+            color: #1565c0;
+        }
+        
+        /* Warning box */
+        .warning-box {
+            background: #fff8e1;
+            border: 1px solid #ffca28;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .warning-box .icon {
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        
+        .warning-box .text {
+            font-size: 0.9em;
+            color: #795548;
+            line-height: 1.5;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-group.half {
+            flex: 1;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 0.95em;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+        }
+        
+        /* Messages */
+        .message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .message.show {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .info-message {
+            background: #e7f3ff;
+            color: #0056b3;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .selected-student-info {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .selected-student-info .name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .report-modal.show {
+            display: flex;
+        }
+        
+        .report-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+        }
+        
+        .report-box h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.selected {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Exam Screen */
+        .exam-screen {
+            display: none;
+            padding-bottom: 10px;
+        }
+        
+        .exam-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 16px;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .exam-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .exam-title {
+            font-size: 0.95em;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .exam-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .student-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85em;
+            color: white;
+        }
+        
+        .student-badge .avatar {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 0.75em;
+        }
+        
+        .timer {
+            background: white;
+            color: #667eea;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 1em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .timer.warning {
+            background: #ff9800;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+        
+        .timer.danger {
+            background: #f44336;
+            color: white;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .student-name {
+            color: #666;
+        }
+        
+        .wrong-name-link {
+            color: #ffcdd2;
+            font-size: 0.7em;
+            text-decoration: none;
+            margin-left: 4px;
+            background: rgba(255,255,255,0.15);
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .wrong-name-link:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        /* Progress section */
+        .progress-section {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+        
+        .progress-count {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar-container {
+            background: #e8e8e8;
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Questions */
+        .question-card {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid transparent;
+            transition: border-color 0.3s;
+        }
+        
+        .question-card.answered {
+            border-left-color: #28a745;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .question-status {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .option.selected {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+        
+        .option input {
+            display: none;
+        }
+        
+        .option-label {
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 14px;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        
+        .option.selected .option-label {
+            background: #28a745;
+        }
+        
+        .option-text {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* Navigation */
+        .question-nav {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .nav-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .nav-btn {
+            width: 34px;
+            height: 34px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8em;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .nav-btn.answered {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .nav-btn.current {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Submit section - HIDDEN */
+        .submit-section {
+            display: none;
+        }
+        
+        /* Submit button on header */
+        .header-submit-btn {
+            background: #28a745;
+            color: white;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .header-submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+            background: #218838;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-mini {
+            font-size: 0.75em;
+            color: white;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+        
+        .progress-mini strong {
+            color: #ffd700;
+        }
+        
+        .submit-info {
+            color: #666;
+            font-size: 0.75em;
+        }
+        
+        .submit-info strong {
+            color: #667eea;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* Legacy nav-btn.answered for compatibility */
+        .nav-btn.answered.legacy {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .nav-btn.current {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Submit */
+        .submit-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .submit-info {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .submit-info strong {
+            color: #333;
+        }
+        
+        /* Result Screen */
+        .result-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .result-box {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .result-score {
+            font-size: 5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        
+        .result-label {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .result-details {
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 1em;
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-row strong {
+            color: #333;
+        }
+        
+        .result-message {
+            color: #666;
+            font-size: 0.95em;
+            padding: 16px;
+            background: #e8f5e9;
+            border-radius: 12px;
+        }
+        
+        /* Saved results section */
+        .saved-results {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px dashed #e0e0e0;
+        }
+        
+        .saved-results-title {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .saved-result-item {
+            background: #f8f9fa;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .saved-result-item:hover {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .saved-result-item.active {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .saved-result-info {
+            flex: 1;
+        }
+        
+        .saved-result-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .saved-result-meta {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .saved-result-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-left: 16px;
+        }
+        
+        .saved-result-delete {
+            color: #999;
+            font-size: 1.2em;
+            margin-left: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        
+        .saved-result-delete:hover {
+            color: #dc3545;
+        }
+        
+        .no-saved-results {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            padding: 20px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-header .icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+        
+        .modal-header h3 {
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        /* Confirm submit modal */
+        .confirm-modal .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 24px;
+        }
+        
+        .confirm-modal .stat-item {
+            text-align: center;
+        }
+        
+        .confirm-modal .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .confirm-modal .stat-label {
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .confirm-modal .stat-item.warning .stat-value {
+            color: #ff9800;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 30px 24px;
+            }
+            
+            .exam-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 16px;
+            }
+            
+            .exam-header-left {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .exam-info {
+                justify-content: center;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .submit-section {
+                flex-direction: column;
+                gap: 12px;
+                padding: 16px;
+            }
+            
+            .result-box {
+                padding: 40px 24px;
+            }
+            
+            .result-score {
+                font-size: 4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="icon">🎓</div>
+                <h1 id="examTitleDisplay">Bài Kiểm Tra</h1>
+                <p class="subtitle">Vui lòng chọn tên của bạn để bắt đầu</p>
+            </div>
+            
+            <!-- Steps indicator -->
+            <div class="steps-indicator">
+                <div class="step-dot active" id="step1"></div>
+                <div class="step-dot" id="step2"></div>
+                <div class="step-dot" id="step3"></div>
+            </div>
+            
+            <!-- Messages -->
+            <div class="message error" id="errorMessage"></div>
+            <div class="message success" id="successMessage"></div>
+            <div class="message info" id="infoMessage"></div>
+            
+            <!-- Step 1: Select student -->
+            <div id="step1Content">
+                <div class="search-box">
+                    <input type="text" id="studentSearch" placeholder="Tìm kiếm theo tên hoặc STT..." oninput="filterStudents()">
+                </div>
+                
+                <div class="form-group">
+                    <select id="studentSelect" size="8" style="height: 240px; padding: 0;">
+                        <option value="" disabled>-- Đang tải danh sách... --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Step 2: Confirm name -->
+            <div id="step2Content" style="display: none;">
+                <div class="student-card">
+                    <div class="label">Bạn đã chọn</div>
+                    <div class="name" id="selectedStudentName"></div>
+                    <div class="stt" id="selectedStudentSTT"></div>
+                </div>
+                
+                <div class="warning-box">
+                    <span class="icon">⚠️</span>
+                    <span class="text">Hãy kiểm tra kỹ! Nếu làm bài với tên người khác, điểm sẽ được tính cho người đó.</span>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="confirmSelection()">
+                        ✓ Đúng rồi
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="cancelSelection()">
+                        ✗ Chọn lại
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Confirm and start -->
+            <div id="step3Content" style="display: none;">
+                <div class="student-card confirmed">
+                    <div class="label">✓ Xác nhận thành công</div>
+                    <div class="name" id="confirmedName"></div>
+                    <a href="javascript:void(0)" onclick="goBackToStep1()" style="font-size: 0.85em; color: #666; text-decoration: underline;">Chọn lại tên khác</a>
+                </div>
+                
+                <!-- Hiển thị lớp từ session của giáo viên -->
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border: 1px solid #a5d6a7;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5em;">🏫</span>
+                        <div>
+                            <div style="font-size: 0.85em; color: #2e7d32;">Lớp đang kiểm tra:</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: #1b5e20;" id="displayCurrentClass">Đang tải...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="loginForm">
+                    <input type="hidden" id="studentClass" value="">
+                    
+                    <button type="submit" class="btn btn-primary" id="startBtn">
+                        🚀 Bắt đầu làm bài
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Legacy elements for backward compatibility - HIDDEN -->
+        </div>
+    </div>
+    
+    <!-- Report Modal -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-box">
+            <h3>⚠️ Báo cáo chọn nhầm tên</h3>
+            <p style="margin-bottom: 15px;">Tên đang làm bài: <strong id="wrongStudentName" style="color: #dc3545;"></strong></p>
+            
+            <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em;">
+                <strong>📋 Quy trình:</strong><br>
+                1. Chọn đúng tên của bạn bên dưới<br>
+                2. Gửi yêu cầu cho giáo viên<br>
+                3. Giáo viên duyệt → Điểm được chuyển sang tên đúng
+            </div>
+            
+            <div class="form-group">
+                <label>Chọn tên đúng của bạn:</label>
+                <select id="correctStudentSelect" required style="font-size: 1em;">
+                    <option value="">-- Chọn tên đúng --</option>
+                </select>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="submitReport()">📤 Gửi yêu cầu</button>
+                <button class="btn btn-danger" onclick="closeReportModal()">❌ Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Screen -->
+    <div class="exam-screen" id="examScreen">
+        <div class="container">
+            <div class="exam-header">
+                <div class="exam-header-left">
+                    <div class="exam-title" id="examTitle">Bài kiểm tra</div>
+                    <div class="student-badge">
+                        <div class="avatar" id="studentAvatar">A</div>
+                        <span><span id="displayName"></span> - <span id="displayClass"></span></span>
+                        <a href="javascript:void(0)" onclick="reportWrongSelectionDuringExam()" class="wrong-name-link">Sai tên?</a>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="progress-mini"><span id="answeredCount2">0</span>/<span id="totalCount2">0</span> câu</div>
+                    <div class="timer" id="timer">00:00</div>
+                    <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span class="progress-title">📝 Tiến độ làm bài</span>
+                    <span class="progress-count"><span id="answeredCount">0</span>/<span id="totalCount">0</span> câu</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="nav-buttons" id="navButtons"></div>
+            </div>
+
+            <div id="questionsContainer"></div>
+        </div>
+        
+        <div class="submit-section">
+            <div class="submit-info">
+                Đã trả lời <strong><span id="answeredCount2">0</span>/<span id="totalCount2">0</span></strong> câu hỏi
+            </div>
+            <button class="btn-submit" onclick="confirmSubmit()">
+                📤 Nộp bài
+            </button>
+        </div>
+    </div>
+
+    <!-- Confirm Submit Modal -->
+    <div class="modal confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon">📝</div>
+                <h3>Xác nhận nộp bài?</h3>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="modalAnswered">0</div>
+                    <div class="stat-label">Đã trả lời</div>
+                </div>
+                <div class="stat-item warning">
+                    <div class="stat-value" id="modalUnanswered">0</div>
+                    <div class="stat-label">Chưa trả lời</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="modalTimeLeft">--:--</div>
+                    <div class="stat-label">Còn lại</div>
+                </div>
+            </div>
+            
+            <div class="warning-box" id="unansweredWarning" style="display: none;">
+                <span class="icon">⚠️</span>
+                <span class="text">Bạn còn câu hỏi chưa trả lời. Bạn có chắc muốn nộp bài?</span>
+            </div>
+            
+            <div class="warning-box" id="earlySubmitWarning" style="background: #fff3cd; border-color: #ffc107; display: none;">
+                <span class="icon">⏰</span>
+                <span class="text" style="color: #856404;"><strong>Lưu ý:</strong> Sau khi nộp bài sẽ chấm điểm ngay và bạn không thể làm lại!</span>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="submitExam()">✓ Nộp bài</button>
+                <button class="btn btn-danger" onclick="closeConfirmModal()">Tiếp tục làm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div class="result-screen" id="resultScreen">
+        <div class="result-box">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-score" id="resultScore">0</div>
+            <div class="result-label">điểm</div>
+            
+            <div class="result-details">
+                <div class="result-row">
+                    <span>Số câu đúng</span>
+                    <strong id="correctCount">0/0</strong>
+                </div>
+                <div class="result-row">
+                    <span>Thời gian làm</span>
+                    <strong id="timeSpent">00:00</strong>
+                </div>
+                <div class="result-row">
+                    <span>Họ tên</span>
+                    <strong id="resultName"></strong>
+                </div>
+            </div>
+            
+            <div class="result-message">
+                ✅ Kết quả đã được gửi về giáo viên!
+            </div>
+            
+            <button class="btn btn-primary" onclick="backToLogin()" style="margin-top: 20px;">
+                ↩️ Quay lại (cho học sinh khác làm bài)
+            </button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Hàm escape HTML để hiển thị các thẻ HTML như text
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        let mySocketId = null;
+        let studentInfo = { name: '', class: '', stt: '' };
+        let selectedStudent = null;
+        let nameConfirmed = false;
+        let students = [];
+        let filteredStudents = [];
+        let questions = [];
+        let originalQuestions = []; // Câu hỏi gốc từ server
+        let questionOrder = []; // Thứ tự câu hỏi đã đảo
+        let optionOrders = []; // Thứ tự đáp án cho mỗi câu hỏi
+        let answers = {};
+        let timeLimit = 30;
+        let timeRemaining = 0;
+        let timerInterval = null;
+        let startTime = null;
+        let currentStep = 1;
+        
+        // Hàm đảo mảng theo seed (STT học sinh)
+        function shuffleWithSeed(array, seed) {
+            const shuffled = [...array];
+            let currentIndex = shuffled.length;
+            
+            // Simple seeded random
+            const seededRandom = () => {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+            
+            while (currentIndex > 0) {
+                const randomIndex = Math.floor(seededRandom() * currentIndex);
+                currentIndex--;
+                [shuffled[currentIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currentIndex]];
+            }
+            
+            return shuffled;
+        }
+        
+        // Tạo thứ tự câu hỏi theo STT
+        function generateQuestionOrder(stt, totalQuestions) {
+            const indices = Array.from({ length: totalQuestions }, (_, i) => i);
+            return shuffleWithSeed(indices, stt);
+        }
+        
+        // Tạo thứ tự đáp án cho mỗi câu hỏi
+        function generateOptionOrders(stt, totalQuestions, questionsData) {
+            const orders = [];
+            for (let i = 0; i < totalQuestions; i++) {
+                const numOptions = questionsData[i].options.length;
+                const optionIndices = Array.from({ length: numOptions }, (_, j) => j);
+                // Seed khác nhau cho mỗi câu hỏi (STT * 1000 + index câu)
+                orders.push(shuffleWithSeed(optionIndices, stt * 1000 + i));
+            }
+            return orders;
+        }
+        
+        // Đảo câu hỏi và đáp án
+        function shuffleQuestionsAndOptions(originalQs, qOrder, optOrders) {
+            return qOrder.map((origIndex, newIndex) => {
+                const origQ = originalQs[origIndex];
+                const optOrder = optOrders[origIndex];
+                
+                // Đảo thứ tự đáp án
+                const shuffledOptions = optOrder.map(i => origQ.options[i]);
+                
+                return {
+                    ...origQ,
+                    options: shuffledOptions,
+                    _optionOrder: optOrder, // Lưu để chuyển đổi khi nộp bài
+                    _originalIndex: origIndex
+                };
+            });
+        }
+
+        // ==================== SOCKET EVENTS ====================
+        socket.on('connected', (data) => {
+            mySocketId = data.socketId;
+            loadStudents();
+            checkExam();
+            
+            // Kiểm tra xem có đang làm bài dở không
+            checkAndRestoreSession();
+        });
+
+        socket.on('examStatusChanged', (isOpen) => {
+            if (isOpen) {
+                showMessage('success', '🎉 Giáo viên đã mở bài thi!');
+            } else {
+                showMessage('error', '⏸️ Giáo viên đã đóng bài thi!');
+            }
+        });
+
+        socket.on('studentStatusUpdated', () => loadStudents());
+        
+        socket.on('allStudentsReset', () => {
+            showMessage('info', '🔄 Danh sách đã được reset!');
+            goBackToStep1();
+            loadStudents();
+        });
+        
+        // Lắng nghe khi giáo viên đổi bài thi
+        socket.on('examSwitched', (data) => {
+            console.log('Exam switched:', data);
+            
+            // Nếu đang ở màn hình kết quả hoặc màn hình chọn tên
+            if (document.getElementById('resultScreen').style.display !== 'none' ||
+                document.getElementById('loginScreen').style.display !== 'none') {
+                
+                // Hiện thông báo bài mới
+                showNewExamNotification(data.examName);
+            }
+            
+            // Nếu đang làm bài thì cảnh báo
+            if (document.getElementById('examScreen').style.display !== 'none') {
+                showMessage('warning', `⚠️ Giáo viên đã chuyển sang bài: "${data.examName}". Hãy nộp bài hiện tại!`);
+            }
+            
+            // Reset trạng thái để sẵn sàng cho bài mới
+            loadStudents();
+        });
+        
+        // Hiển thị thông báo bài thi mới
+        function showNewExamNotification(examName) {
+            // Tạo modal thông báo
+            const existingModal = document.getElementById('newExamModal');
+            if (existingModal) existingModal.remove();
+            
+            const modal = document.createElement('div');
+            modal.id = 'newExamModal';
+            modal.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <div style="font-size: 4em; margin-bottom: 15px;">📚</div>
+                        <h2 style="margin: 0 0 10px 0; color: #333;">Bài kiểm tra mới!</h2>
+                        <p style="color: #666; margin-bottom: 20px;">Giáo viên đã chuyển sang bài:</p>
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; font-size: 1.2em; font-weight: bold; margin-bottom: 20px;">
+                            ${examName}
+                        </div>
+                        <button onclick="closeNewExamModal()" style="background: #28a745; color: white; border: none; padding: 15px 40px; border-radius: 10px; font-size: 1.1em; cursor: pointer; font-weight: bold;">
+                            ✓ Đã hiểu, làm bài mới
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function closeNewExamModal() {
+            const modal = document.getElementById('newExamModal');
+            if (modal) modal.remove();
+            
+            // Nếu đang ở màn hình kết quả, quay về màn hình chọn tên
+            if (document.getElementById('resultScreen').style.display !== 'none') {
+                document.getElementById('resultScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+                
+                // Reset các biến
+                answers = {};
+                questions = [];
+                selectedStudent = null;
+                nameConfirmed = false;
+                
+                // Quay về step 1
+                goBackToStep1();
+            }
+        }
+
+        // ==================== LOAD & RENDER ====================
+        async function loadStudents() {
+            try {
+                const res = await fetch('/api/students');
+                students = await res.json();
+                filteredStudents = [...students];
+                renderStudentList();
+            } catch (err) {
+                showMessage('error', 'Không thể tải danh sách học sinh');
+            }
+        }
+
+        function renderStudentList() {
+            const select = document.getElementById('studentSelect');
+            
+            if (filteredStudents.length === 0) {
+                select.innerHTML = '<option value="" disabled>Không tìm thấy học sinh</option>';
+                return;
+            }
+            
+            select.innerHTML = filteredStudents.map(s => {
+                let statusIcon = '';
+                let disabled = false;
+                let style = '';
+                
+                if (s.status.completed && !s.status.canRetry) {
+                    statusIcon = ' ✅';
+                    disabled = true;
+                    style = 'color: #28a745;';
+                } else if (s.status.selected && s.status.selectedBy !== mySocketId) {
+                    statusIcon = ' 🔒';
+                    disabled = true;
+                    style = 'color: #999;';
+                } else if (s.status.canRetry) {
+                    statusIcon = ' 🔄';
+                    style = 'color: #ff9800;';
+                }
+                
+                return `<option value="${s.stt}" ${disabled ? 'disabled' : ''} style="padding: 12px 16px; ${style}">
+                    ${s.stt}. ${s.fullName}${statusIcon}
+                </option>`;
+            }).join('');
+        }
+
+        function filterStudents() {
+            const search = document.getElementById('studentSearch').value.toLowerCase().trim();
+            
+            if (!search) {
+                filteredStudents = [...students];
+            } else {
+                filteredStudents = students.filter(s => 
+                    s.fullName.toLowerCase().includes(search) || 
+                    s.stt.toString().includes(search)
+                );
+            }
+            
+            renderStudentList();
+        }
+
+        // Legacy function for backward compatibility
+        function renderStudentSelect() {
+            renderStudentList();
+        }
+
+        // ==================== STEP NAVIGATION ====================
+        function updateSteps(step) {
+            currentStep = step;
+            
+            document.getElementById('step1').className = 'step-dot ' + (step >= 1 ? (step > 1 ? 'completed' : 'active') : '');
+            document.getElementById('step2').className = 'step-dot ' + (step >= 2 ? (step > 2 ? 'completed' : 'active') : '');
+            document.getElementById('step3').className = 'step-dot ' + (step >= 3 ? 'active' : '');
+            
+            document.getElementById('step1Content').style.display = step === 1 ? 'block' : 'none';
+            document.getElementById('step2Content').style.display = step === 2 ? 'block' : 'none';
+            document.getElementById('step3Content').style.display = step === 3 ? 'block' : 'none';
+            
+            // Khi hiển thị step 3, load tên lớp từ session
+            if (step === 3) {
+                loadCurrentClassName();
+            }
+        }
+        
+        // Load tên lớp hiện tại từ session của giáo viên
+        async function loadCurrentClassName() {
+            try {
+                const res = await fetch('/api/exam');
+                const data = await res.json();
+                if (data.className) {
+                    document.getElementById('displayCurrentClass').textContent = data.className;
+                    document.getElementById('studentClass').value = data.className;
+                } else if (data.error) {
+                    document.getElementById('displayCurrentClass').textContent = 'Phòng thi chưa mở';
+                } else {
+                    document.getElementById('displayCurrentClass').textContent = 'Chưa chọn lớp';
+                }
+            } catch (err) {
+                document.getElementById('displayCurrentClass').textContent = 'Lỗi kết nối';
+            }
+        }
+
+        function goBackToStep1() {
+            if (selectedStudent) {
+                fetch('/api/deselect-student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId })
+                });
+            }
+            selectedStudent = null;
+            nameConfirmed = false;
+            document.getElementById('studentSelect').value = '';
+            document.getElementById('studentSearch').value = '';
+            filteredStudents = [...students];
+            renderStudentList();
+            updateSteps(1);
+        }
+
+        // ==================== SELECT & CONFIRM ====================
+        document.getElementById('studentSelect').addEventListener('change', async (e) => {
+            const stt = e.target.value;
+            if (!stt) return;
+            
+            try {
+                const res = await fetch('/api/select-student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stt, socketId: mySocketId })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    selectedStudent = data.student;
+                    document.getElementById('selectedStudentName').textContent = 
+                        `${selectedStudent.ho} ${selectedStudent.ten}`;
+                    document.getElementById('selectedStudentSTT').textContent = 
+                        `STT: ${selectedStudent.stt}`;
+                    updateSteps(2);
+                } else {
+                    showMessage('error', data.error);
+                    e.target.value = '';
+                }
+            } catch (err) {
+                showMessage('error', 'Không thể chọn học sinh');
+            }
+        });
+
+        function confirmSelection() {
+            if (!selectedStudent) return;
+            nameConfirmed = true;
+            document.getElementById('confirmedName').textContent = 
+                `${selectedStudent.ho} ${selectedStudent.ten} (STT ${selectedStudent.stt})`;
+            updateSteps(3);
+        }
+
+        function cancelSelection() {
+            if (selectedStudent) {
+                fetch('/api/deselect-student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId })
+                });
+            }
+            selectedStudent = null;
+            nameConfirmed = false;
+            document.getElementById('studentSelect').value = '';
+            loadStudents();
+            updateSteps(1);
+        }
+
+        // ==================== CHECK EXAM & MESSAGES ====================
+        async function checkExam() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = await res.json();
+                document.getElementById('examTitleDisplay').textContent = data.title;
+                
+                if (!data.isOpen) {
+                    showMessage('info', '⏳ Bài thi chưa mở. Vui lòng chờ giáo viên!');
+                }
+            } catch (err) {
+                showMessage('error', 'Không thể kết nối server');
+            }
+        }
+
+        function showMessage(type, text) {
+            const el = document.getElementById(type + 'Message');
+            if (el) {
+                el.innerHTML = text;
+                el.className = `message ${type} show`;
+                setTimeout(() => el.classList.remove('show'), 4000);
+            }
+        }
+
+        // Legacy functions
+        function showError(msg) { showMessage('error', msg); }
+        function showSuccess(msg) { showMessage('success', msg); }
+
+        // Render dropdown cho báo cáo
+        function renderCorrectStudentSelect() {
+            const select = document.getElementById('correctStudentSelect');
+            
+            select.innerHTML = '<option value="">-- Chọn tên đúng --</option>' + 
+                students.filter(s => !s.status.completed && !s.status.selected)
+                    .map(s => `<option value="${s.stt}">${s.stt}. ${s.fullName}</option>`)
+                    .join('');
+        }
+
+        // Báo sai tên khi đang làm bài
+        function reportWrongSelectionDuringExam() {
+            // Hiển thị tên đang làm bài
+            document.getElementById('wrongStudentName').textContent = studentInfo.name;
+            
+            // Render danh sách học sinh có thể chọn
+            const select = document.getElementById('correctStudentSelect');
+            select.innerHTML = '<option value="">-- Chọn tên đúng của bạn --</option>' + 
+                students.filter(s => s.stt !== studentInfo.stt && !s.status.completed)
+                    .map(s => `<option value="${s.stt}">${s.stt}. ${s.fullName}</option>`)
+                    .join('');
+            
+            // Mở modal
+            document.getElementById('reportModal').classList.add('show');
+        }
+
+        // Mở modal báo cáo (từ màn hình chọn tên)
+        function reportWrongSelection() {
+            if (!selectedStudent) return;
+            
+            document.getElementById('wrongStudentName').textContent = 
+                `${selectedStudent.ho} ${selectedStudent.ten}`;
+            renderCorrectStudentSelect();
+            document.getElementById('reportModal').classList.add('show');
+        }
+
+        // Đóng modal
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('show');
+        }
+
+        // Gửi báo cáo
+        async function submitReport() {
+            const correctSTT = document.getElementById('correctStudentSelect').value;
+            
+            if (!correctSTT) {
+                alert('Vui lòng chọn tên đúng của bạn!');
+                return;
+            }
+            
+            // Determine which STT is wrong (from login screen or exam screen)
+            const wrongSTT = studentInfo.stt || (selectedStudent ? selectedStudent.stt : null);
+            
+            if (!wrongSTT) {
+                alert('Không xác định được thông tin!');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/report-wrong-selection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wrongSTT: wrongSTT,
+                        correctSTT,
+                        reason: 'Chọn nhầm tên',
+                        socketId: mySocketId
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    closeReportModal();
+                    alert('✅ Đã gửi yêu cầu cho giáo viên!\n\nBạn có thể tiếp tục làm bài.\nGiáo viên sẽ duyệt và chuyển điểm cho bạn sau.');
+                } else {
+                    alert('Lỗi: ' + data.error);
+                }
+            } catch (err) {
+                alert('Không thể gửi báo cáo. Vui lòng thử lại!');
+            }
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedStudent || !nameConfirmed) {
+                showError('Vui lòng chọn và xác nhận tên của bạn');
+                return;
+            }
+            
+            // Check if exam is open and get class name from session
+            const res = await fetch('/api/exam');
+            const data = await res.json();
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // Lấy tên lớp và examId từ session của giáo viên
+            const studentClass = data.className || 'Chưa chọn lớp';
+            document.getElementById('studentClass').value = studentClass;
+            currentExamId = data.examId || 'default'; // Lưu examId hiện tại
+            
+            studentInfo = { 
+                name: `${selectedStudent.ho} ${selectedStudent.ten}`, 
+                class: studentClass, 
+                stt: selectedStudent.stt 
+            };
+            
+            // Lưu câu hỏi gốc và tạo thứ tự đảo theo STT
+            originalQuestions = data.questions;
+            questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
+            optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
+            
+            // Đảo câu hỏi VÀ đáp án theo thứ tự
+            questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+            timeLimit = data.timeLimit;
+            
+            document.getElementById('examTitle').textContent = data.title;
+            
+            startExam();
+        });
+
+        // Start exam
+        function startExam() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('examScreen').style.display = 'block';
+            
+            document.getElementById('displayName').textContent = studentInfo.name;
+            document.getElementById('displayClass').textContent = `Lớp ${studentInfo.class} - STT ${studentInfo.stt}`;
+            
+            // Check for saved progress
+            const hasProgress = restoreExamProgress();
+            
+            renderQuestions();
+            renderNavigation();
+            
+            if (hasProgress && Object.keys(answers).length > 0) {
+                // Restore UI from saved answers
+                applyRestoredAnswers();
+                
+                // Use restored time if available, otherwise start fresh
+                if (timeRemaining <= 0) {
+                    timeRemaining = timeLimit * 60;
+                    startTime = new Date();
+                } else {
+                    // Adjust startTime based on time already spent
+                    // Total time - time remaining = time spent
+                    const totalTimeSeconds = timeLimit * 60;
+                    const timeSpentSeconds = totalTimeSeconds - timeRemaining;
+                    startTime = new Date(Date.now() - timeSpentSeconds * 1000);
+                }
+                
+                const minutesLeft = Math.floor(timeRemaining / 60);
+                const secondsLeft = timeRemaining % 60;
+                showMessage('success', `📥 Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
+            } else {
+                startTime = new Date();
+                timeRemaining = timeLimit * 60;
+            }
+            
+            startTimer();
+        }
+
+        // Render questions
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="question${i}">
+                    <div class="question-header">
+                        <span class="question-number">Câu ${i + 1}</span>
+                    </div>
+                    <div class="question-text">${escapeHtml(q.question)}</div>
+                    ${q.image ? `<img src="${q.image}" class="question-image" alt="Hình">` : ''}
+                    <div class="options">
+                        ${q.options.map((opt, j) => `
+                            <label class="option" onclick="selectOption(${i}, ${j})">
+                                <input type="radio" name="q${i}" value="${j}">
+                                <span class="option-label">${String.fromCharCode(65 + j)}</span>
+                                <span class="option-text">${escapeHtml(opt)}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('totalCount').textContent = questions.length;
+            document.getElementById('totalCount2').textContent = questions.length;
+        }
+
+        // Select option
+        function selectOption(questionIndex, optionIndex) {
+            answers[questionIndex] = optionIndex;
+            
+            // Update question card UI
+            const card = document.getElementById(`question${questionIndex}`);
+            card.classList.add('answered');
+            
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.toggle('selected', i === optionIndex);
+            });
+            
+            updateProgress();
+            
+            // Save to localStorage
+            saveExamProgress();
+        }
+        
+        // ==================== EXAM PROGRESS STORAGE ====================
+        const EXAM_PROGRESS_KEY = 'quiz_exam_progress';
+        let currentExamId = null; // ID bài thi hiện tại
+        
+        function saveExamProgress() {
+            if (!studentInfo.stt || !currentExamId) return;
+            
+            const progressKey = `${studentInfo.stt}_${currentExamId}`; // Key theo STT + examId
+            
+            const progress = {
+                stt: studentInfo.stt,
+                name: studentInfo.name,
+                class: studentInfo.class,
+                examId: currentExamId,
+                answers: answers,
+                timeRemaining: timeRemaining,
+                startTime: startTime ? startTime.toISOString() : null,
+                questionOrder: questionOrder,
+                optionOrders: optionOrders,
+                originalQuestions: originalQuestions,
+                timeLimit: timeLimit,
+                examTitle: document.getElementById('examTitle')?.textContent || 'Bài kiểm tra',
+                inExam: true,
+                savedAt: new Date().toISOString()
+            };
+            
+            // Get all progress data
+            let allProgress = {};
+            try {
+                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                if (data) allProgress = JSON.parse(data);
+            } catch (e) {}
+            
+            // Save progress with composite key (stt_examId)
+            allProgress[progressKey] = progress;
+            
+            localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
+        }
+        
+        function getExamProgress(stt, examId) {
+            try {
+                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                if (!data) return null;
+                const allProgress = JSON.parse(data);
+                const progressKey = `${stt}_${examId}`;
+                return allProgress[progressKey] || null;
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        function clearExamProgress(stt, examId) {
+            try {
+                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                if (!data) return;
+                const allProgress = JSON.parse(data);
+                const progressKey = `${stt}_${examId}`;
+                delete allProgress[progressKey];
+                localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
+            } catch (e) {}
+        }
+        
+        function restoreExamProgress() {
+            if (!currentExamId) return false;
+            
+            const progress = getExamProgress(studentInfo.stt, currentExamId);
+            if (!progress) return false;
+            
+            // Kiểm tra examId có khớp không (phòng trường hợp dữ liệu cũ)
+            if (progress.examId && progress.examId !== currentExamId) {
+                console.log('ExamId không khớp, không restore');
+                return false;
+            }
+            
+            // Check if progress is recent (within last 2 hours)
+            const savedTime = new Date(progress.savedAt);
+            const now = new Date();
+            const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+            
+            if (hoursDiff > 2) {
+                clearExamProgress(studentInfo.stt, currentExamId);
+                return false;
+            }
+            
+            // Restore answers
+            answers = progress.answers || {};
+            
+            // Restore time remaining
+            if (progress.timeRemaining && progress.timeRemaining > 0) {
+                // Calculate how much time has passed since last save
+                const timePassed = Math.floor((now - savedTime) / 1000);
+                timeRemaining = Math.max(0, progress.timeRemaining - timePassed);
+            }
+            
+            // Restore start time
+            if (progress.startTime) {
+                startTime = new Date(progress.startTime);
+            }
+            
+            return true;
+        }
+        
+        function applyRestoredAnswers() {
+            // Apply restored answers to UI
+            Object.keys(answers).forEach(qIndex => {
+                const optionIndex = answers[qIndex];
+                const card = document.getElementById(`question${qIndex}`);
+                if (card) {
+                    card.classList.add('answered');
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, i) => {
+                        opt.classList.toggle('selected', i === optionIndex);
+                    });
+                }
+            });
+            updateProgress();
+        }
+        
+        // Kiểm tra và khôi phục session khi F5
+        async function checkAndRestoreSession() {
+            try {
+                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                if (!data) return;
+                
+                const allProgress = JSON.parse(data);
+                // Tìm session đang làm bài
+                const activeSession = Object.values(allProgress).find(p => p.inExam);
+                
+                if (!activeSession) return;
+                
+                // Kiểm tra thời gian (2 giờ)
+                const savedTime = new Date(activeSession.savedAt);
+                const now = new Date();
+                const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+                
+                if (hoursDiff > 2) {
+                    clearExamProgress(activeSession.stt);
+                    return;
+                }
+                
+                // Tính thời gian còn lại
+                const timePassed = Math.floor((now - savedTime) / 1000);
+                const remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
+                
+                if (remainingTime <= 0) {
+                    clearExamProgress(activeSession.stt);
+                    return;
+                }
+                
+                // Khôi phục session
+                studentInfo = {
+                    stt: activeSession.stt,
+                    name: activeSession.name,
+                    class: activeSession.class
+                };
+                
+                originalQuestions = activeSession.originalQuestions || [];
+                questionOrder = activeSession.questionOrder || [];
+                optionOrders = activeSession.optionOrders || [];
+                
+                // Khôi phục câu hỏi đã đảo (cả câu hỏi và đáp án)
+                if (optionOrders.length > 0) {
+                    questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                } else {
+                    questions = questionOrder.map(i => originalQuestions[i]);
+                }
+                
+                answers = activeSession.answers || {};
+                timeLimit = activeSession.timeLimit || 30;
+                timeRemaining = remainingTime;
+                
+                // Hiển thị màn hình làm bài
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('examScreen').style.display = 'block';
+                document.getElementById('displayName').textContent = studentInfo.name;
+                document.getElementById('displayClass').textContent = `Lớp ${studentInfo.class} - STT ${studentInfo.stt}`;
+                document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
+                
+                // Tính lại startTime
+                const totalTimeSeconds = timeLimit * 60;
+                const timeSpentSeconds = totalTimeSeconds - timeRemaining;
+                startTime = new Date(Date.now() - timeSpentSeconds * 1000);
+                
+                renderQuestions();
+                renderNavigation();
+                applyRestoredAnswers();
+                startTimer();
+                
+                const minutesLeft = Math.floor(timeRemaining / 60);
+                const secondsLeft = timeRemaining % 60;
+                showMessage('success', `📥 Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
+                
+            } catch (e) {
+                console.error('Lỗi khôi phục session:', e);
+            }
+        }
+
+        // Render navigation
+        function renderNavigation() {
+            const container = document.getElementById('navButtons');
+            
+            container.innerHTML = questions.map((_, i) => `
+                <button class="nav-btn" id="nav${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
+            `).join('');
+        }
+
+        // Update progress
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const total = questions.length;
+            const percent = total > 0 ? (answered / total) * 100 : 0;
+            
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('answeredCount2').textContent = answered;
+            document.getElementById('progressBar').style.width = percent + '%';
+            
+            // Update nav buttons
+            questions.forEach((_, i) => {
+                const btn = document.getElementById(`nav${i}`);
+                btn.classList.toggle('answered', answers[i] !== undefined);
+            });
+        }
+
+        // Scroll to question
+        function scrollToQuestion(index) {
+            document.getElementById(`question${index}`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
+
+        // Timer
+        function startTimer() {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                // Save progress every 10 seconds
+                if (timeRemaining % 10 === 0) {
+                    saveExamProgress();
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    showMessage('error', '⏰ Hết giờ! Bài đang được nộp tự động...');
+                    setTimeout(() => submitExam(true), 1000);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timer = document.getElementById('timer');
+            timer.textContent = display;
+            
+            // Warning colors
+            timer.classList.remove('warning', 'danger');
+            if (timeRemaining <= 60) {
+                timer.classList.add('danger');
+            } else if (timeRemaining <= 300) {
+                timer.classList.add('warning');
+            }
+        }
+
+        // Confirm submit
+        function confirmSubmit() {
+            const answered = Object.keys(answers).length;
+            const unanswered = questions.length - answered;
+            
+            document.getElementById('modalAnswered').textContent = answered;
+            document.getElementById('modalUnanswered').textContent = unanswered;
+            document.getElementById('unansweredWarning').style.display = unanswered > 0 ? 'flex' : 'none';
+            
+            // Hiển thị thời gian còn lại
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('modalTimeLeft').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Hiển thị cảnh báo nếu còn nhiều thời gian (còn hơn 1 phút)
+            document.getElementById('earlySubmitWarning').style.display = timeRemaining > 60 ? 'flex' : 'none';
+            
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        // Submit exam
+        async function submitExam(autoSubmit = false) {
+            closeConfirmModal();
+            clearInterval(timerInterval);
+            
+            const endTime = new Date();
+            const timeSpentMs = endTime - startTime;
+            const timeSpentMinutes = Math.floor(timeSpentMs / 60000);
+            const timeSpentSeconds = Math.floor((timeSpentMs % 60000) / 1000);
+            const timeSpent = `${timeSpentMinutes} phút ${timeSpentSeconds} giây`;
+            
+            // Chuyển đổi answers từ thứ tự đảo về thứ tự gốc
+            const answersArray = [];
+            for (let i = 0; i < originalQuestions.length; i++) {
+                answersArray.push(-1); // Mặc định chưa trả lời
+            }
+            
+            // Map answers về vị trí gốc (cả câu hỏi và đáp án)
+            for (let shuffledIndex = 0; shuffledIndex < questions.length; shuffledIndex++) {
+                if (answers[shuffledIndex] !== undefined) {
+                    const originalQIndex = questionOrder[shuffledIndex];
+                    const shuffledOptionIndex = answers[shuffledIndex];
+                    
+                    // Chuyển đáp án đã chọn về vị trí gốc
+                    // optionOrders[originalQIndex] chứa thứ tự đảo của đáp án
+                    // Ví dụ: optionOrders[0] = [2, 0, 3, 1] nghĩa là:
+                    // - Đáp án A (vị trí 0) hiển thị = đáp án gốc vị trí 2 (C)
+                    // - Đáp án B (vị trí 1) hiển thị = đáp án gốc vị trí 0 (A)
+                    // Nên nếu chọn B (vị trí 1), đáp án gốc là vị trí 0
+                    const originalOptionIndex = optionOrders[originalQIndex] 
+                        ? optionOrders[originalQIndex][shuffledOptionIndex] 
+                        : shuffledOptionIndex;
+                    
+                    answersArray[originalQIndex] = originalOptionIndex;
+                }
+            }
+            
+            try {
+                const res = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        studentSTT: studentInfo.stt,
+                        studentName: studentInfo.name,
+                        studentClass: studentInfo.class,
+                        answers: answersArray,
+                        timeSpent
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    // Clear saved progress after successful submission
+                    clearExamProgress(studentInfo.stt, currentExamId);
+                    showResult(result, timeSpent);
+                } else {
+                    alert(result.error || 'Có lỗi khi nộp bài. Vui lòng thử lại!');
+                }
+            } catch (err) {
+                alert('Không thể kết nối đến server!');
+            }
+        }
+
+        // Show result
+        function showResult(result, timeSpent) {
+            document.getElementById('examScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'flex';
+            
+            // Kiểm tra nếu giáo viên cho phép xem điểm
+            const showScore = result.showScore !== false;
+            
+            if (showScore) {
+                document.getElementById('resultScore').textContent = result.score;
+                document.getElementById('resultScore').style.display = 'block';
+                document.querySelector('.result-label').style.display = 'block';
+                document.getElementById('correctCount').textContent = `${result.correctCount}/${result.totalQuestions}`;
+                document.getElementById('correctCount').parentElement.style.display = 'flex';
+                
+                // Icon based on score
+                const icon = document.getElementById('resultIcon');
+                if (result.score >= 8) {
+                    icon.textContent = '🎉';
+                } else if (result.score >= 5) {
+                    icon.textContent = '👍';
+                } else {
+                    icon.textContent = '💪';
+                }
+            } else {
+                // Ẩn điểm nếu giáo viên không cho phép
+                document.getElementById('resultScore').style.display = 'none';
+                document.querySelector('.result-label').style.display = 'none';
+                document.getElementById('correctCount').parentElement.style.display = 'none';
+                document.getElementById('resultIcon').textContent = '✅';
+            }
+            
+            document.getElementById('timeSpent').textContent = timeSpent;
+            document.getElementById('resultName').textContent = studentInfo.name;
+            
+            // Save result to localStorage
+            saveResultToLocal({
+                stt: studentInfo.stt,
+                name: studentInfo.name,
+                class: studentInfo.class,
+                score: result.score,
+                correctCount: result.correctCount,
+                totalQuestions: result.totalQuestions,
+                timeSpent: timeSpent,
+                submittedAt: new Date().toISOString(),
+                showScore: showScore
+            });
+        }
+        
+        // ==================== LOCAL STORAGE ====================
+        const STORAGE_KEY = 'quiz_results';
+        
+        function getSavedResults() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+        
+        function saveResultToLocal(result) {
+            const results = getSavedResults();
+            
+            // Check if this student already has a result, update it
+            const existingIndex = results.findIndex(r => r.stt === result.stt);
+            if (existingIndex >= 0) {
+                results[existingIndex] = result;
+            } else {
+                results.push(result);
+            }
+            
+            // Keep only last 50 results
+            if (results.length > 50) {
+                results.shift();
+            }
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+            renderSavedResults();
+        }
+        
+        function deleteSavedResult(stt) {
+            if (!confirm('Xóa kết quả này?')) return;
+            
+            const results = getSavedResults().filter(r => r.stt !== stt);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+            renderSavedResults();
+        }
+        
+        function viewSavedResult(stt) {
+            const results = getSavedResults();
+            const result = results.find(r => r.stt === stt);
+            if (!result) return;
+            
+            // Show result screen with saved data
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'flex';
+            
+            // Kiểm tra nếu giáo viên cho phép xem điểm
+            const showScore = result.showScore !== false;
+            
+            if (showScore) {
+                document.getElementById('resultScore').textContent = result.score;
+                document.getElementById('resultScore').style.display = 'block';
+                document.querySelector('.result-label').style.display = 'block';
+                document.getElementById('correctCount').textContent = `${result.correctCount}/${result.totalQuestions}`;
+                document.getElementById('correctCount').parentElement.style.display = 'flex';
+                
+                const icon = document.getElementById('resultIcon');
+                if (result.score >= 8) icon.textContent = '🎉';
+                else if (result.score >= 5) icon.textContent = '👍';
+                else icon.textContent = '💪';
+            } else {
+                document.getElementById('resultScore').style.display = 'none';
+                document.querySelector('.result-label').style.display = 'none';
+                document.getElementById('correctCount').parentElement.style.display = 'none';
+                document.getElementById('resultIcon').textContent = '✅';
+            }
+            
+            document.getElementById('timeSpent').textContent = result.timeSpent;
+            document.getElementById('resultName').textContent = result.name;
+        }
+        
+        function renderSavedResults() {
+            let container = document.getElementById('savedResultsContainer');
+            
+            // Create container if not exists
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'savedResultsContainer';
+                container.className = 'saved-results';
+                document.querySelector('.login-box').appendChild(container);
+            }
+            
+            const results = getSavedResults();
+            
+            if (results.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            // Sort by submission time, newest first
+            results.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+            
+            container.innerHTML = `
+                <div class="saved-results-title">
+                    📋 Kết quả đã lưu trên máy này (${results.length})
+                </div>
+                ${results.map(r => {
+                    const date = new Date(r.submittedAt);
+                    const timeStr = date.toLocaleString('vi-VN', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        day: '2-digit',
+                        month: '2-digit'
+                    });
+                    return `
+                        <div class="saved-result-item" onclick="viewSavedResult(${r.stt})">
+                            <div class="saved-result-info">
+                                <div class="saved-result-name">${r.stt}. ${r.name}</div>
+                                <div class="saved-result-meta">Lớp ${r.class} • ${timeStr}</div>
+                            </div>
+                            <div class="saved-result-score">${r.score}</div>
+                            <span class="saved-result-delete" onclick="event.stopPropagation(); deleteSavedResult(${r.stt})" title="Xóa">×</span>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+        
+        function backToLogin() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            
+            // Reset state for new student
+            selectedStudent = null;
+            answers = {};
+            goBackToStep1();
+            loadStudents();
+        }
+
+        // Listen for report processed
+        socket.on('reportProcessed', (data) => {
+            if (data.status === 'approved') {
+                showSuccess('Báo cáo đã được duyệt! Vui lòng chọn lại tên.');
+                selectedStudent = null;
+            } else if (data.status === 'rejected') {
+                showError('Báo cáo bị từ chối.');
+            }
+            loadStudents();
+        });
+
+        // Listen for all students reset (legacy)
+        socket.on('allStudentsReset', () => {
+            showSuccess('Danh sách đã được reset!');
+            selectedStudent = null;
+            document.getElementById('selectedStudentInfo').style.display = 'none';
+            document.getElementById('startBtn').disabled = true;
+            loadStudents();
+        });
+
+        // Listen for retry allowed
+        socket.on('retryAllowed', (data) => {
+            if (selectedStudent && selectedStudent.stt == data.stt) {
+                showSuccess('Giáo viên cho phép bạn làm lại bài!');
+            }
+            loadStudents();
+        });
+
+        // Initialize
+        checkExam();
+        renderSavedResults();
+    </script>
+</body>
+</html>

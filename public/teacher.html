@@ -1351,6 +1351,11 @@
             loadStudents();
         });
 
+        socket.on('studentTabLeave', (data) => {
+            showNotification(`⚠️ ${data.name} (STT ${data.stt}) rời trang lần ${data.count}!`, 'warning');
+            loadStudents(); // Refresh to show tab leave count
+        });
+
         socket.on('newReport', (report) => {
             showNotification(`⚠️ Có báo cáo mới: ${report.wrongName} → ${report.correctName}`);
             loadReports();
@@ -2339,7 +2344,7 @@
             const tbody = document.getElementById('studentsBody');
             
             if (students.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #666;">Chưa có danh sách học sinh. Hãy đặt file danhsach.xlsx vào thư mục danhsach/</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #666;">Chưa có danh sách học sinh. Hãy đặt file danhsach.xlsx vào thư mục danhsach/</td></tr>';
                 return;
             }
 
@@ -2365,12 +2370,18 @@
                 if (s.status.selected && !s.status.completed) {
                     actions.push(`<button class="btn btn-danger" onclick="forceDeselect(${s.stt})">❌ Hủy chọn</button>`);
                 }
+                
+                // Show tab leave warning
+                const tabLeaveCount = s.status.tabLeaveCount || 0;
+                const tabLeaveWarning = tabLeaveCount > 0 
+                    ? `<span style="color: #dc3545; font-weight: bold; margin-left: 8px;" title="Rời trang ${tabLeaveCount} lần">⚠️ ${tabLeaveCount}</span>` 
+                    : '';
 
                 return `
                     <tr>
                         <td>${s.stt}</td>
                         <td>${s.ho} ${s.ten} ${s.nu === 'X' ? '👧' : ''}</td>
-                        <td><span class="student-status ${statusClass}">${statusText}</span></td>
+                        <td><span class="student-status ${statusClass}">${statusText}</span>${tabLeaveWarning}</td>
                         <td>${actions.join(' ') || '-'}</td>
                     </tr>
                 `;

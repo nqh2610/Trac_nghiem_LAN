@@ -1160,6 +1160,162 @@
                 font-size: 4em;
             }
         }
+        
+        /* ========== CHỐNG GIAN LẬN ========== */
+        
+        /* Chống copy text khi làm bài */
+        .exam-screen.no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .exam-screen.no-select .question-text,
+        .exam-screen.no-select .option-text {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Watermark động */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .watermark-text {
+            position: absolute;
+            font-size: 16px;
+            color: rgba(102, 126, 234, 0.08);
+            font-weight: bold;
+            white-space: nowrap;
+            transform: rotate(-25deg);
+            pointer-events: none;
+        }
+        
+        /* Single Question Mode */
+        .single-question-mode #questionsContainer .question-card {
+            display: none;
+        }
+        
+        .single-question-mode #questionsContainer .question-card.active {
+            display: block;
+            animation: fadeInQuestion 0.3s ease;
+        }
+        
+        @keyframes fadeInQuestion {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Navigation buttons for single question mode */
+        .question-navigation {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .single-question-mode .question-navigation {
+            display: flex;
+        }
+        
+        .nav-arrow-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .nav-arrow-btn.prev {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .nav-arrow-btn.prev:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+        
+        .nav-arrow-btn.next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .nav-arrow-btn.next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .nav-arrow-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .question-indicator {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .question-indicator span {
+            color: #667eea;
+        }
+        
+        /* Tab warning indicator */
+        .tab-warning {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Mode toggle button */
+        .view-mode-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .view-mode-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
@@ -1292,6 +1448,9 @@
                     </div>
                 </div>
                 <div class="header-right">
+                    <button class="view-mode-toggle" onclick="toggleViewMode()" title="Đổi chế độ xem">
+                        <span id="viewModeIcon">📄</span> <span id="viewModeText">Từng câu</span>
+                    </button>
                     <div class="progress-mini"><span id="answeredCount2">0</span>/<span id="totalCount2">0</span> câu</div>
                     <div class="timer" id="timer">00:00</div>
                     <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
@@ -1310,6 +1469,19 @@
             </div>
 
             <div id="questionsContainer"></div>
+            
+            <!-- Question Navigation for Single Mode -->
+            <div class="question-navigation" id="questionNavigation">
+                <button class="nav-arrow-btn prev" id="prevQuestionBtn" onclick="navigateQuestion(-1)">
+                    ◀ Câu trước
+                </button>
+                <div class="question-indicator">
+                    Câu <span id="currentQuestionNum">1</span>/<span id="totalQuestionNum">0</span>
+                </div>
+                <button class="nav-arrow-btn next" id="nextQuestionBtn" onclick="navigateQuestion(1)">
+                    Câu tiếp ▶
+                </button>
+            </div>
         </div>
         
         <div class="submit-section">
@@ -1321,6 +1493,12 @@
             </button>
         </div>
     </div>
+    
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay" id="watermarkOverlay"></div>
+    
+    <!-- Tab Warning Indicator -->
+    <div class="tab-warning" id="tabWarning">⚠️ Đã rời khỏi trang: <span id="tabLeaveCount">0</span> lần</div>
 
     <!-- Confirm Submit Modal -->
     <div class="modal confirm-modal" id="confirmModal">
@@ -1935,6 +2113,14 @@
             }
             
             startTimer();
+            
+            // Initialize anti-cheat measures
+            initAntiCheat();
+            
+            // Show first question if in single mode
+            if (singleQuestionMode) {
+                setTimeout(() => showCurrentQuestion(), 100);
+            }
         }
 
         // Render questions
@@ -1942,7 +2128,7 @@
             const container = document.getElementById('questionsContainer');
             
             container.innerHTML = questions.map((q, i) => `
-                <div class="question-card" id="question${i}">
+                <div class="question-card${singleQuestionMode && i === 0 ? ' active' : ''}" id="question${i}">
                     <div class="question-header">
                         <span class="question-number">Câu ${i + 1}</span>
                     </div>
@@ -1962,6 +2148,7 @@
             
             document.getElementById('totalCount').textContent = questions.length;
             document.getElementById('totalCount2').textContent = questions.length;
+            updateQuestionNavigation();
         }
 
         // Select option
@@ -2185,7 +2372,7 @@
             const container = document.getElementById('navButtons');
             
             container.innerHTML = questions.map((_, i) => `
-                <button class="nav-btn" id="nav${i}" onclick="scrollToQuestion(${i})">${i + 1}</button>
+                <button class="nav-btn${i === currentQuestionIndex ? ' current' : ''}" id="nav${i}" onclick="goToQuestion(${i})">${i + 1}</button>
             `).join('');
         }
 
@@ -2203,11 +2390,17 @@
             questions.forEach((_, i) => {
                 const btn = document.getElementById(`nav${i}`);
                 btn.classList.toggle('answered', answers[i] !== undefined);
+                btn.classList.toggle('current', i === currentQuestionIndex);
             });
         }
 
-        // Scroll to question
+        // Scroll to question (legacy, redirect to goToQuestion)
         function scrollToQuestion(index) {
+            goToQuestion(index);
+        }
+        
+        // Legacy scroll behavior
+        function scrollToQuestionLegacy(index) {
             document.getElementById(`question${index}`).scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'center' 
@@ -2548,6 +2741,197 @@
             }
             loadStudents();
         });
+
+        // ========== CHỐNG GIAN LẬN ==========
+        
+        let singleQuestionMode = true; // Mặc định: chế độ từng câu
+        let currentQuestionIndex = 0;
+        let tabLeaveCount = 0;
+        
+        // Toggle view mode
+        function toggleViewMode() {
+            singleQuestionMode = !singleQuestionMode;
+            const examScreen = document.getElementById('examScreen');
+            const icon = document.getElementById('viewModeIcon');
+            const text = document.getElementById('viewModeText');
+            
+            if (singleQuestionMode) {
+                examScreen.classList.add('single-question-mode');
+                icon.textContent = '📄';
+                text.textContent = 'Từng câu';
+                showCurrentQuestion();
+            } else {
+                examScreen.classList.remove('single-question-mode');
+                icon.textContent = '📋';
+                text.textContent = 'Tất cả';
+                // Show all questions
+                document.querySelectorAll('.question-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+            }
+            updateQuestionNavigation();
+        }
+        
+        // Show current question in single mode
+        function showCurrentQuestion() {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === currentQuestionIndex);
+            });
+            
+            // Update nav buttons highlight
+            document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+                btn.classList.toggle('current', i === currentQuestionIndex);
+            });
+            
+            updateQuestionNavigation();
+            
+            // Scroll to top
+            document.getElementById('questionsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Navigate between questions
+        function navigateQuestion(direction) {
+            const totalQuestions = questions.length;
+            currentQuestionIndex += direction;
+            
+            if (currentQuestionIndex < 0) currentQuestionIndex = 0;
+            if (currentQuestionIndex >= totalQuestions) currentQuestionIndex = totalQuestions - 1;
+            
+            showCurrentQuestion();
+        }
+        
+        // Go to specific question
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            if (singleQuestionMode) {
+                showCurrentQuestion();
+            } else {
+                // Scroll to question
+                const card = document.getElementById(`question${index}`);
+                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        // Update navigation buttons
+        function updateQuestionNavigation() {
+            const prevBtn = document.getElementById('prevQuestionBtn');
+            const nextBtn = document.getElementById('nextQuestionBtn');
+            const currentNum = document.getElementById('currentQuestionNum');
+            const totalNum = document.getElementById('totalQuestionNum');
+            
+            if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentQuestionIndex >= questions.length - 1;
+            if (currentNum) currentNum.textContent = currentQuestionIndex + 1;
+            if (totalNum) totalNum.textContent = questions.length;
+        }
+        
+        // Create watermark
+        function createWatermark() {
+            if (!studentInfo.name || !studentInfo.stt) return;
+            
+            const overlay = document.getElementById('watermarkOverlay');
+            overlay.innerHTML = '';
+            overlay.style.display = 'block';
+            
+            const text = `${studentInfo.name} - STT ${studentInfo.stt}`;
+            const rows = 8;
+            const cols = 5;
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const watermark = document.createElement('div');
+                    watermark.className = 'watermark-text';
+                    watermark.textContent = text;
+                    watermark.style.top = `${(i * 14) + 5}%`;
+                    watermark.style.left = `${(j * 25) - 5}%`;
+                    overlay.appendChild(watermark);
+                }
+            }
+        }
+        
+        // Anti-copy measures
+        function enableAntiCopy() {
+            const examScreen = document.getElementById('examScreen');
+            examScreen.classList.add('no-select');
+            
+            // Disable right-click
+            examScreen.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showMessage('warning', '⚠️ Không được sao chép nội dung!');
+            });
+            
+            // Disable copy shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (document.getElementById('examScreen').style.display === 'block') {
+                    // Ctrl+C, Ctrl+A, Ctrl+V, Ctrl+X
+                    if (e.ctrlKey && ['c', 'a', 'v', 'x', 'p', 's'].includes(e.key.toLowerCase())) {
+                        e.preventDefault();
+                        showMessage('warning', '⚠️ Phím tắt bị vô hiệu hóa khi làm bài!');
+                    }
+                    // F12, Ctrl+Shift+I (DevTools)
+                    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i')) {
+                        e.preventDefault();
+                    }
+                    // Print Screen
+                    if (e.key === 'PrintScreen') {
+                        showMessage('warning', '⚠️ Không được chụp màn hình!');
+                    }
+                }
+            });
+            
+            // Disable text selection via CSS is already applied
+        }
+        
+        // Tab visibility detection
+        function setupTabDetection() {
+            document.addEventListener('visibilitychange', () => {
+                if (document.getElementById('examScreen').style.display !== 'block') return;
+                
+                if (document.hidden) {
+                    tabLeaveCount++;
+                    document.getElementById('tabLeaveCount').textContent = tabLeaveCount;
+                    document.getElementById('tabWarning').style.display = 'block';
+                    
+                    // Report to server
+                    socket.emit('tabLeave', {
+                        stt: studentInfo.stt,
+                        name: studentInfo.name,
+                        count: tabLeaveCount,
+                        time: new Date().toISOString()
+                    });
+                }
+            });
+            
+            // Detect window blur (user clicks outside)
+            window.addEventListener('blur', () => {
+                if (document.getElementById('examScreen').style.display !== 'block') return;
+                
+                // Only count if actually leaving for a while
+                setTimeout(() => {
+                    if (document.hidden) {
+                        // Already counted by visibilitychange
+                    }
+                }, 100);
+            });
+        }
+        
+        // Initialize anti-cheat on exam start
+        function initAntiCheat() {
+            createWatermark();
+            enableAntiCopy();
+            setupTabDetection();
+            
+            // Default to single question mode
+            const examScreen = document.getElementById('examScreen');
+            if (singleQuestionMode) {
+                examScreen.classList.add('single-question-mode');
+                currentQuestionIndex = 0;
+            }
+        }
+        
+        // Override renderNavigation to add click handler
+        const originalRenderNavigation = typeof renderNavigation !== 'undefined' ? renderNavigation : null;
 
         // Initialize
         checkExam();

@@ -1972,6 +1972,26 @@ io.on('connection', (socket) => {
     // Gửi socket ID cho client
     socket.emit('connected', { socketId: socket.id });
     
+    // Nhận thông báo khi học sinh rời tab
+    socket.on('tabLeave', (data) => {
+        console.log(`⚠️ Học sinh ${data.name} (STT ${data.stt}) rời khỏi trang lần ${data.count}`);
+        
+        // Lưu vào student status
+        if (studentStatus[data.stt]) {
+            studentStatus[data.stt].tabLeaveCount = data.count;
+            studentStatus[data.stt].lastTabLeave = data.time;
+            saveStudentStatus();
+        }
+        
+        // Thông báo cho giáo viên (teacher dashboard)
+        io.emit('studentTabLeave', {
+            stt: data.stt,
+            name: data.name,
+            count: data.count,
+            time: data.time
+        });
+    });
+    
     // Khi ngắt kết nối, hủy chọn học sinh nếu chưa hoàn thành
     socket.on('disconnect', () => {
         console.log('📴 Ngắt kết nối:', socket.id);

@@ -9,5 +9,27 @@
     "socketId": "BvEJzwdp9G9sHs5jAAAH",
     "status": "approved",
     "createdAt": "21:55:19 3/12/2025"
+  },
+  {
+    "id": 1764778988125,
+    "wrongSTT": "1",
+    "wrongName": "Bùi Hoàng Anh",
+    "correctSTT": "2",
+    "correctName": "Nguyễn Trần Trâm Anh",
+    "reason": "Test report",
+    "socketId": "wrong-select-1764778988121",
+    "status": "approved",
+    "createdAt": "23:23:08 3/12/2025"
+  },
+  {
+    "id": 1764779132735,
+    "wrongSTT": "1",
+    "wrongName": "Bùi Hoàng Anh",
+    "correctSTT": "2",
+    "correctName": "Nguyễn Trần Trâm Anh",
+    "reason": "Test report",
+    "socketId": "wrong-select-1764779132727",
+    "status": "approved",
+    "createdAt": "23:25:32 3/12/2025"
   }
 ]

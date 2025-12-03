@@ -624,8 +624,15 @@ app.get('/api/students', (req, res) => {
 app.post('/api/select-student', (req, res) => {
     const { stt, socketId } = req.body;
     
-    if (!studentStatus[stt]) {
+    // Kiểm tra học sinh có trong danh sách không
+    const student = students.find(s => s.stt == stt);
+    if (!student) {
         return res.json({ success: false, error: 'Không tìm thấy học sinh' });
+    }
+    
+    // Tạo status nếu chưa có
+    if (!studentStatus[stt]) {
+        studentStatus[stt] = { selected: false, selectedBy: null, completed: false, canRetry: false };
     }
     
     const status = studentStatus[stt];
@@ -651,7 +658,6 @@ app.post('/api/select-student', (req, res) => {
     // Thông báo cho tất cả client
     io.emit('studentStatusUpdated', { stt, status: studentStatus[stt] });
     
-    const student = students.find(s => s.stt == stt);
     res.json({ success: true, student });
 });
 
@@ -659,8 +665,15 @@ app.post('/api/select-student', (req, res) => {
 app.post('/api/deselect-student', (req, res) => {
     const { stt, socketId } = req.body;
     
-    if (!studentStatus[stt]) {
+    // Kiểm tra học sinh có trong danh sách không
+    const student = students.find(s => s.stt == stt);
+    if (!student) {
         return res.json({ success: false, error: 'Không tìm thấy học sinh' });
+    }
+    
+    // Nếu chưa có status thì không cần làm gì
+    if (!studentStatus[stt]) {
+        return res.json({ success: true });
     }
     
     const status = studentStatus[stt];
@@ -1355,7 +1368,151 @@ app.post('/api/exams/switch', (req, res) => {
     });
 });
 
-// Tạo bài kiểm tra mới (trống)
+// Tạo bài kiểm tra mới (KHÔNG chuyển sang dùng - chỉ lưu vào danh sách)
+app.post('/api/exams/create', (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+        return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
+    }
+    
+    // Tạo examId mới
+    const newExamId = 'exam_' + Date.now();
+    
+    // Lưu bài kiểm tra mới vào file riêng (trống, chưa có câu hỏi)
+    const examData = {
+        id: newExamId,
+        name: name.trim(),
+        questions: [],
+        createdAt: new Date().toISOString()
+    };
+    
+    const examFilePath = path.join(__dirname, 'data', 'exams', `${newExamId}.json`);
+    fs.writeFileSync(examFilePath, JSON.stringify(examData, null, 2));
+    
+    res.json({ 
+        success: true, 
+        examId: newExamId,
+        message: `Đã tạo bài kiểm tra "${name.trim()}". Bài đang dùng không thay đổi.`
+    });
+});
+
+// Import câu hỏi vào một bài kiểm tra cụ thể (không phải bài đang dùng)
+app.post('/api/exams/:examId/import-json', upload.single('file'), (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    const { examId } = req.params;
+    
+    if (!req.file) {
+        return res.json({ success: false, error: 'Không có file được upload' });
+    }
+    
+    try {
+        // Đọc nội dung file JSON
+        const jsonContent = req.file.buffer.toString('utf8');
+        const uploadedQuestions = JSON.parse(jsonContent);
+        
+        if (!Array.isArray(uploadedQuestions) || uploadedQuestions.length === 0) {
+            return res.json({ success: false, error: 'File JSON không hợp lệ hoặc rỗng' });
+        }
+        
+        // Validate câu hỏi
+        const validQuestions = [];
+        uploadedQuestions.forEach((q, index) => {
+            if (q.question && q.options && Array.isArray(q.options) && q.options.length >= 2 &&
+                typeof q.correct === 'number' && q.correct >= 0 && q.correct < q.options.length) {
+                validQuestions.push({
+                    question: q.question.trim(),
+                    options: q.options.map(opt => String(opt).trim()),
+                    correct: q.correct,
+                    image: q.image || null
+                });
+            }
+        });
+        
+        if (validQuestions.length === 0) {
+            return res.json({ success: false, error: 'Không có câu hỏi hợp lệ trong file' });
+        }
+        
+        // Đọc file bài kiểm tra
+        const examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+        if (!fs.existsSync(examFilePath)) {
+            return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
+        }
+        
+        const examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
+        examData.questions = validQuestions;
+        examData.updatedAt = new Date().toISOString();
+        
+        fs.writeFileSync(examFilePath, JSON.stringify(examData, null, 2));
+        
+        res.json({ 
+            success: true, 
+            count: validQuestions.length,
+            message: `Đã import ${validQuestions.length} câu hỏi vào bài "${examData.name}"`
+        });
+        
+    } catch (err) {
+        console.error('Lỗi import:', err);
+        res.json({ success: false, error: 'Lỗi: ' + err.message });
+    }
+});
+
+// Import Word vào bài kiểm tra cụ thể
+app.post('/api/exams/:examId/import-word', upload.single('file'), (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    const { examId } = req.params;
+    
+    if (!req.file) {
+        return res.json({ success: false, error: 'Không có file được upload' });
+    }
+    
+    try {
+        const result = mammoth.extractRawText({ buffer: req.file.buffer });
+        result.then(data => {
+            const text = data.value;
+            const parsedQuestions = parseQuestionsFromText(text);
+            
+            if (parsedQuestions.length === 0) {
+                return res.json({ success: false, error: 'Không tìm thấy câu hỏi hợp lệ trong file' });
+            }
+            
+            // Đọc và cập nhật bài kiểm tra
+            const examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+            if (!fs.existsSync(examFilePath)) {
+                return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
+            }
+            
+            const examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
+            examData.questions = parsedQuestions;
+            examData.updatedAt = new Date().toISOString();
+            
+            fs.writeFileSync(examFilePath, JSON.stringify(examData, null, 2));
+            
+            res.json({ 
+                success: true, 
+                count: parsedQuestions.length,
+                message: `Đã import ${parsedQuestions.length} câu hỏi vào bài "${examData.name}"`
+            });
+        }).catch(err => {
+            res.json({ success: false, error: 'Không thể đọc file Word: ' + err.message });
+        });
+        
+    } catch (err) {
+        console.error('Lỗi import Word:', err);
+        res.json({ success: false, error: 'Lỗi: ' + err.message });
+    }
+});
+
+// Tạo bài kiểm tra mới và CHUYỂN SANG DÙNG NGAY (cũ - giữ lại để tương thích)
 app.post('/api/exams/new', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
@@ -1778,7 +1935,95 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
     }
 });
 
-// Upload câu hỏi từ file JSON
+// Upload câu hỏi từ file JSON (qua FormData)
+app.post('/api/import-json-file', upload.single('file'), (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền upload câu hỏi' });
+    }
+    
+    if (!req.file) {
+        return res.json({ success: false, error: 'Không có file được upload' });
+    }
+    
+    try {
+        // Đọc nội dung file JSON từ buffer
+        const jsonContent = req.file.buffer.toString('utf8');
+        const uploadedQuestions = JSON.parse(jsonContent);
+        
+        // Kiểm tra dữ liệu
+        if (!Array.isArray(uploadedQuestions)) {
+            return res.json({
+                success: false,
+                error: 'File JSON không hợp lệ. Phải là một mảng các câu hỏi.'
+            });
+        }
+        
+        if (uploadedQuestions.length === 0) {
+            return res.json({
+                success: false,
+                error: 'File JSON không có câu hỏi nào.'
+            });
+        }
+        
+        // Validate và import câu hỏi
+        const validQuestions = [];
+        const errors = [];
+        
+        uploadedQuestions.forEach((q, index) => {
+            const qNum = index + 1;
+            
+            if (!q.question || typeof q.question !== 'string' || q.question.trim() === '') {
+                errors.push(`Câu ${qNum}: Thiếu nội dung câu hỏi`);
+                return;
+            }
+            
+            if (!q.options || !Array.isArray(q.options) || q.options.length < 2) {
+                errors.push(`Câu ${qNum}: Thiếu hoặc không đủ đáp án`);
+                return;
+            }
+            
+            if (typeof q.correct !== 'number' || q.correct < 0 || q.correct >= q.options.length) {
+                errors.push(`Câu ${qNum}: Đáp án đúng không hợp lệ`);
+                return;
+            }
+            
+            validQuestions.push({
+                question: q.question.trim(),
+                options: q.options.map(opt => String(opt).trim()),
+                correct: q.correct,
+                image: q.image || null
+            });
+        });
+        
+        if (validQuestions.length === 0) {
+            return res.json({
+                success: false,
+                error: 'Không có câu hỏi hợp lệ. ' + errors.slice(0, 3).join('; ')
+            });
+        }
+        
+        // Thêm vào danh sách câu hỏi hiện tại
+        questions = validQuestions;
+        saveQuestions();
+        
+        io.emit('questionsUpdated', questions.length);
+        
+        res.json({
+            success: true,
+            count: validQuestions.length,
+            errors: errors.length > 0 ? errors.slice(0, 5) : undefined
+        });
+        
+    } catch (err) {
+        console.error('Lỗi import JSON:', err);
+        res.json({
+            success: false,
+            error: 'File JSON không hợp lệ: ' + err.message
+        });
+    }
+});
+
+// Upload câu hỏi từ file JSON (cũ - qua body)
 app.post('/api/upload-questions-json', express.json({ limit: '10mb' }), (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền upload câu hỏi' });

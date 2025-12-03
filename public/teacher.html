@@ -68,11 +68,11 @@
         .tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
         
         .tab {
-            padding: 15px 30px;
+            padding: 12px 25px;
             background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 10px 10px 0 0;
@@ -804,7 +804,7 @@
                         </div>
                     </div>
                     <button class="btn" onclick="showClassManager()" style="background: white; color: #667eea; font-weight: bold; padding: 10px 15px; font-size: 0.9em; white-space: nowrap;">
-                        🔄 Đổi lớp
+                        📋 Quản lý Lớp
                     </button>
                 </div>
                 
@@ -821,7 +821,7 @@
                         </div>
                     </div>
                     <button class="btn" onclick="showExamManager()" style="background: white; color: #667eea; font-weight: bold; padding: 10px 15px; font-size: 0.9em; white-space: nowrap;">
-                        🔄 Đổi bài
+                        📚 Quản lý Đề
                     </button>
                 </div>
             </div>
@@ -987,64 +987,18 @@
         <div id="questions" class="panel active">
             
             <!-- Banner hướng dẫn -->
-            <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 1px solid #667eea40; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                <div style="flex: 1;">
-                    <h4 style="margin: 0 0 5px 0; color: #667eea;">📝 Đang soạn: <span id="currentExamNameInQuestions" style="color: #333;">--</span></h4>
-                    <p style="margin: 0; color: #666; font-size: 0.9em;">Các câu hỏi bên dưới sẽ được thêm vào bài kiểm tra đang chọn</p>
-                </div>
-                <button class="btn" onclick="showExamManager()" style="background: #667eea; color: white; white-space: nowrap;">
-                    📚 Quản lý Đề thi
-                </button>
+            <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 1px solid #667eea40; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;">
+                <h4 style="margin: 0 0 5px 0; color: #667eea;">📝 Đang soạn: <span id="currentExamNameInQuestions" style="color: #333;">--</span></h4>
+                <p style="margin: 0; color: #666; font-size: 0.9em;">Các câu hỏi bên dưới sẽ được thêm vào bài kiểm tra đang chọn</p>
             </div>
             
             <h2>Thêm câu hỏi mới</h2>
             
-            <!-- Import từ Word hoặc JSON -->
-            <div class="import-section">
-                <h3>📄 Import câu hỏi từ file</h3>
-                <p style="color: #666; margin-bottom: 15px;">Chọn định dạng file phù hợp để import nhanh câu hỏi <strong>vào bài đang chọn</strong></p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
-                    <!-- Import Word -->
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border: 2px dashed #dee2e6;">
-                        <h4 style="margin-bottom: 10px; color: #495057;">📝 File Word (.docx)</h4>
-                        <div class="import-buttons" style="display: flex; flex-direction: column; gap: 8px;">
-                            <a href="/data/mau-cau-hoi.docx" download class="btn btn-secondary" style="text-align: center;">📥 Tải mẫu Word</a>
-                            <label class="btn btn-success file-label" style="text-align: center; cursor: pointer;">
-                                📤 Chọn file Word
-                                <input type="file" id="wordFile" accept=".docx" style="display: none;" onchange="importWord(this)">
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <!-- Import JSON -->
-                    <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border: 2px dashed #ffc107;">
-                        <h4 style="margin-bottom: 10px; color: #856404;">📋 File JSON</h4>
-                        <div class="import-buttons" style="display: flex; flex-direction: column; gap: 8px;">
-                            <a href="/data/mau-cau-hoi.json" download class="btn btn-secondary" style="text-align: center;">📥 Tải mẫu JSON</a>
-                            <label class="btn btn-warning file-label" style="text-align: center; cursor: pointer; color: #212529;">
-                                📤 Chọn file JSON
-                                <input type="file" id="jsonFile" accept=".json" style="display: none;" onchange="importJSON(this)">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="importStatus" style="margin-top: 10px;"></div>
-            </div>
-            
-            <hr style="margin: 30px 0; border: none; border-top: 2px dashed #e0e0e0;">
-            
-            <h3>✏️ Hoặc thêm thủ công</h3>
+            <h3>✏️ Thêm câu hỏi thủ công</h3>
             <form id="questionForm">
                 <div class="form-group">
                     <label>Nội dung câu hỏi:</label>
                     <textarea id="questionText" placeholder="Nhập nội dung câu hỏi..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Link hình ảnh (tùy chọn):</label>
-                    <input type="text" id="questionImage" placeholder="https://example.com/image.jpg">
                 </div>
                 
                 <div class="form-group">
@@ -1241,6 +1195,55 @@
         </div>
     </div>
 
+    <!-- Modal sửa câu hỏi -->
+    <div id="editQuestionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+        <div style="background: white; border-radius: 16px; width: 95%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">✏️ Sửa câu hỏi</h3>
+                <button onclick="closeEditQuestionModal()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5em; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">&times;</button>
+            </div>
+            <div style="padding: 25px;">
+                <input type="hidden" id="editQuestionId">
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">📝 Nội dung câu hỏi:</label>
+                    <textarea id="editQuestionText" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; resize: vertical; box-sizing: border-box;" placeholder="Nhập nội dung câu hỏi..."></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">📋 Các đáp án (chọn đáp án đúng):</label>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="editCorrect" value="0" id="editCorrect0" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</span>
+                            <input type="text" id="editOptionA" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án A">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="editCorrect" value="1" id="editCorrect1" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">B</span>
+                            <input type="text" id="editOptionB" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án B">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="editCorrect" value="2" id="editCorrect2" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">C</span>
+                            <input type="text" id="editOptionC" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án C">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" name="editCorrect" value="3" id="editCorrect3" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">D</span>
+                            <input type="text" id="editOptionD" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án D">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px;">
+                    <button onclick="closeEditQuestionModal()" style="padding: 12px 25px; background: #e0e0e0; color: #333; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">❌ Hủy</button>
+                    <button onclick="saveEditQuestion()" style="padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">💾 Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal chi tiết -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
@@ -1419,7 +1422,6 @@
             e.preventDefault();
             
             const question = document.getElementById('questionText').value;
-            const image = document.getElementById('questionImage').value;
             const options = [
                 document.getElementById('optionA').value,
                 document.getElementById('optionB').value,
@@ -1431,7 +1433,7 @@
             const res = await fetch('/api/questions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question, options, correct, image })
+                body: JSON.stringify({ question, options, correct })
             });
 
             if (res.ok) {
@@ -1452,22 +1454,80 @@
             }
         }
 
-        // Edit question (simple prompt for now)
-        async function editQuestion(id) {
+        // Edit question - mở modal sửa
+        function editQuestion(id) {
             const q = questions[id];
-            const newQuestion = prompt('Sửa nội dung câu hỏi:', q.question);
-            if (newQuestion === null) return;
+            if (!q) return;
             
-            q.question = newQuestion;
-            const res = await fetch(`/api/questions/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(q)
-            });
+            // Điền dữ liệu vào form
+            document.getElementById('editQuestionId').value = id;
+            document.getElementById('editQuestionText').value = q.question || '';
+            document.getElementById('editOptionA').value = q.options[0] || '';
+            document.getElementById('editOptionB').value = q.options[1] || '';
+            document.getElementById('editOptionC').value = q.options[2] || '';
+            document.getElementById('editOptionD').value = q.options[3] || '';
             
-            if (res.ok) {
-                showNotification('✅ Đã cập nhật câu hỏi!');
-                loadQuestions();
+            // Chọn đáp án đúng
+            const correctRadio = document.getElementById('editCorrect' + q.correct);
+            if (correctRadio) correctRadio.checked = true;
+            
+            // Hiện modal
+            document.getElementById('editQuestionModal').style.display = 'flex';
+        }
+        
+        function closeEditQuestionModal() {
+            document.getElementById('editQuestionModal').style.display = 'none';
+        }
+        
+        async function saveEditQuestion() {
+            const id = document.getElementById('editQuestionId').value;
+            const question = document.getElementById('editQuestionText').value.trim();
+            const optionA = document.getElementById('editOptionA').value.trim();
+            const optionB = document.getElementById('editOptionB').value.trim();
+            const optionC = document.getElementById('editOptionC').value.trim();
+            const optionD = document.getElementById('editOptionD').value.trim();
+            const correct = parseInt(document.querySelector('input[name="editCorrect"]:checked')?.value || '0');
+            
+            // Validate
+            if (!question) {
+                alert('⚠️ Vui lòng nhập nội dung câu hỏi!');
+                return;
+            }
+            if (!optionA || !optionB) {
+                alert('⚠️ Cần ít nhất 2 đáp án!');
+                return;
+            }
+            
+            // Tạo mảng options (bỏ qua đáp án trống)
+            const options = [optionA, optionB];
+            if (optionC) options.push(optionC);
+            if (optionD) options.push(optionD);
+            
+            // Kiểm tra correct có hợp lệ không
+            const validCorrect = Math.min(correct, options.length - 1);
+            
+            const updatedQuestion = {
+                question,
+                options,
+                correct: validCorrect
+            };
+            
+            try {
+                const res = await fetch(`/api/questions/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedQuestion)
+                });
+                
+                if (res.ok) {
+                    showNotification('✅ Đã cập nhật câu hỏi!');
+                    closeEditQuestionModal();
+                    loadQuestions();
+                } else {
+                    alert('❌ Lỗi khi lưu câu hỏi!');
+                }
+            } catch (err) {
+                alert('❌ Lỗi: ' + err.message);
             }
         }
 
@@ -1491,12 +1551,12 @@
             tbody.innerHTML = results.map((r, i) => `
                 <tr>
                     <td>${i + 1}</td>
-                    <td>${r.studentName}</td>
-                    <td>${r.studentClass || '-'}</td>
+                    <td>${escapeHtml(r.studentName)}</td>
+                    <td>${escapeHtml(r.studentClass || '-')}</td>
                     <td>${r.studentSTT || r.studentId || '-'}</td>
                     <td class="${r.score >= 8 ? 'score-high' : r.score >= 5 ? 'score-medium' : 'score-low'}">${r.score}</td>
                     <td>${r.correctCount}/${r.totalQuestions}</td>
-                    <td>${r.timeSpent}</td>
+                    <td>${r.timeSpent || '-'}</td>
                     <td>${r.submittedAt}</td>
                     <td><button class="btn btn-secondary" onclick="showDetail(${i})">👁️ Xem</button></td>
                 </tr>
@@ -1525,15 +1585,15 @@
             const content = document.getElementById('detailContent');
             
             content.innerHTML = `
-                <p><strong>Họ tên:</strong> ${r.studentName}</p>
-                <p><strong>Lớp:</strong> ${r.studentClass || '-'}</p>
+                <p><strong>Họ tên:</strong> ${escapeHtml(r.studentName)}</p>
+                <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
                 <p><strong>STT:</strong> ${r.studentSTT || r.studentId || '-'}</p>
                 <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng)</p>
                 <hr style="margin: 15px 0;">
                 <h4>Chi tiết từng câu:</h4>
                 ${r.details.map((d, i) => `
                     <div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}">
-                        <strong>Câu ${i + 1}:</strong> ${d.question}<br>
+                        <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
                         <span>Trả lời: ${d.studentAnswer !== undefined ? String.fromCharCode(65 + d.studentAnswer) : 'Không trả lời'}</span>
                         ${!d.isCorrect ? ` | <span style="color: green;">Đáp án đúng: ${String.fromCharCode(65 + d.correctAnswer)}</span>` : ''}
                     </div>
@@ -1904,7 +1964,7 @@
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <span style="font-size: 1.3em;">${cls.id === currentSession.classId ? '📌' : '🏫'}</span>
                                     <div>
-                                        <strong style="font-size: 1.05em; color: #333;">${cls.name}</strong>
+                                        <strong style="font-size: 1.05em; color: #333;">${escapeHtml(cls.name)}</strong>
                                         ${cls.id === currentSession.classId ? '<span style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
                                         <div style="color: #888; font-size: 0.85em; margin-top: 3px;">
                                             👨‍🎓 ${cls.studentCount || 0} học sinh
@@ -2076,7 +2136,7 @@
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="font-size: 1.3em;">${exam.id === currentSession.examId ? '📌' : '📄'}</span>
                                 <div>
-                                    <strong style="font-size: 1.05em; color: #333;">${exam.name}</strong>
+                                    <strong style="font-size: 1.05em; color: #333;">${escapeHtml(exam.name)}</strong>
                                     ${exam.id === currentSession.examId ? '<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
                                     <div style="color: #888; font-size: 0.85em; margin-top: 3px;">📝 ${exam.questionCount} câu hỏi</div>
                                 </div>
@@ -2109,25 +2169,20 @@
                 return;
             }
             
-            if (!confirm(`✨ Tạo bài kiểm tra mới: "${name}"\n\nBài mới sẽ bắt đầu với 0 câu hỏi.\nTiếp tục?`)) return;
+            if (!confirm(`✨ Tạo bài kiểm tra mới: "${name}"\n\nBài mới sẽ được lưu vào danh sách.\nBài đang dùng KHÔNG thay đổi.\nTiếp tục?`)) return;
             
             try {
-                const res = await fetch('/api/exams/new', {
+                const res = await fetch('/api/exams/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, resetStudents: false })
+                    body: JSON.stringify({ name })
                 });
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('✅ ' + result.message);
+                    showNotification(`✅ Đã tạo bài "${name}" (chưa sử dụng)`);
                     document.getElementById('newExamName').value = '';
-                    hideExamManager();
-                    loadQuestions();
-                    loadResults();
-                    loadStudents();
-                    loadSettings();
-                    updateSessionDisplay();
+                    loadSavedExams(); // Chỉ load lại danh sách bài
                 } else {
                     alert('❌ ' + result.error);
                 }
@@ -2212,7 +2267,7 @@
             }
         }
         
-        // Tạo bài kiểm tra mới từ file Word hoặc JSON
+        // Tạo bài kiểm tra mới từ file Word hoặc JSON (KHÔNG chuyển sang dùng)
         async function createExamFromFile(input, fileType) {
             const file = input.files[0];
             if (!file) return;
@@ -2226,11 +2281,11 @@
             }
             
             try {
-                // Bước 1: Tạo bài kiểm tra mới (trống)
-                const createRes = await fetch('/api/exams/new', {
+                // Bước 1: Tạo bài kiểm tra mới (KHÔNG chuyển sang dùng)
+                const createRes = await fetch('/api/exams/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: examName, resetStudents: false })
+                    body: JSON.stringify({ name: examName })
                 });
                 
                 const createResult = await createRes.json();
@@ -2240,50 +2295,32 @@
                     return;
                 }
                 
-                // Bước 2: Import câu hỏi từ file
-                if (fileType === 'json') {
-                    // JSON file
-                    const text = await file.text();
-                    const questions = JSON.parse(text);
-                    
-                    const jsonRes = await fetch('/api/import-json', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ questions })
-                    });
-                    
-                    const jsonResult = await jsonRes.json();
-                    if (jsonResult.success) {
-                        showNotification(`✅ Đã tạo "${examName}" với ${jsonResult.count} câu hỏi`);
-                    } else {
-                        showNotification('⚠️ Đã tạo bài nhưng import lỗi: ' + jsonResult.error);
-                    }
+                const newExamId = createResult.examId;
+                
+                // Bước 2: Import câu hỏi vào bài vừa tạo (không ảnh hưởng bài đang dùng)
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const uploadUrl = fileType === 'json' 
+                    ? `/api/exams/${newExamId}/import-json` 
+                    : `/api/exams/${newExamId}/import-word`;
+                
+                const uploadRes = await fetch(uploadUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const uploadResult = await uploadRes.json();
+                if (uploadResult.success) {
+                    const count = uploadResult.count || 0;
+                    showNotification(`✅ Đã tạo "${examName}" với ${count} câu hỏi (chưa sử dụng)`);
                 } else {
-                    // Word file - dùng FormData
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    const wordRes = await fetch('/api/import-word', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const wordResult = await wordRes.json();
-                    if (wordResult.success) {
-                        showNotification(`✅ Đã tạo "${examName}" với ${wordResult.imported} câu hỏi`);
-                    } else {
-                        showNotification('⚠️ Đã tạo bài nhưng import lỗi: ' + wordResult.error);
-                    }
+                    showNotification('⚠️ Đã tạo bài nhưng import lỗi: ' + uploadResult.error);
                 }
                 
-                // Cập nhật giao diện
+                // Cập nhật danh sách bài - KHÔNG thay đổi bài đang dùng
                 document.getElementById('newExamName').value = '';
-                hideExamManager();
-                loadQuestions();
-                loadResults();
-                loadStudents();
-                loadSettings();
-                updateSessionDisplay();
+                loadSavedExams(); // Chỉ load lại danh sách bài đã lưu
                 
             } catch (err) {
                 alert('❌ Lỗi: ' + err.message);
@@ -2380,7 +2417,7 @@
                 return `
                     <tr>
                         <td>${s.stt}</td>
-                        <td>${s.ho} ${s.ten} ${s.nu === 'X' ? '👧' : ''}</td>
+                        <td>${escapeHtml(s.ho)} ${escapeHtml(s.ten)} ${s.nu === 'X' ? '👧' : ''}</td>
                         <td><span class="student-status ${statusClass}">${statusText}</span>${tabLeaveWarning}</td>
                         <td>${actions.join(' ') || '-'}</td>
                     </tr>
@@ -2494,9 +2531,9 @@
                 <div class="report-item">
                     <div class="report-info">
                         <strong>Báo cáo lúc:</strong> ${r.createdAt}<br>
-                        <strong>Đã chọn nhầm:</strong> ${r.wrongName} (STT ${r.wrongSTT})<br>
-                        <strong>Tên đúng:</strong> ${r.correctName} (STT ${r.correctSTT})<br>
-                        ${r.reason ? `<strong>Lý do:</strong> ${r.reason}` : ''}
+                        <strong>Đã chọn nhầm:</strong> ${escapeHtml(r.wrongName)} (STT ${r.wrongSTT})<br>
+                        <strong>Tên đúng:</strong> ${escapeHtml(r.correctName)} (STT ${r.correctSTT})<br>
+                        ${r.reason ? `<strong>Lý do:</strong> ${escapeHtml(r.reason)}` : ''}
                     </div>
                     <div class="report-actions">
                         <button class="btn btn-success" onclick="approveReport(${r.id})">✅ Duyệt</button>
@@ -2660,5 +2697,40 @@
             input.value = ''; // Reset input
         }
     </script>
+    
+    <!-- Footer Copyright -->
+    <footer style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #e8e8e8; padding: 25px 20px; margin-top: 40px; border-top: 3px solid #667eea;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+            <div style="flex: 1; min-width: 250px;">
+                <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px; color: #667eea;">
+                    🎓 Hệ thống Trắc nghiệm LAN
+                </div>
+                <div style="font-size: 0.85em; color: #aaa;">
+                    Phần mềm thi trắc nghiệm trên mạng nội bộ
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 250px; text-align: center;">
+                <div style="font-size: 1.1em; font-weight: 600; margin-bottom: 10px;">
+                    👨‍💻 <span style="color: #ffd700;">Nguyễn Quang Hùng</span>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap;">
+                    <a href="mailto:nqh2610@gmail.com" style="color: #4fc3f7; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
+                        <span style="font-size: 1.2em;">✉️</span> nqh2610@gmail.com
+                    </a>
+                    <a href="tel:0976385309" style="color: #81c784; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
+                        <span style="font-size: 1.2em;">📱</span> 0976.385.309
+                    </a>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 150px; text-align: right;">
+                <div style="font-size: 0.85em; color: #888;">
+                    © 2025 All rights reserved
+                </div>
+                <div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                    Version 1.0
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

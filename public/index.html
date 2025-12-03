@@ -734,6 +734,7 @@
             cursor: pointer;
             transition: all 0.2s;
             background: #fafafa;
+            position: relative;
         }
         
         .option:hover {
@@ -768,6 +769,152 @@
         
         .option.selected .option-label {
             background: #28a745;
+        }
+        
+        /* Practice mode styles */
+        .option.practice-correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+            border-color: #28a745 !important;
+        }
+        
+        .option.practice-correct .option-label {
+            background: #28a745 !important;
+        }
+        
+        .option.practice-wrong {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%) !important;
+            border-color: #dc3545 !important;
+        }
+        
+        .option.practice-wrong .option-label {
+            background: #dc3545 !important;
+        }
+        
+        .option.practice-answer {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+            border-color: #28a745 !important;
+            animation: pulse-correct 0.5s ease-in-out;
+        }
+        
+        .option.practice-answer .option-label {
+            background: #28a745 !important;
+        }
+        
+        .option.practice-answer::after {
+            content: '✓ Đáp án đúng';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #28a745;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        @keyframes pulse-correct {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        /* Practice toast */
+        .practice-toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            z-index: 10000;
+            animation: slideDown 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .practice-toast-correct {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .practice-toast-wrong {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        .practice-toast.fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0); 
+            }
+        }
+        
+        @keyframes fadeOut {
+            to { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px); 
+            }
+        }
+        
+        /* Practice mode banner */
+        .practice-mode-banner {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .practice-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .practice-icon {
+            font-size: 2em;
+        }
+        
+        .practice-text {
+            flex: 1;
+            color: white;
+        }
+        
+        .practice-text strong {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 2px;
+        }
+        
+        .practice-text span {
+            font-size: 0.9em;
+            opacity: 0.95;
+        }
+        
+        .practice-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        
+        .practice-close:hover {
+            background: rgba(255,255,255,0.3);
         }
         
         .option-text {
@@ -1661,6 +1808,7 @@
         let timerInterval = null;
         let startTime = null;
         let currentStep = 1;
+        let practiceMode = false; // Chế độ ôn tập
         
         // Hàm đảo mảng theo seed (STT học sinh)
         function shuffleWithSeed(array, seed) {
@@ -2131,6 +2279,7 @@
             const studentClass = data.className || 'Chưa chọn lớp';
             document.getElementById('studentClass').value = studentClass;
             currentExamId = data.examId || 'default'; // Lưu examId hiện tại
+            practiceMode = data.practiceMode || false; // Chế độ ôn tập
             
             studentInfo = { 
                 name: `${selectedStudent.ho} ${selectedStudent.ten}`, 
@@ -2159,6 +2308,11 @@
             
             document.getElementById('displayName').textContent = studentInfo.name;
             document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
+            
+            // Hiển thị banner chế độ ôn tập nếu được bật
+            if (practiceMode) {
+                showPracticeModeNotice();
+            }
             
             // Check for saved progress
             const hasProgress = restoreExamProgress();
@@ -2244,6 +2398,102 @@
             
             // Save to localStorage
             saveExamProgress();
+            
+            // Chế độ ôn tập - kiểm tra đáp án ngay
+            if (practiceMode) {
+                checkAnswerPractice(questionIndex, optionIndex);
+            }
+        }
+        
+        // Kiểm tra đáp án trong chế độ ôn tập
+        async function checkAnswerPractice(questionIndex, selectedOption) {
+            // Tìm originalIndex từ questionOrder
+            const originalIndex = questionOrder[questionIndex];
+            
+            // Tìm đáp án gốc từ optionOrders (vì đáp án đã bị đảo)
+            const optionOrder = optionOrders[questionIndex];
+            const originalAnswer = optionOrder[selectedOption]; // Đáp án gốc tương ứng
+            
+            try {
+                const res = await fetch('/api/check-answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        questionIndex: originalIndex,
+                        answer: originalAnswer
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.error) return;
+                
+                const card = document.getElementById(`question${questionIndex}`);
+                const options = card.querySelectorAll('.option');
+                
+                // Xóa các class cũ
+                options.forEach(opt => {
+                    opt.classList.remove('practice-correct', 'practice-wrong', 'practice-answer');
+                });
+                
+                // Tìm index của đáp án đúng trong thứ tự đã đảo
+                const correctOriginalIndex = result.correctAnswer;
+                const correctShuffledIndex = optionOrder.indexOf(correctOriginalIndex);
+                
+                if (result.isCorrect) {
+                    // Đúng - highlight xanh
+                    options[selectedOption].classList.add('practice-correct');
+                    showPracticeToast('✅ Chính xác!', 'correct');
+                } else {
+                    // Sai - highlight đỏ cho đáp án đã chọn, xanh cho đáp án đúng
+                    options[selectedOption].classList.add('practice-wrong');
+                    if (correctShuffledIndex >= 0) {
+                        options[correctShuffledIndex].classList.add('practice-answer');
+                    }
+                    showPracticeToast('❌ Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
+                }
+            } catch (err) {
+                console.error('Lỗi kiểm tra đáp án:', err);
+            }
+        }
+        
+        // Hiển thị toast thông báo cho chế độ ôn tập
+        function showPracticeToast(message, type) {
+            // Xóa toast cũ nếu có
+            const oldToast = document.querySelector('.practice-toast');
+            if (oldToast) oldToast.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `practice-toast practice-toast-${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            
+            // Tự động ẩn sau 2 giây
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+        
+        // Hiển thị thông báo chế độ ôn tập
+        function showPracticeModeNotice() {
+            const notice = document.createElement('div');
+            notice.className = 'practice-mode-banner';
+            notice.innerHTML = `
+                <div class="practice-banner-content">
+                    <span class="practice-icon">📚</span>
+                    <div class="practice-text">
+                        <strong>CHẾ ĐỘ ÔN TẬP</strong>
+                        <span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close">✕</button>
+                </div>
+            `;
+            
+            // Thêm vào sau header
+            const examScreen = document.getElementById('examScreen');
+            const container = examScreen.querySelector('.container');
+            container.insertBefore(notice, container.firstChild);
         }
         
         // ==================== EXAM PROGRESS STORAGE ====================

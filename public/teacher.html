@@ -1179,6 +1179,17 @@
                     </label>
                 </div>
                 
+                <div class="setting-row" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 2px solid #ff9800; border-radius: 12px; padding: 15px;">
+                    <div>
+                        <strong style="color: #e65100;">📚 Chế độ ÔN TẬP</strong>
+                        <p style="color: #bf360c; font-size: 0.9em;">Hiển thị đúng/sai ngay khi học sinh chọn đáp án (không tính điểm)</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="practiceMode" onchange="saveSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
                 <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px;">💾 Lưu cài đặt</button>
             </div>
 
@@ -1702,6 +1713,7 @@
             document.getElementById('examTime').value = settings.timeLimit;
             document.getElementById('examOpen').checked = settings.isOpen;
             document.getElementById('showScore').checked = settings.showScore !== false;
+            document.getElementById('practiceMode').checked = settings.practiceMode === true;
             updateExamStatus(settings.isOpen);
         }
 
@@ -1710,7 +1722,8 @@
                 title: document.getElementById('examTitle').value,
                 timeLimit: parseInt(document.getElementById('examTime').value),
                 isOpen: document.getElementById('examOpen').checked,
-                showScore: document.getElementById('showScore').checked
+                showScore: document.getElementById('showScore').checked,
+                practiceMode: document.getElementById('practiceMode').checked
             };
 
             const res = await fetch('/api/settings', {

@@ -104,7 +104,8 @@ let examSettings = {
     title: 'Bài kiểm tra trắc nghiệm',
     timeLimit: 30, // phút
     isOpen: false,
-    showScore: true // Cho học sinh xem điểm sau khi nộp bài
+    showScore: true, // Cho học sinh xem điểm sau khi nộp bài
+    practiceMode: false // Chế độ ôn tập - hiển thị đúng/sai ngay khi chọn đáp án
 };
 
 // ========== QUẢN LÝ LỚP ==========
@@ -879,7 +880,30 @@ app.get('/api/exam', (req, res) => {
         questions: examQuestions,
         className: currentSession.className || 'Chưa chọn lớp',
         examId: currentSession.examId || 'default',
-        examName: currentSession.examName || examSettings.title
+        examName: currentSession.examName || examSettings.title,
+        practiceMode: examSettings.practiceMode || false
+    });
+});
+
+// API kiểm tra đáp án cho chế độ ôn tập
+app.post('/api/check-answer', (req, res) => {
+    if (!examSettings.practiceMode) {
+        return res.status(403).json({ error: 'Chế độ ôn tập chưa được bật' });
+    }
+    
+    const { questionIndex, answer } = req.body;
+    
+    if (questionIndex < 0 || questionIndex >= questions.length) {
+        return res.json({ error: 'Câu hỏi không hợp lệ' });
+    }
+    
+    const correctAnswer = questions[questionIndex].correct;
+    const isCorrect = answer === correctAnswer;
+    
+    res.json({
+        isCorrect,
+        correctAnswer,
+        yourAnswer: answer
     });
 });
 

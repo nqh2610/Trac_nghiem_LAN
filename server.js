@@ -932,6 +932,36 @@ app.post('/api/settings', (req, res) => {
     res.json({ success: true });
 });
 
+// Mở bài thi
+app.post('/api/exam/open', (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    if (questions.length === 0) {
+        return res.json({ success: false, error: 'Chưa có câu hỏi nào trong bài thi' });
+    }
+    
+    examSettings.isOpen = true;
+    saveCurrentSession();
+    io.emit('examStatusChanged', true);
+    io.emit('examOpened');
+    res.json({ success: true, message: 'Bài thi đã mở' });
+});
+
+// Đóng bài thi
+app.post('/api/exam/close', (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    examSettings.isOpen = false;
+    saveCurrentSession();
+    io.emit('examStatusChanged', false);
+    io.emit('examClosed');
+    res.json({ success: true, message: 'Bài thi đã đóng' });
+});
+
 // ========== QUẢN LÝ SESSION (LỚP + BÀI KIỂM TRA) ==========
 
 // Lấy thông tin session hiện tại
@@ -1028,6 +1058,15 @@ app.post('/api/classes', (req, res) => {
     const { name } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên lớp' });
+    }
+    
+    // Kiểm tra trùng tên lớp
+    const trimmedName = name.trim().toLowerCase();
+    const existingClass = Object.values(classesData).find(
+        c => c.name.toLowerCase() === trimmedName
+    );
+    if (existingClass) {
+        return res.json({ success: false, error: 'Tên lớp đã tồn tại' });
     }
     
     const newClass = createClass(name.trim());
@@ -1137,6 +1176,66 @@ app.get('/api/exams', (req, res) => {
         currentExamId: currentSession.examId,
         exams: getSavedExams()
     });
+});
+
+// Tạo bài kiểm tra mới (API ngắn gọn)
+app.post('/api/exams', (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+        return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
+    }
+    
+    // Tạo ID unique
+    const examId = 'exam_' + Date.now();
+    
+    // Lưu bài kiểm tra trống
+    const examData = {
+        name: name.trim(),
+        questions: [],
+        settings: {
+            title: name.trim(),
+            timeLimit: 30,
+            isOpen: false,
+            showScore: true
+        },
+        createdAt: new Date().toISOString()
+    };
+    
+    const dir = path.join(__dirname, 'data', 'exams');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, `${examId}.json`), JSON.stringify(examData, null, 2), 'utf8');
+    
+    res.json({ 
+        success: true, 
+        examId,
+        message: `Đã tạo bài kiểm tra "${name.trim()}"` 
+    });
+});
+
+// Xóa bài kiểm tra
+app.delete('/api/exams/:examId', (req, res) => {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền thực hiện' });
+    }
+    
+    const { examId } = req.params;
+    
+    // Không cho xóa bài đang dùng
+    if (examId === currentSession.examId) {
+        return res.json({ success: false, error: 'Không thể xóa bài đang sử dụng' });
+    }
+    
+    const examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+    if (fs.existsSync(examPath)) {
+        fs.unlinkSync(examPath);
+        res.json({ success: true, message: 'Đã xóa bài kiểm tra' });
+    } else {
+        res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
+    }
 });
 
 // Lưu bài kiểm tra hiện tại

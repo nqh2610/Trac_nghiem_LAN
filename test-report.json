@@ -1,0 +1,203 @@
+{
+  "timestamp": "2025-12-03T13:58:08.524Z",
+  "duration": "0.22s",
+  "summary": {
+    "passed": 48,
+    "failed": 0,
+    "total": 48
+  },
+  "tests": [
+    {
+      "name": "Server phản hồi thành công",
+      "status": "PASS"
+    },
+    {
+      "name": "API trả về currentSession",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/classes - Lấy danh sách lớp",
+      "status": "PASS"
+    },
+    {
+      "name": "Danh sách lớp là mảng",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/classes - Tạo lớp \"Test_1764770288340\"",
+      "status": "PASS"
+    },
+    {
+      "name": "Lớp mới có ID",
+      "status": "PASS"
+    },
+    {
+      "name": "Số lớp tăng thêm 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Không cho tạo lớp trùng tên",
+      "status": "PASS"
+    },
+    {
+      "name": "DELETE /api/classes/class_1764770288341 - Xóa lớp test",
+      "status": "PASS"
+    },
+    {
+      "name": "Số lớp trở về ban đầu",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/exams - Lấy danh sách bài",
+      "status": "PASS"
+    },
+    {
+      "name": "Danh sách bài là mảng",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/exams - Tạo bài \"BaiTest_1764770288359\"",
+      "status": "PASS"
+    },
+    {
+      "name": "Bài mới có ID",
+      "status": "PASS"
+    },
+    {
+      "name": "Số bài tăng thêm 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Chuyển sang bài test thành công",
+      "status": "PASS"
+    },
+    {
+      "name": "Session examId đúng",
+      "status": "PASS"
+    },
+    {
+      "name": "DELETE /api/exams/exam_1764770288360 - Xóa bài test",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/questions - Lấy danh sách câu hỏi",
+      "status": "PASS"
+    },
+    {
+      "name": "Danh sách câu hỏi là mảng",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/questions - Thêm câu hỏi",
+      "status": "PASS"
+    },
+    {
+      "name": "Số câu hỏi tăng thêm 1",
+      "status": "PASS"
+    },
+    {
+      "name": "DELETE /api/questions/5 - Xóa câu hỏi test",
+      "status": "PASS"
+    },
+    {
+      "name": "Số câu hỏi trở về ban đầu",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/session - Lấy session",
+      "status": "PASS"
+    },
+    {
+      "name": "Có currentSession",
+      "status": "PASS"
+    },
+    {
+      "name": "Có examSettings",
+      "status": "PASS"
+    },
+    {
+      "name": "Có studentCount",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/students - Lấy danh sách học sinh",
+      "status": "PASS"
+    },
+    {
+      "name": "Danh sách học sinh là mảng",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/settings - Lấy cài đặt",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/settings - Cập nhật cài đặt",
+      "status": "PASS"
+    },
+    {
+      "name": "timeLimit đã cập nhật",
+      "status": "PASS"
+    },
+    {
+      "name": "Khôi phục cài đặt gốc",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/exam/open",
+      "status": "PASS"
+    },
+    {
+      "name": "POST /api/exam/close - Đóng bài thi",
+      "status": "PASS"
+    },
+    {
+      "name": "Bài thi đã đóng",
+      "status": "PASS"
+    },
+    {
+      "name": "Học sinh có STT",
+      "status": "PASS"
+    },
+    {
+      "name": "API /api/exam báo lỗi khi bài thi đóng",
+      "status": "PASS"
+    },
+    {
+      "name": "Đề thi có danh sách câu hỏi",
+      "status": "PASS"
+    },
+    {
+      "name": "Đề thi có thời gian",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/results - Lấy kết quả",
+      "status": "PASS"
+    },
+    {
+      "name": "Kết quả là mảng",
+      "status": "PASS"
+    },
+    {
+      "name": "GET /api/reports - Lấy báo cáo",
+      "status": "PASS"
+    },
+    {
+      "name": "API questions cho phép từ localhost",
+      "status": "PASS"
+    },
+    {
+      "name": "API classes cho phép từ localhost",
+      "status": "PASS"
+    },
+    {
+      "name": "Tạo 3 lớp liên tiếp thành công",
+      "status": "PASS"
+    },
+    {
+      "name": "Xóa sạch các lớp test",
+      "status": "PASS"
+    }
+  ]
+}

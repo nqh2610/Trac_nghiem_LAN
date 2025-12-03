@@ -61,7 +61,14 @@
     "title": "Kiểm tra 15 phút",
     "timeLimit": 30,
     "isOpen": false,
-    "showScore": true
+    "showScore": true,
+    "currentSession": {
+      "classId": "class_1764766952564",
+      "className": "11A4",
+      "examId": "exam_1764770257487",
+      "examName": "BaiTest_1764770257484"
+    },
+    "currentExamId": "exam_1764770257487"
   },
-  "createdAt": "2025-12-03T12:57:54.619Z"
+  "createdAt": "2025-12-03T13:58:08.407Z"
 }

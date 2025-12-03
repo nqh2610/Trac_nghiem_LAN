@@ -1,11 +1,7 @@
 {
-  "currentSession": {
-    "classId": "class_1764766952564",
-    "className": "11A4",
-    "examId": "exam_1764775136717",
-    "examName": "Kiểm tra TX 3 K11"
-  },
-  "examSettings": {
+  "name": "Kiểm tra TX 3 K11",
+  "questions": [],
+  "settings": {
     "title": "Kiểm tra TX 3 K11",
     "timeLimit": 30,
     "isOpen": false,
@@ -17,5 +13,6 @@
       "examName": "BaiTest_1764770257484"
     },
     "currentExamId": "exam_1764770257487"
-  }
+  },
+  "createdAt": "2025-12-03T15:18:43.775Z"
 }

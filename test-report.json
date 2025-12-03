@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-12-03T13:58:08.524Z",
-  "duration": "0.22s",
+  "timestamp": "2025-12-03T14:38:24.045Z",
+  "duration": "0.26s",
   "summary": {
     "passed": 48,
     "failed": 0,
@@ -24,7 +24,7 @@
       "status": "PASS"
     },
     {
-      "name": "POST /api/classes - Tạo lớp \"Test_1764770288340\"",
+      "name": "POST /api/classes - Tạo lớp \"Test_1764772703819\"",
       "status": "PASS"
     },
     {
@@ -40,7 +40,7 @@
       "status": "PASS"
     },
     {
-      "name": "DELETE /api/classes/class_1764770288341 - Xóa lớp test",
+      "name": "DELETE /api/classes/class_1764772703821 - Xóa lớp test",
       "status": "PASS"
     },
     {
@@ -56,7 +56,7 @@
       "status": "PASS"
     },
     {
-      "name": "POST /api/exams - Tạo bài \"BaiTest_1764770288359\"",
+      "name": "POST /api/exams - Tạo bài \"BaiTest_1764772703839\"",
       "status": "PASS"
     },
     {
@@ -76,7 +76,7 @@
       "status": "PASS"
     },
     {
-      "name": "DELETE /api/exams/exam_1764770288360 - Xóa bài test",
+      "name": "DELETE /api/exams/exam_1764772703840 - Xóa bài test",
       "status": "PASS"
     },
     {

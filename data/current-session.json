@@ -8,14 +8,14 @@
   "examSettings": {
     "title": "Kiểm tra 15 phút",
     "timeLimit": 30,
-    "isOpen": true,
+    "isOpen": false,
     "showScore": true,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",
-      "examId": "exam_1764770257487",
-      "examName": "BaiTest_1764770257484"
+      "examId": "exam_1764766674551",
+      "examName": "Kiểm tra 15 phút"
     },
-    "currentExamId": "exam_1764770257487"
+    "currentExamId": "exam_1764766674551"
   }
 }

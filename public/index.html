@@ -1227,12 +1227,12 @@
             pointer-events: none;
         }
         
-        /* Single Question Mode */
-        .single-question-mode #questionsContainer .question-card {
+        /* Single Question Mode - Always Active */
+        #questionsContainer .question-card {
             display: none;
         }
         
-        .single-question-mode #questionsContainer .question-card.active {
+        #questionsContainer .question-card.active {
             display: block;
             animation: fadeInQuestion 0.3s ease;
         }
@@ -1242,9 +1242,9 @@
             to { opacity: 1; transform: translateX(0); }
         }
         
-        /* Navigation buttons for single question mode */
+        /* Navigation buttons - Always visible */
         .question-navigation {
-            display: none;
+            display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 20px;
@@ -1252,10 +1252,6 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        
-        .single-question-mode .question-navigation {
-            display: flex;
         }
         
         .nav-arrow-btn {
@@ -1324,27 +1320,6 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
-        }
-        
-        /* Mode toggle button */
-        .view-mode-toggle {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .view-mode-toggle:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.02);
         }
         
         .progress-mini {
@@ -1515,9 +1490,6 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <button class="view-mode-toggle" onclick="toggleViewMode()" title="Đổi chế độ xem">
-                        <span id="viewModeIcon">📄</span> <span id="viewModeText">Từng câu</span>
-                    </button>
                     <div class="progress-mini">✓ <strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
                     <div class="timer" id="timer">⏱ 00:00</div>
                     <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
@@ -1537,7 +1509,7 @@
 
             <div id="questionsContainer"></div>
             
-            <!-- Question Navigation for Single Mode -->
+            <!-- Question Navigation -->
             <div class="question-navigation" id="questionNavigation">
                 <button class="nav-arrow-btn prev" id="prevQuestionBtn" onclick="navigateQuestion(-1)">
                     ◀ Câu trước
@@ -2184,10 +2156,8 @@
             // Initialize anti-cheat measures
             initAntiCheat();
             
-            // Show first question if in single mode
-            if (singleQuestionMode) {
-                setTimeout(() => showCurrentQuestion(), 100);
-            }
+            // Show first question
+            setTimeout(() => showCurrentQuestion(), 100);
         }
 
         // Render questions
@@ -2195,7 +2165,7 @@
             const container = document.getElementById('questionsContainer');
             
             container.innerHTML = questions.map((q, i) => `
-                <div class="question-card${singleQuestionMode && i === 0 ? ' active' : ''}" id="question${i}">
+                <div class="question-card${i === 0 ? ' active' : ''}" id="question${i}">
                     <div class="question-header">
                         <span class="question-number">Câu ${i + 1}</span>
                     </div>
@@ -2811,35 +2781,10 @@
 
         // ========== CHỐNG GIAN LẬN ==========
         
-        let singleQuestionMode = true; // Mặc định: chế độ từng câu
         let currentQuestionIndex = 0;
         let tabLeaveCount = 0;
         
-        // Toggle view mode
-        function toggleViewMode() {
-            singleQuestionMode = !singleQuestionMode;
-            const examScreen = document.getElementById('examScreen');
-            const icon = document.getElementById('viewModeIcon');
-            const text = document.getElementById('viewModeText');
-            
-            if (singleQuestionMode) {
-                examScreen.classList.add('single-question-mode');
-                icon.textContent = '📄';
-                text.textContent = 'Từng câu';
-                showCurrentQuestion();
-            } else {
-                examScreen.classList.remove('single-question-mode');
-                icon.textContent = '📋';
-                text.textContent = 'Tất cả';
-                // Show all questions
-                document.querySelectorAll('.question-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-            }
-            updateQuestionNavigation();
-        }
-        
-        // Show current question in single mode
+        // Show current question (always single question mode)
         function showCurrentQuestion() {
             const cards = document.querySelectorAll('.question-card');
             cards.forEach((card, i) => {
@@ -2871,13 +2816,7 @@
         // Go to specific question
         function goToQuestion(index) {
             currentQuestionIndex = index;
-            if (singleQuestionMode) {
-                showCurrentQuestion();
-            } else {
-                // Scroll to question
-                const card = document.getElementById(`question${index}`);
-                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            showCurrentQuestion();
         }
         
         // Update navigation buttons
@@ -2988,13 +2927,7 @@
             createWatermark();
             enableAntiCopy();
             setupTabDetection();
-            
-            // Default to single question mode
-            const examScreen = document.getElementById('examScreen');
-            if (singleQuestionMode) {
-                examScreen.classList.add('single-question-mode');
-                currentQuestionIndex = 0;
-            }
+            currentQuestionIndex = 0;
         }
         
         // Override renderNavigation to add click handler

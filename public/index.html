@@ -474,9 +474,7 @@
         
         .exam-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 12px 20px;
-            border-radius: 0 0 16px 16px;
-            margin-bottom: 12px;
+            padding: 10px 20px;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             display: flex;
             justify-content: space-between;
@@ -485,7 +483,26 @@
             gap: 10px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 101;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .exam-title-bar {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 12px 0;
+        }
+        
+        .exam-title {
+            font-size: 1.2em;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin: 0;
         }
         
         .exam-header-left {
@@ -493,13 +510,6 @@
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-        }
-        
-        .exam-title {
-            font-size: 1.05em;
-            color: white;
-            font-weight: 700;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .exam-info {
@@ -1477,23 +1487,25 @@
 
     <!-- Exam Screen -->
     <div class="exam-screen" id="examScreen">
+        <div class="exam-header">
+            <div class="exam-header-left">
+                <div class="student-badge">
+                    <div class="avatar" id="studentAvatar">A</div>
+                    <span><span id="displayName"></span></span>
+                    <span style="opacity: 0.8;">•</span>
+                    <span id="displayClass"></span>
+                    <a href="javascript:void(0)" onclick="reportWrongSelectionDuringExam()" class="wrong-name-link">Sai tên?</a>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="progress-mini">✓ <strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
+                <div class="timer" id="timer">⏱ 00:00</div>
+                <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
+            </div>
+        </div>
         <div class="container">
-            <div class="exam-header">
-                <div class="exam-header-left">
-                    <div class="exam-title" id="examTitle">📝 Bài kiểm tra</div>
-                    <div class="student-badge">
-                        <div class="avatar" id="studentAvatar">A</div>
-                        <span><span id="displayName"></span></span>
-                        <span style="opacity: 0.8;">•</span>
-                        <span id="displayClass"></span>
-                        <a href="javascript:void(0)" onclick="reportWrongSelectionDuringExam()" class="wrong-name-link">Sai tên?</a>
-                    </div>
-                </div>
-                <div class="header-right">
-                    <div class="progress-mini">✓ <strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
-                    <div class="timer" id="timer">⏱ 00:00</div>
-                    <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
-                </div>
+            <div class="exam-title-bar">
+                <div class="exam-title" id="examTitle">📝 Bài kiểm tra</div>
             </div>
 
             <div class="progress-section">
@@ -1813,22 +1825,26 @@
                 let statusIcon = '';
                 let disabled = false;
                 let style = '';
+                let extraText = '';
                 
                 if (s.status.completed && !s.status.canRetry) {
                     statusIcon = ' ✅';
                     disabled = true;
-                    style = 'color: #28a745;';
+                    style = 'color: #28a745; background: #e8f5e9;';
+                    extraText = ' (Đã nộp bài)';
                 } else if (s.status.selected && s.status.selectedBy !== mySocketId) {
                     statusIcon = ' 🔒';
                     disabled = true;
-                    style = 'color: #999;';
+                    style = 'color: #999; background: #f5f5f5;';
+                    extraText = ' (Đang làm)';
                 } else if (s.status.canRetry) {
                     statusIcon = ' 🔄';
                     style = 'color: #ff9800;';
+                    extraText = ' (Được làm lại)';
                 }
                 
                 return `<option value="${s.stt}" ${disabled ? 'disabled' : ''} style="padding: 12px 16px; ${style}">
-                    ${s.stt}. ${s.fullName}${statusIcon}
+                    ${s.stt}. ${s.fullName}${statusIcon}${extraText}
                 </option>`;
             }).join('');
         }
@@ -2077,6 +2093,19 @@
             if (!selectedStudent || !nameConfirmed) {
                 showError('Vui lòng chọn và xác nhận tên của bạn');
                 return;
+            }
+            
+            // Kiểm tra xem học sinh đã nộp bài chưa
+            try {
+                const checkRes = await fetch(`/api/check-submitted/${selectedStudent.stt}`);
+                const checkData = await checkRes.json();
+                
+                if (checkData.submitted && !checkData.canRetry) {
+                    showError('❌ Bạn đã nộp bài rồi! Không thể vào lại bài thi này.');
+                    return;
+                }
+            } catch (e) {
+                console.log('Không kiểm tra được trạng thái nộp bài');
             }
             
             // Check if exam is open and get class name from session
@@ -2343,8 +2372,28 @@
                 const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
                 
                 if (hoursDiff > 2) {
-                    clearExamProgress(activeSession.stt);
+                    clearExamProgress(activeSession.stt, activeSession.examId);
                     return;
+                }
+                
+                // Kiểm tra với server xem học sinh đã nộp bài chưa và examId có khớp không
+                try {
+                    const checkRes = await fetch(`/api/check-submitted/${activeSession.stt}`);
+                    const checkData = await checkRes.json();
+                    
+                    // Nếu đã nộp bài và không được làm lại -> xóa progress, không khôi phục
+                    if (checkData.submitted && !checkData.canRetry) {
+                        clearExamProgress(activeSession.stt, activeSession.examId);
+                        return;
+                    }
+                    
+                    // Nếu examId không khớp (giáo viên đã đổi bài) -> xóa progress cũ
+                    if (checkData.examId !== activeSession.examId) {
+                        clearExamProgress(activeSession.stt, activeSession.examId);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Không thể kiểm tra trạng thái nộp bài, tiếp tục khôi phục');
                 }
                 
                 // Tính thời gian còn lại
@@ -2352,9 +2401,12 @@
                 const remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
                 
                 if (remainingTime <= 0) {
-                    clearExamProgress(activeSession.stt);
+                    clearExamProgress(activeSession.stt, activeSession.examId);
                     return;
                 }
+                
+                // Lưu currentExamId trước khi khôi phục
+                currentExamId = activeSession.examId;
                 
                 // Khôi phục session
                 studentInfo = {
@@ -2394,6 +2446,9 @@
                 renderNavigation();
                 applyRestoredAnswers();
                 startTimer();
+                
+                // Initialize anti-cheat measures khi khôi phục
+                initAntiCheat();
                 
                 const minutesLeft = Math.floor(timeRemaining / 60);
                 const secondsLeft = timeRemaining % 60;

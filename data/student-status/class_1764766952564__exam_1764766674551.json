@@ -8,28 +8,30 @@
   "2": {
     "selected": false,
     "selectedBy": null,
-    "completed": false,
+    "completed": true,
     "canRetry": false,
     "tabLeaveCount": 3,
     "lastTabLeave": "2025-12-03T14:19:52.893Z"
   },
   "3": {
-    "selected": false,
-    "selectedBy": null,
+    "selected": true,
+    "selectedBy": "FeZ4mROCragqxiw1AAAL",
     "completed": false,
     "canRetry": false
   },
   "4": {
     "selected": false,
     "selectedBy": null,
-    "completed": false,
+    "completed": true,
     "canRetry": false
   },
   "5": {
-    "selected": false,
-    "selectedBy": null,
+    "selected": true,
+    "selectedBy": "SP-KjGgiSksjs3rzAAAd",
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 10,
+    "lastTabLeave": "2025-12-03T15:15:28.735Z"
   },
   "6": {
     "selected": false,
@@ -47,7 +49,9 @@
     "selected": false,
     "selectedBy": null,
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 1,
+    "lastTabLeave": "2025-12-03T15:03:42.681Z"
   },
   "9": {
     "selected": false,
@@ -59,7 +63,9 @@
     "selected": false,
     "selectedBy": null,
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 10,
+    "lastTabLeave": "2025-12-03T14:55:35.091Z"
   },
   "11": {
     "selected": false,
@@ -101,7 +107,9 @@
     "selected": false,
     "selectedBy": null,
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2025-12-03T15:06:04.066Z"
   },
   "18": {
     "selected": false,

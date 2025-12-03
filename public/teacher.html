@@ -930,7 +930,7 @@
                             <span style="font-size: 1.5em;">📄</span>
                             <h4 style="margin: 0; color: #2e7d32;">Tạo bài mới từ file</h4>
                         </div>
-                        <input type="text" id="newExamName" placeholder="Tên bài kiểm tra (VD: Bài KT HTML - Tuần 5)" style="width: 100%; padding: 12px; border: 1px solid #a5d6a7; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box;">
+                        <input type="text" id="newExamName" maxlength="40" placeholder="Tên bài kiểm tra (tối đa 40 ký tự)" style="width: 100%; padding: 12px; border: 1px solid #a5d6a7; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box;">
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                             <button class="btn" onclick="createNewExam()" style="background: #4caf50; color: white; padding: 12px; border-radius: 8px; font-weight: bold;">
@@ -959,7 +959,7 @@
                             <h4 style="margin: 0; color: #f57f17;">Lưu bài đang làm</h4>
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="saveExamName" placeholder="Nhập tên để lưu..." style="flex: 1; padding: 12px; border: 1px solid #ffe082; border-radius: 8px; box-sizing: border-box;">
+                            <input type="text" id="saveExamName" maxlength="40" placeholder="Nhập tên để lưu (tối đa 40 ký tự)" style="flex: 1; padding: 12px; border: 1px solid #ffe082; border-radius: 8px; box-sizing: border-box;">
                             <button class="btn" onclick="saveCurrentExam()" style="background: #ff9800; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; white-space: nowrap;">
                                 💾 Lưu
                             </button>

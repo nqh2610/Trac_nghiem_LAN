@@ -870,6 +870,22 @@ app.get('/api/exam', (req, res) => {
     });
 });
 
+// Kiểm tra học sinh đã nộp bài chưa (cho bài thi hiện tại)
+app.get('/api/check-submitted/:stt', (req, res) => {
+    const stt = req.params.stt;
+    const examId = currentSession.examId || 'default';
+    
+    // Kiểm tra trong studentStatus
+    const status = studentStatus[stt];
+    const hasSubmitted = status && status.completed === true;
+    
+    res.json({
+        submitted: hasSubmitted,
+        examId: examId,
+        canRetry: status ? status.canRetry : false
+    });
+});
+
 // Thêm câu hỏi mới (chỉ localhost)
 app.post('/api/questions', (req, res) => {
     if (!isLocalhost(req)) {

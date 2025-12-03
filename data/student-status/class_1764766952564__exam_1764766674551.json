@@ -9,7 +9,9 @@
     "selected": false,
     "selectedBy": null,
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 3,
+    "lastTabLeave": "2025-12-03T14:19:52.893Z"
   },
   "3": {
     "selected": false,

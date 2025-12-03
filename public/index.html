@@ -474,15 +474,15 @@
         
         .exam-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 8px 16px;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 12px 20px;
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -491,13 +491,15 @@
         .exam-header-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         
         .exam-title {
-            font-size: 0.95em;
+            font-size: 1.05em;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .exam-info {
@@ -510,17 +512,19 @@
         .student-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 16px;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 0.85em;
             color: white;
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
         .student-badge .avatar {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -528,19 +532,40 @@
             justify-content: center;
             color: #667eea;
             font-weight: bold;
+            font-size: 0.8em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .wrong-name-link {
+            color: rgba(255,255,255,0.7);
             font-size: 0.75em;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+        
+        .wrong-name-link:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .timer {
             background: white;
             color: #667eea;
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-size: 1em;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1.1em;
             font-weight: bold;
             font-family: 'Courier New', monospace;
-            min-width: 70px;
+            min-width: 80px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .timer.warning {
@@ -1304,17 +1329,57 @@
         /* Mode toggle button */
         .view-mode-toggle {
             background: rgba(255,255,255,0.2);
-            border: none;
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 0.8em;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .view-mode-toggle:hover {
             background: rgba(255,255,255,0.3);
+            transform: scale(1.02);
+        }
+        
+        .progress-mini {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .progress-mini strong {
+            color: #ffd700;
+        }
+        
+        .header-submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        .header-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
         }
     </style>
 </head>
@@ -1440,10 +1505,12 @@
         <div class="container">
             <div class="exam-header">
                 <div class="exam-header-left">
-                    <div class="exam-title" id="examTitle">Bài kiểm tra</div>
+                    <div class="exam-title" id="examTitle">📝 Bài kiểm tra</div>
                     <div class="student-badge">
                         <div class="avatar" id="studentAvatar">A</div>
-                        <span><span id="displayName"></span> - <span id="displayClass"></span></span>
+                        <span><span id="displayName"></span></span>
+                        <span style="opacity: 0.8;">•</span>
+                        <span id="displayClass"></span>
                         <a href="javascript:void(0)" onclick="reportWrongSelectionDuringExam()" class="wrong-name-link">Sai tên?</a>
                     </div>
                 </div>
@@ -1451,8 +1518,8 @@
                     <button class="view-mode-toggle" onclick="toggleViewMode()" title="Đổi chế độ xem">
                         <span id="viewModeIcon">📄</span> <span id="viewModeText">Từng câu</span>
                     </button>
-                    <div class="progress-mini"><span id="answeredCount2">0</span>/<span id="totalCount2">0</span> câu</div>
-                    <div class="timer" id="timer">00:00</div>
+                    <div class="progress-mini">✓ <strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
+                    <div class="timer" id="timer">⏱ 00:00</div>
                     <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
                 </div>
             </div>
@@ -2080,7 +2147,7 @@
             document.getElementById('examScreen').style.display = 'block';
             
             document.getElementById('displayName').textContent = studentInfo.name;
-            document.getElementById('displayClass').textContent = `Lớp ${studentInfo.class} - STT ${studentInfo.stt}`;
+            document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
             
             // Check for saved progress
             const hasProgress = restoreExamProgress();
@@ -2345,7 +2412,7 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('examScreen').style.display = 'block';
                 document.getElementById('displayName').textContent = studentInfo.name;
-                document.getElementById('displayClass').textContent = `Lớp ${studentInfo.class} - STT ${studentInfo.stt}`;
+                document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
                 document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
                 
                 // Tính lại startTime
@@ -2434,7 +2501,7 @@
             const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             const timer = document.getElementById('timer');
-            timer.textContent = display;
+            timer.textContent = `⏱ ${display}`;
             
             // Warning colors
             timer.classList.remove('warning', 'danger');

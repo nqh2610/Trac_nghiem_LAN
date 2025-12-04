@@ -1603,6 +1603,11 @@
                 document.getElementById('statAverage').textContent = avg;
                 document.getElementById('statHighest').textContent = highest;
                 document.getElementById('statLowest').textContent = lowest;
+            } else {
+                // Reset về "-" khi chưa có kết quả
+                document.getElementById('statAverage').textContent = '-';
+                document.getElementById('statHighest').textContent = '-';
+                document.getElementById('statLowest').textContent = '-';
             }
         }
 

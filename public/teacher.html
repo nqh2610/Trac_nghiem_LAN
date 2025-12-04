@@ -1646,16 +1646,29 @@
             const r = results[index];
             const content = document.getElementById('detailContent');
             
-            // Hàm format đáp án: ưu tiên hiển thị nội dung text, fallback về A/B/C/D
-            function formatAnswer(answerIndex, answerText) {
+            // Hàm format đáp án: hiển thị nội dung text đầy đủ
+            // Tìm từ data lưu sẵn hoặc từ câu hỏi hiện tại
+            function formatAnswer(answerIndex, answerText, questionIndex, isCorrect) {
                 if (answerIndex === undefined || answerIndex === null || answerIndex < 0) {
-                    return 'Không trả lời';
+                    return '<em style="color: #999;">Không trả lời</em>';
                 }
                 const letter = String.fromCharCode(65 + answerIndex);
+                
+                // Ưu tiên dùng text đã lưu
                 if (answerText) {
-                    return `${letter}. ${escapeHtml(answerText)}`;
+                    return `<strong>${letter}.</strong> ${escapeHtml(answerText)}`;
                 }
-                return letter;
+                
+                // Fallback: tìm từ danh sách câu hỏi hiện tại (nếu có)
+                if (questions && questions[questionIndex] && questions[questionIndex].options) {
+                    const optionText = questions[questionIndex].options[answerIndex];
+                    if (optionText) {
+                        return `<strong>${letter}.</strong> ${escapeHtml(optionText)}`;
+                    }
+                }
+                
+                // Không tìm được text, chỉ hiện chữ cái
+                return `<strong>${letter}</strong> <em style="color: #999;">(không có nội dung)</em>`;
             }
             
             content.innerHTML = `
@@ -1668,8 +1681,17 @@
                 ${r.details.map((d, i) => `
                     <div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}">
                         <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
-                        <span>Trả lời: ${formatAnswer(d.studentAnswer, d.studentAnswerText)}</span>
-                        ${!d.isCorrect ? ` | <span style="color: green;">Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText)}</span>` : ''}
+                        <div style="margin-top: 5px;">
+                            <span style="color: ${d.isCorrect ? '#2e7d32' : '#c62828'};">
+                                📝 HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
+                            </span>
+                        </div>
+                        ${!d.isCorrect ? `
+                        <div style="margin-top: 3px;">
+                            <span style="color: #2e7d32;">
+                                ✅ Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
+                            </span>
+                        </div>` : ''}
                     </div>
                 `).join('')}
             `;

@@ -1646,12 +1646,24 @@
             const r = results[index];
             const content = document.getElementById('detailContent');
             
+            // Hàm kiểm tra học sinh có chọn đáp án không
+            function hasAnswer(answerIndex) {
+                return answerIndex !== undefined && 
+                       answerIndex !== null && 
+                       answerIndex !== -1 &&
+                       !isNaN(answerIndex) &&
+                       typeof answerIndex === 'number' &&
+                       answerIndex >= 0;
+            }
+            
             // Hàm format đáp án: hiển thị nội dung text đầy đủ
             // Tìm từ data lưu sẵn hoặc từ câu hỏi hiện tại
-            function formatAnswer(answerIndex, answerText, questionIndex, isCorrect) {
-                if (answerIndex === undefined || answerIndex === null || answerIndex < 0) {
-                    return '<em style="color: #999;">Không trả lời</em>';
+            function formatAnswer(answerIndex, answerText, questionIndex, isCorrectAnswer) {
+                // Kiểm tra học sinh có chọn đáp án không
+                if (!hasAnswer(answerIndex)) {
+                    return '<em style="color: #ff9800; font-weight: bold;">⚠️ Không chọn đáp án</em>';
                 }
+                
                 const letter = String.fromCharCode(65 + answerIndex);
                 
                 // Ưu tiên dùng text đã lưu
@@ -1671,29 +1683,35 @@
                 return `<strong>${letter}</strong> <em style="color: #999;">(không có nội dung)</em>`;
             }
             
+            // Đếm số câu không trả lời
+            const unansweredCount = r.details.filter(d => !hasAnswer(d.studentAnswer)).length;
+            
             content.innerHTML = `
                 <p><strong>Họ tên:</strong> ${escapeHtml(r.studentName)}</p>
                 <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
                 <p><strong>STT:</strong> ${r.studentSTT || r.studentId || '-'}</p>
                 <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng)</p>
+                ${unansweredCount > 0 ? `<p style="color: #ff9800; font-weight: bold;">⚠️ Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
                 <hr style="margin: 15px 0;">
                 <h4>Chi tiết từng câu:</h4>
-                ${r.details.map((d, i) => `
-                    <div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}">
+                ${r.details.map((d, i) => {
+                    const studentDidNotAnswer = !hasAnswer(d.studentAnswer);
+                    return `
+                    <div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left: 4px solid #ff9800;' : ''}">
                         <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
                         <div style="margin-top: 5px;">
-                            <span style="color: ${d.isCorrect ? '#2e7d32' : '#c62828'};">
+                            <span style="color: ${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
                                 📝 HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
                             </span>
                         </div>
-                        ${!d.isCorrect ? `
+                        ${!d.isCorrect ? \`
                         <div style="margin-top: 3px;">
                             <span style="color: #2e7d32;">
                                 ✅ Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
                             </span>
-                        </div>` : ''}
+                        </div>\` : ''}
                     </div>
-                `).join('')}
+                `}).join('')}
             `;
             
             document.getElementById('detailModal').classList.add('active');

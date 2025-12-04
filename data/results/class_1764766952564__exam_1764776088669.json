@@ -1,1 +1,266 @@
-[]
+[
+  {
+    "studentSTT": "1",
+    "studentName": "Bùi Hoàng Anh",
+    "studentClass": "11A4",
+    "score": 1.5,
+    "correctCount": 3,
+    "totalQuestions": 20,
+    "timeSpent": "5 phút 30 giây",
+    "submittedAt": "08:52:44 4/12/2025",
+    "details": [
+      {
+        "question": "Để mở môi trường viết lệnh SQL trong Access 2010, sau khi vào Query Design, ta chọn gì?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào dùng để tạo bảng Lop trong Access?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Từ khóa PRIMARY KEY trong câu lệnh CREATE TABLE có ý nghĩa gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Từ khóa NOT NULL có ý nghĩa gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Kiểu dữ liệu TEXT(50) trong Access có nghĩa là gì?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Để tạo khóa ngoại liên kết bảng HocSinh với bảng Lop, ta dùng cú pháp nào?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm một lớp mới có MaLop là 'L01' và TenLop là 'Lớp 10A1'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được đặt trong ký tự gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm học sinh với NgaySinh là 12/05/2005 trong Access?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào cập nhật tên học sinh có MaHS = 1 thành 'Nguyen Van B'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh DELETE FROM HocSinh WHERE MaHS = 1 sẽ làm gì?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm cột NamKinhNghiem vào bảng GiaoVien?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào xóa cột NamKinhNghiem khỏi bảng GiaoVien?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh DROP TABLE HocSinh sẽ làm gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào lấy danh sách họ tên học sinh thuộc lớp 'L01'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh SELECT * FROM GiaoVien WHERE MonDay = 'Toán' sẽ trả về gì?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Dấu * trong câu lệnh SELECT * FROM có nghĩa là gì?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh INNER JOIN dùng để làm gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Trong lệnh INNER JOIN, từ khóa ON dùng để làm gì?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Lệnh nào kết hợp bảng HocSinh và Lop để lấy tên học sinh và tên lớp?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "2",
+    "studentName": "Nguyễn Trần Trâm Anh",
+    "studentClass": "11A4",
+    "score": 2,
+    "correctCount": 4,
+    "totalQuestions": 20,
+    "timeSpent": "10 phút 15 giây",
+    "submittedAt": "08:52:44 4/12/2025",
+    "details": [
+      {
+        "question": "Để mở môi trường viết lệnh SQL trong Access 2010, sau khi vào Query Design, ta chọn gì?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào dùng để tạo bảng Lop trong Access?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Từ khóa PRIMARY KEY trong câu lệnh CREATE TABLE có ý nghĩa gì?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Từ khóa NOT NULL có ý nghĩa gì?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Kiểu dữ liệu TEXT(50) trong Access có nghĩa là gì?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Để tạo khóa ngoại liên kết bảng HocSinh với bảng Lop, ta dùng cú pháp nào?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm một lớp mới có MaLop là 'L01' và TenLop là 'Lớp 10A1'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được đặt trong ký tự gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm học sinh với NgaySinh là 12/05/2005 trong Access?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào cập nhật tên học sinh có MaHS = 1 thành 'Nguyen Van B'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh DELETE FROM HocSinh WHERE MaHS = 1 sẽ làm gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào thêm cột NamKinhNghiem vào bảng GiaoVien?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Lệnh nào xóa cột NamKinhNghiem khỏi bảng GiaoVien?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh DROP TABLE HocSinh sẽ làm gì?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào lấy danh sách họ tên học sinh thuộc lớp 'L01'?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh SELECT * FROM GiaoVien WHERE MonDay = 'Toán' sẽ trả về gì?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Dấu * trong câu lệnh SELECT * FROM có nghĩa là gì?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh INNER JOIN dùng để làm gì?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Trong lệnh INNER JOIN, từ khóa ON dùng để làm gì?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào kết hợp bảng HocSinh và Lop để lấy tên học sinh và tên lớp?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      }
+    ]
+  }
+]

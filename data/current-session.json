@@ -8,9 +8,11 @@
   "examSettings": {
     "title": "Kiểm tra TX 33 K11",
     "timeLimit": 30,
-    "isOpen": false,
-    "showScore": false,
+    "isOpen": true,
+    "showScore": true,
     "practiceMode": false,
+    "examPassword": "",
+    "requirePassword": false,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",

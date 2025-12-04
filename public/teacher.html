@@ -1190,6 +1190,22 @@
                     </label>
                 </div>
                 
+                <div class="setting-row" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #1976d2; border-radius: 12px; padding: 15px; margin-top: 15px;">
+                    <div style="flex: 1;">
+                        <strong style="color: #0d47a1;">🔐 Mật khẩu bắt đầu làm bài</strong>
+                        <p style="color: #1565c0; font-size: 0.9em;">Học sinh phải nhập mật khẩu mới được làm bài (để tất cả bắt đầu cùng lúc)</p>
+                        <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
+                            <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;" onchange="saveSettings()">
+                            <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên">🎲</button>
+                            <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu">📋</button>
+                        </div>
+                    </div>
+                    <label class="toggle-switch" style="margin-left: 15px;">
+                        <input type="checkbox" id="requirePassword" onchange="saveSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
                 <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px;">💾 Lưu cài đặt</button>
             </div>
 
@@ -1714,6 +1730,8 @@
             document.getElementById('examOpen').checked = settings.isOpen;
             document.getElementById('showScore').checked = settings.showScore !== false;
             document.getElementById('practiceMode').checked = settings.practiceMode === true;
+            document.getElementById('examPassword').value = settings.examPassword || '';
+            document.getElementById('requirePassword').checked = settings.requirePassword === true;
             updateExamStatus(settings.isOpen);
         }
 
@@ -1723,7 +1741,9 @@
                 timeLimit: parseInt(document.getElementById('examTime').value),
                 isOpen: document.getElementById('examOpen').checked,
                 showScore: document.getElementById('showScore').checked,
-                practiceMode: document.getElementById('practiceMode').checked
+                practiceMode: document.getElementById('practiceMode').checked,
+                examPassword: document.getElementById('examPassword').value,
+                requirePassword: document.getElementById('requirePassword').checked
             };
 
             const res = await fetch('/api/settings', {
@@ -1735,6 +1755,33 @@
             if (res.ok) {
                 showNotification('💾 Đã lưu cài đặt!');
             }
+        }
+        
+        // Tạo mật khẩu ngẫu nhiên
+        function generateRandomPassword() {
+            const chars = '0123456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // Bỏ O, I để tránh nhầm
+            let password = '';
+            for (let i = 0; i < 6; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('examPassword').value = password;
+            document.getElementById('requirePassword').checked = true;
+            saveSettings();
+            showNotification('🎲 Mật khẩu mới: ' + password);
+        }
+        
+        // Sao chép mật khẩu
+        function copyPassword() {
+            const password = document.getElementById('examPassword').value;
+            if (!password) {
+                showNotification('⚠️ Chưa có mật khẩu!', 'warning');
+                return;
+            }
+            navigator.clipboard.writeText(password).then(() => {
+                showNotification('📋 Đã sao chép: ' + password);
+            }).catch(() => {
+                showNotification('❌ Không thể sao chép', 'error');
+            });
         }
 
         async function toggleExam() {

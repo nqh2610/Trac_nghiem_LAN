@@ -105,7 +105,9 @@ let examSettings = {
     timeLimit: 30, // phút
     isOpen: false,
     showScore: true, // Cho học sinh xem điểm sau khi nộp bài
-    practiceMode: false // Chế độ ôn tập - hiển thị đúng/sai ngay khi chọn đáp án
+    practiceMode: false, // Chế độ ôn tập - hiển thị đúng/sai ngay khi chọn đáp án
+    examPassword: '', // Mật khẩu để bắt đầu làm bài (để trống = không cần mật khẩu)
+    requirePassword: false // Yêu cầu nhập mật khẩu trước khi làm bài
 };
 
 // ========== QUẢN LÝ LỚP ==========
@@ -1015,6 +1017,30 @@ app.post('/api/exam/close', (req, res) => {
     res.json({ success: true, message: 'Bài thi đã đóng' });
 });
 
+// Kiểm tra mật khẩu bắt đầu làm bài
+app.post('/api/exam/verify-password', (req, res) => {
+    const { password } = req.body;
+    
+    // Nếu không yêu cầu mật khẩu hoặc mật khẩu trống
+    if (!examSettings.requirePassword || !examSettings.examPassword) {
+        return res.json({ success: true, message: 'Không cần mật khẩu' });
+    }
+    
+    // Kiểm tra mật khẩu
+    if (password === examSettings.examPassword) {
+        return res.json({ success: true, message: 'Mật khẩu chính xác' });
+    } else {
+        return res.json({ success: false, error: 'Mật khẩu không đúng!' });
+    }
+});
+
+// Kiểm tra xem có yêu cầu mật khẩu không (cho client)
+app.get('/api/exam/password-required', (req, res) => {
+    res.json({
+        required: examSettings.requirePassword && !!examSettings.examPassword
+    });
+});
+
 // ========== QUẢN LÝ SESSION (LỚP + BÀI KIỂM TRA) ==========
 
 // Lấy thông tin session hiện tại
@@ -1726,26 +1752,47 @@ app.get('/api/results/export', (req, res) => {
     
     const fileName = `${removeVietnameseTones(className)}_${removeVietnameseTones(examName)}_${dateStr}.xlsx`;
     
-    // Tạo dữ liệu cho Excel
-    const excelData = results.map((r, i) => ({
-        'STT': i + 1,
-        'Họ tên': r.studentName,
-        'Lớp': r.studentClass,
-        'STT trong lớp': r.studentSTT,
-        'Điểm': r.score,
-        'Số câu đúng': r.correctCount,
-        'Tổng câu': r.totalQuestions,
-        'Thời gian làm': r.timeSpent,
-        'Thời gian nộp': r.submittedAt
-    }));
+    // Tạo dữ liệu cho Excel theo danh sách đầy đủ học sinh trong lớp
+    // Sắp xếp theo STT, học sinh chưa thi thì để trống điểm
+    const excelData = [];
+    
+    // Lấy danh sách học sinh, sắp xếp theo STT
+    const sortedStudents = [...students].sort((a, b) => a.stt - b.stt);
+    
+    for (const student of sortedStudents) {
+        // Tìm kết quả của học sinh này (theo STT)
+        const result = results.find(r => r.studentSTT === student.stt);
+        
+        if (result) {
+            // Học sinh đã thi - có điểm
+            excelData.push({
+                'STT': student.stt,
+                'Họ tên': student.name,
+                'Điểm': result.score,
+                'Số câu đúng': result.correctCount,
+                'Tổng câu': result.totalQuestions,
+                'Thời gian làm': result.timeSpent,
+                'Thời gian nộp': result.submittedAt
+            });
+        } else {
+            // Học sinh chưa thi - để trống điểm
+            excelData.push({
+                'STT': student.stt,
+                'Họ tên': student.name,
+                'Điểm': '',
+                'Số câu đúng': '',
+                'Tổng câu': '',
+                'Thời gian làm': '',
+                'Thời gian nộp': ''
+            });
+        }
+    }
     
     // Tạo worksheet và workbook
     const ws = XLSX.utils.json_to_sheet(excelData);
     ws['!cols'] = [
         { wch: 5 },   // STT
         { wch: 25 },  // Họ tên
-        { wch: 10 },  // Lớp
-        { wch: 12 },  // STT trong lớp
         { wch: 8 },   // Điểm
         { wch: 12 },  // Số câu đúng
         { wch: 10 },  // Tổng câu
@@ -2318,6 +2365,7 @@ loadReports();         // Load báo cáo
 
 server.listen(PORT, '0.0.0.0', () => {
     const ip = getLocalIP();
+    const hostname = os.hostname().toLowerCase();
     console.log('');
     console.log('╔════════════════════════════════════════════════════════════╗');
     console.log('║                                                            ║');
@@ -2333,7 +2381,10 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`║   📌 Giáo viên truy cập (chỉ trên máy này):                ║`);
     console.log(`║      http://localhost:${PORT}/teacher                        `);
     console.log('║                                                            ║');
-    console.log(`║   📌 Gửi link này cho học sinh:                            ║`);
+    console.log(`║   📌 Link gửi học sinh:                                    ║`);
+    console.log(`║      http://${hostname}:${PORT}                            `);
+    console.log('║                                                            ║');
+    console.log(`║   📌 Link gửi học sinh dự phòng:                           ║`);
     console.log(`║      http://${ip}:${PORT}                                  `);
     console.log('║                                                            ║');
     console.log('╠════════════════════════════════════════════════════════════╣');

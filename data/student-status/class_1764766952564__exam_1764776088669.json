@@ -2,13 +2,13 @@
   "1": {
     "selected": false,
     "selectedBy": null,
-    "completed": false,
+    "completed": true,
     "canRetry": false
   },
   "2": {
     "selected": false,
     "selectedBy": null,
-    "completed": false,
+    "completed": true,
     "canRetry": false
   },
   "3": {

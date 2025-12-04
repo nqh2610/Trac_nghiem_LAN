@@ -2369,7 +2369,7 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('');
     console.log('╔════════════════════════════════════════════════════════════╗');
     console.log('║                                                            ║');
-    console.log('║   📡 TRẮC NGHIỆM LAN - Hệ thống thi trực tuyến            ║');
+    console.log('║   📡 TRẮC NGHIỆM LAN - Hệ thống thi trắc nghiệm mạng LAN  ║');
     console.log('║                                                            ║');
     console.log('╠════════════════════════════════════════════════════════════╣');
     if (currentSession.className || currentSession.examName) {

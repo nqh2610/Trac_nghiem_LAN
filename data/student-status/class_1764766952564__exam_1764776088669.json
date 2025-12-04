@@ -12,10 +12,12 @@
     "canRetry": false
   },
   "3": {
-    "selected": false,
-    "selectedBy": null,
+    "selected": true,
+    "selectedBy": "Cgmp3-c0Eu7n-hd_AAAF",
     "completed": false,
-    "canRetry": false
+    "canRetry": false,
+    "tabLeaveCount": 1,
+    "lastTabLeave": "2025-12-04T03:40:50.676Z"
   },
   "4": {
     "selected": false,

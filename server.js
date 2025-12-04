@@ -1763,11 +1763,14 @@ app.get('/api/results/export', (req, res) => {
         // Tìm kết quả của học sinh này (theo STT)
         const result = results.find(r => r.studentSTT === student.stt);
         
+        // Ghép họ + tên thành họ tên đầy đủ
+        const fullName = [student.ho, student.ten].filter(Boolean).join(' ').trim();
+        
         if (result) {
             // Học sinh đã thi - có điểm
             excelData.push({
                 'STT': student.stt,
-                'Họ tên': student.name,
+                'Họ tên': fullName || result.studentName || '',
                 'Điểm': result.score,
                 'Số câu đúng': result.correctCount,
                 'Tổng câu': result.totalQuestions,
@@ -1778,7 +1781,7 @@ app.get('/api/results/export', (req, res) => {
             // Học sinh chưa thi - để trống điểm
             excelData.push({
                 'STT': student.stt,
-                'Họ tên': student.name,
+                'Họ tên': fullName,
                 'Điểm': '',
                 'Số câu đúng': '',
                 'Tổng câu': '',

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Trắc nghiệm - Giáo viên</title>
+    <title>Trắc Nghiệm LAN - Giáo viên</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <style>
         * {
             margin: 0;
@@ -39,6 +40,29 @@
         header h1 {
             color: #333;
             font-size: 1.8em;
+            margin: 0;
+        }
+        
+        .logo-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-tagline {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 2px;
         }
         
         .header-info {
@@ -776,7 +800,13 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎓 Quản lý Trắc nghiệm</h1>
+            <div class="logo-brand">
+                <img src="/logo.svg" alt="Logo" class="brand-logo">
+                <div class="brand-text">
+                    <h1>Trắc Nghiệm LAN</h1>
+                    <span class="brand-tagline">Hệ thống thi trực tuyến</span>
+                </div>
+            </div>
             <div class="header-info">
                 <span>Tổng câu hỏi: <strong id="totalQuestions">0</strong></span>
                 <span>Học sinh đã nộp: <strong id="totalSubmitted">0</strong></span>

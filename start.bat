@@ -1,9 +1,9 @@
 @echo off
-title Server Trac Nghiem
+title Trac Nghiem LAN
 
 echo.
 echo ========================================
-echo    HE THONG THI TRAC NGHIEM LAN
+echo    TRAC NGHIEM LAN - He thong thi
 echo ========================================
 echo.
 

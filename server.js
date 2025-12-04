@@ -1655,10 +1655,19 @@ app.post('/api/submit', (req, res) => {
     const details = questions.map((q, index) => {
         const isCorrect = answers[index] === q.correct;
         if (isCorrect) correctCount++;
+        
+        // Lấy nội dung text của đáp án để dễ kiểm tra (vì đề đã đảo thứ tự)
+        const studentAnswerText = (answers[index] >= 0 && answers[index] < q.options.length) 
+            ? q.options[answers[index]] 
+            : null;
+        const correctAnswerText = q.options[q.correct];
+        
         return {
             question: q.question,
             studentAnswer: answers[index],
+            studentAnswerText: studentAnswerText,  // Nội dung đáp án HS chọn
             correctAnswer: q.correct,
+            correctAnswerText: correctAnswerText,  // Nội dung đáp án đúng
             isCorrect
         };
     });

@@ -2869,21 +2869,44 @@
 
         // Timer
         function startTimer() {
+            // QUAN TRỌNG: Clear tất cả interval cũ trước khi tạo mới để tránh timer chạy nhanh
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // Kiểm tra nếu đã hết giờ thì không khởi động timer
+            if (timeRemaining <= 0) {
+                console.log('Không khởi động timer vì đã hết giờ');
+                return;
+            }
+            
             updateTimerDisplay();
             
+            // Sử dụng timestamp để đảm bảo timing chính xác
+            let lastTick = Date.now();
+            
             timerInterval = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay();
+                const now = Date.now();
+                const elapsed = Math.floor((now - lastTick) / 1000);
                 
-                // Save progress every 10 seconds
-                if (timeRemaining % 10 === 0) {
-                    saveExamProgress();
-                }
-                
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    showMessage('error', '⏰ Hết giờ! Bài đang được nộp tự động...');
-                    setTimeout(() => submitExam(true), 1000);
+                // Chỉ giảm 1 giây mỗi lần, bỏ qua nếu elapsed > 1 (do browser throttling)
+                if (elapsed >= 1) {
+                    timeRemaining--;
+                    lastTick = now;
+                    updateTimerDisplay();
+                    
+                    // Save progress every 10 seconds
+                    if (timeRemaining % 10 === 0) {
+                        saveExamProgress();
+                    }
+                    
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        showMessage('error', '⏰ Hết giờ! Bài đang được nộp tự động...');
+                        setTimeout(() => submitExam(true), 1000);
+                    }
                 }
             }, 1000);
         }
@@ -2933,6 +2956,7 @@
         async function submitExam(autoSubmit = false) {
             closeConfirmModal();
             clearInterval(timerInterval);
+            timerInterval = null; // Reset để tránh trùng lặp
             
             const endTime = new Date();
             const timeSpentMs = endTime - startTime;

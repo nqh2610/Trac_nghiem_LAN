@@ -8,6 +8,20 @@ const mammoth = require('mammoth');
 const XLSX = require('xlsx');
 const multer = require('multer');
 
+// ========== HỆ THỐNG LICENSE & UPDATE ==========
+const { LicenseManager, TrialManager } = require('./license/license-manager');
+const { UpdateManager, MockUpdateServer } = require('./license/update-manager');
+
+const APP_VERSION = '1.0.0';
+const licenseManager = new LicenseManager(path.join(__dirname, 'data'));
+const trialManager = new TrialManager(path.join(__dirname, 'data'));
+const updateManager = new UpdateManager({
+    currentVersion: APP_VERSION,
+    appName: 'TracNghiemLAN',
+    updateServerUrl: 'http://localhost:3456/api', // Thay bằng server thật khi deploy
+    dataDir: path.join(__dirname, 'data')
+});
+
 // Cấu hình multer để lưu file trong memory
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -23,6 +37,56 @@ app.use(express.static('public'));
 
 // Serve thư mục data để download file mẫu
 app.use('/data', express.static('data'));
+
+// ========== API LICENSE ==========
+// Lấy thông tin license hiện tại
+app.get('/api/license/info', (req, res) => {
+    const licenseInfo = licenseManager.getLicenseInfo();
+    const trialInfo = trialManager.getTrialInfo();
+    
+    res.json({
+        version: APP_VERSION,
+        license: licenseInfo,
+        trial: !licenseInfo.activated ? trialInfo : null,
+        hardwareId: licenseManager.getHardwareId()
+    });
+});
+
+// Kích hoạt license
+app.post('/api/license/activate', (req, res) => {
+    const { licenseKey, licenseData } = req.body;
+    
+    if (!licenseKey || !licenseData) {
+        return res.status(400).json({ success: false, error: 'Thiếu thông tin license' });
+    }
+    
+    const result = licenseManager.activate(licenseKey, licenseData);
+    res.json(result);
+});
+
+// Hủy kích hoạt
+app.post('/api/license/deactivate', (req, res) => {
+    const result = licenseManager.deactivate();
+    res.json(result);
+});
+
+// ========== API UPDATE ==========
+// Kiểm tra cập nhật
+app.get('/api/update/check', async (req, res) => {
+    try {
+        const updateInfo = await updateManager.checkForUpdates();
+        res.json(updateInfo);
+    } catch (e) {
+        res.json({ 
+            updateAvailable: false, 
+            error: e.message,
+            currentVersion: APP_VERSION
+        });
+    }
+});
+
+// Mock update server (cho development)
+new MockUpdateServer(app, APP_VERSION);
 
 // Middleware kiểm tra quyền truy cập trang giáo viên
 function isLocalhost(req) {
@@ -2378,12 +2442,27 @@ loadReports();         // Load báo cáo
 server.listen(PORT, '0.0.0.0', () => {
     const ip = getLocalIP();
     const hostname = os.hostname().toLowerCase();
+    
+    // Kiểm tra license
+    const licenseInfo = licenseManager.getLicenseInfo();
+    const trialInfo = trialManager.getTrialInfo();
+    let licenseStatus = '';
+    
+    if (licenseInfo.activated) {
+        licenseStatus = `✅ License: ${licenseInfo.type.toUpperCase()} - ${licenseInfo.customerName}`;
+    } else if (trialInfo.active) {
+        licenseStatus = `⏱️  Dùng thử: còn ${trialInfo.daysLeft} ngày (${trialInfo.maxStudents} học sinh)`;
+    } else {
+        licenseStatus = '❌ Hết hạn dùng thử - Vui lòng mua license';
+    }
+    
     console.log('');
     console.log('╔════════════════════════════════════════════════════════════╗');
     console.log('║                                                            ║');
-    console.log('║   📡 TRẮC NGHIỆM LAN - Hệ thống thi trắc nghiệm mạng LAN  ║');
+    console.log(`║   📡 TRẮC NGHIỆM LAN v${APP_VERSION} - Hệ thống thi trắc nghiệm     ║`);
     console.log('║                                                            ║');
     console.log('╠════════════════════════════════════════════════════════════╣');
+    console.log(`║   ${licenseStatus.padEnd(55)} ║`);
     if (currentSession.className || currentSession.examName) {
         console.log('║                                                            ║');
         console.log(`║   📚 Lớp: ${(currentSession.className || 'Chưa chọn').padEnd(40)}    ║`);

@@ -4,7 +4,15 @@
   "description": "Phần mềm trắc nghiệm cho mạng LAN",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node build-scripts/build.js",
+    "admin": "node license/admin-tool.js",
+    "generate-license": "node license/admin-tool.js generate"
+  },
+  "pkg": {
+    "scripts": ["license/**/*.js"],
+    "assets": ["public/**/*", "data/**/*", "Noidung/**/*"],
+    "targets": ["node18-win-x64"]
   },
   "dependencies": {
     "docx": "^9.5.1",
@@ -13,5 +21,8 @@
     "multer": "^2.0.2",
     "socket.io": "^4.7.2",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
   }
 }

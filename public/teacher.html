@@ -1686,6 +1686,29 @@
             // Đếm số câu không trả lời
             const unansweredCount = r.details.filter(d => !hasAnswer(d.studentAnswer)).length;
             
+            // Tạo HTML cho chi tiết từng câu
+            let detailsHtml = r.details.map((d, i) => {
+                const studentDidNotAnswer = !hasAnswer(d.studentAnswer);
+                let html = `<div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left: 4px solid #ff9800;' : ''}">
+                    <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
+                    <div style="margin-top: 5px;">
+                        <span style="color: ${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
+                            📝 HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
+                        </span>
+                    </div>`;
+                
+                if (!d.isCorrect) {
+                    html += `<div style="margin-top: 3px;">
+                        <span style="color: #2e7d32;">
+                            ✅ Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
+                        </span>
+                    </div>`;
+                }
+                
+                html += `</div>`;
+                return html;
+            }).join('');
+            
             content.innerHTML = `
                 <p><strong>Họ tên:</strong> ${escapeHtml(r.studentName)}</p>
                 <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
@@ -1694,24 +1717,7 @@
                 ${unansweredCount > 0 ? `<p style="color: #ff9800; font-weight: bold;">⚠️ Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
                 <hr style="margin: 15px 0;">
                 <h4>Chi tiết từng câu:</h4>
-                ${r.details.map((d, i) => {
-                    const studentDidNotAnswer = !hasAnswer(d.studentAnswer);
-                    return `
-                    <div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left: 4px solid #ff9800;' : ''}">
-                        <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
-                        <div style="margin-top: 5px;">
-                            <span style="color: ${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
-                                📝 HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
-                            </span>
-                        </div>
-                        ${!d.isCorrect ? \`
-                        <div style="margin-top: 3px;">
-                            <span style="color: #2e7d32;">
-                                ✅ Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
-                            </span>
-                        </div>\` : ''}
-                    </div>
-                `}).join('')}
+                ${detailsHtml}
             `;
             
             document.getElementById('detailModal').classList.add('active');

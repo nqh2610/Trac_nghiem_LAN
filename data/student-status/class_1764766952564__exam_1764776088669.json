@@ -2,22 +2,20 @@
   "1": {
     "selected": false,
     "selectedBy": null,
-    "completed": true,
+    "completed": false,
     "canRetry": false
   },
   "2": {
     "selected": false,
     "selectedBy": null,
-    "completed": true,
+    "completed": false,
     "canRetry": false
   },
   "3": {
     "selected": false,
     "selectedBy": null,
     "completed": false,
-    "canRetry": false,
-    "tabLeaveCount": 5,
-    "lastTabLeave": "2025-12-04T04:33:54.650Z"
+    "canRetry": false
   },
   "4": {
     "selected": false,

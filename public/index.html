@@ -1571,7 +1571,7 @@
                 
                 <div class="warning-box">
                     <span class="icon">(!)</span>
-                    <span class="text">Hay kiem tra ky! Neu lam bai voi ten nguoi khac, diem se duoc tinh cho nguoi do.</span>
+                    <span class="text">Hãy kiểm tra kỹ! Nếu làm bài với tên người khác, điểm sẽ được tính cho người đó.</span>
                 </div>
                 
                 <div class="btn-group">
@@ -1595,7 +1595,7 @@
                 <!-- Hiển thị lớp từ session của giáo viên -->
                 <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border: 1px solid #a5d6a7;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.5em;">[Lop]</span>
+                        <span style="font-size: 1.3em; background: #2e7d32; color: white; padding: 5px 10px; border-radius: 6px;">Lớp</span>
                         <div>
                             <div style="font-size: 0.85em; color: #2e7d32;">Lớp đang kiểm tra:</div>
                             <div style="font-size: 1.2em; font-weight: bold; color: #1b5e20;" id="displayCurrentClass">Đang tải...</div>
@@ -1759,12 +1759,12 @@
             
             <div class="warning-box" id="unansweredWarning" style="display: none;">
                 <span class="icon">(!)</span>
-                <span class="text">Ban con cau hoi chua tra loi. Ban co chac muon nop bai?</span>
+                <span class="text">Bạn còn câu hỏi chưa trả lời. Bạn có chắc muốn nộp bài?</span>
             </div>
             
             <div class="warning-box" id="earlySubmitWarning" style="background: #fff3cd; border-color: #ffc107; display: none;">
                 <span class="icon">(!)</span>
-                <span class="text" style="color: #856404;"><strong>Luu y:</strong> Sau khi nop bai se cham diem ngay va ban khong the lam lai!</span>
+                <span class="text" style="color: #856404;"><strong>Lưu ý:</strong> Sau khi nộp bài sẽ chấm điểm ngay và bạn không thể làm lại!</span>
             </div>
             
             <div class="btn-group">
@@ -2196,7 +2196,7 @@
                 document.getElementById('examTitleDisplay').textContent = data.title;
                 
                 if (!data.isOpen) {
-                    showMessage('info', 'Bai thi chua mo. Vui long cho giao vien!');
+                    showMessage('info', 'Bài thi chưa mở. Vui lòng chờ giáo viên!');
                 }
             } catch (err) {
                 showMessage('error', 'Không thể kết nối server');
@@ -2396,12 +2396,12 @@
                 
                 // Kiem tra co cau hoi khong
                 if (!data.questions || data.questions.length === 0) {
-                    showError('Bai thi chua co cau hoi nao!');
+                    showError('Bài thi chưa có câu hỏi nào!');
                     return;
                 }
                 
                 // Lay ten lop va examId tu session cua giao vien
-                var studentClass = data.className || 'Chua chon lop';
+                var studentClass = data.className || 'Chưa chọn lớp';
                 document.getElementById('studentClass').value = studentClass;
                 currentExamId = data.examId || 'default'; // Luu examId hien tai
                 practiceMode = data.practiceMode || false; // Che do on tap
@@ -2426,7 +2426,7 @@
                 startExam();
             } catch (err) {
                 console.error('Loi khi vao lam bai:', err);
-                showError('Khong the vao lam bai. Vui long thu lai! Loi: ' + err.message);
+                showError('Không thể vào làm bài. Vui lòng thử lại! Lỗi: ' + err.message);
             }
         }
 
@@ -2608,18 +2608,15 @@
         
         // Hiển thị thông báo chế độ ôn tập
         function showPracticeModeNotice() {
-            const notice = document.createElement('div');
+            var notice = document.createElement('div');
             notice.className = 'practice-mode-banner';
-            notice.innerHTML = `
-                <div class="practice-banner-content">
-                    <span class="practice-icon">[On tap]</span>
-                    <div class="practice-text">
-                        <strong>CHE DO ON TAP</strong>
-                        <span>He thong se bao dung/sai ngay khi ban chon dap an</span>
-                    </div>
-                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close">X</button>
-                </div>
-            `;
+            notice.innerHTML = '<div class="practice-banner-content">' +
+                '<span class="practice-icon" style="background:#ff9800;color:white;padding:5px 10px;border-radius:6px;font-weight:bold;">Ôn tập</span>' +
+                '<div class="practice-text">' +
+                '<strong>CHẾ ĐỘ ÔN TẬP</strong>' +
+                '<span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>' +
+                '</div>' +
+                '</div>';
             
             // Thêm vào sau header
             const examScreen = document.getElementById('examScreen');
@@ -2870,20 +2867,23 @@
 
         // Update progress
         function updateProgress() {
-            const answered = Object.keys(answers).length;
-            const total = questions.length;
-            const percent = total > 0 ? (answered / total) * 100 : 0;
+            var answered = Object.keys(answers).length;
+            var total = questions.length;
+            var percent = total > 0 ? (answered / total) * 100 : 0;
             
             document.getElementById('answeredCount').textContent = answered;
             document.getElementById('answeredCount2').textContent = answered;
             document.getElementById('progressBar').style.width = percent + '%';
             
-            // Update nav buttons
-            questions.forEach((_, i) => {
-                const btn = document.getElementById(`nav${i}`);
-                btn.classList.toggle('answered', answers!== undefined);
-                btn.classList.toggle('current', i === currentQuestionIndex);
-            });
+            // Update nav buttons - chi xanh cau da tra loi
+            for (var i = 0; i < questions.length; i++) {
+                var btn = document.getElementById('nav' + i);
+                if (btn) {
+                    // Chi danh dau 'answered' neu cau do da co trong object answers
+                    btn.classList.toggle('answered', answers[i] !== undefined);
+                    btn.classList.toggle('current', i === currentQuestionIndex);
+                }
+            }
         }
 
         // Scroll to question (legacy, redirect to goToQuestion)

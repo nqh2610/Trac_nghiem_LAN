@@ -857,7 +857,7 @@
             <!-- Thông tin kết quả session hiện tại -->
             <div id="sessionResultInfo" style="margin-top: 15px; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 25px;">
                 <span>Kết quả: <strong id="sessionResultCount">0</strong> bài đã nộp</span>
-                <span>Dang lam: <strong id="sessionInProgressCount">0</strong></span>
+                <span>Đang làm: <strong id="sessionInProgressCount">0</strong></span>
                 <span>Hoàn thành: <strong id="sessionCompletedCount">0</strong></span>
             </div>
         </div>
@@ -866,7 +866,7 @@
             <button class="tab active" onclick="showTab('questions')">Câu hỏi</button>
             <button class="tab" onclick="showTab('students')">Học sinh</button>
             <button class="tab" onclick="showTab('results')">Kết quả</button>
-            <button class="tab" onclick="showTab('settings')">Cai dat</button>
+            <button class="tab" onclick="showTab('settings')">Cài đặt</button>
         </div>
 
         <!-- ========== MODAL QUẢN LÝ LỚP ========== -->
@@ -1173,7 +1173,7 @@
         <!-- Panel Cài đặt -->
         <div id="settings" class="panel">
             <div class="settings-card">
-                <h3>Cai dat bài thi</h3>
+                <h3>Cài đặt bài thi</h3>
                 
                 <div class="form-group">
                     <label>Tiêu đề bài thi:</label>
@@ -1757,7 +1757,7 @@
                 return;
             }
             
-            showNotification('Dang tai len......', 'info');
+            showNotification('Đang tải lên...', 'info');
             
             try {
                 const res = await fetch('/api/upload-students', {
@@ -2548,7 +2548,7 @@
                     statusText = 'Được làm lại';
                 } else if (s.status.selected) {
                     statusClass = 'selected';
-                    statusText = 'Dang lam bai';
+                    statusText = 'Đang làm bài';
                 }
 
                 const actions = [];
@@ -2737,7 +2737,7 @@
             if (!file) return;
             
             const statusDiv = document.getElementById('importStatus');
-            statusDiv.innerHTML = '<span style="color: #667eea;">Dang xu ly file...</span>';
+            statusDiv.innerHTML = '<span style="color: #667eea;">Đang xử lý file...</span>';
             
             try {
                 const formData = new FormData();
@@ -2801,7 +2801,7 @@
             if (!file) return;
             
             const statusDiv = document.getElementById('importStatus');
-            statusDiv.innerHTML = '<span style="color: #667eea;">Dang xu ly file JSON...</span>';
+            statusDiv.innerHTML = '<span style="color: #667eea;">Đang xử lý file JSON...</span>';
             
             try {
                 const text = await file.text();

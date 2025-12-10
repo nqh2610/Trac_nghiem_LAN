@@ -1,23 +1,48 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const mammoth = require('mammoth');
-const XLSX = require('xlsx');
-const multer = require('multer');
+var express = require('express');
+var http = require('http');
+var Server = require('socket.io').Server;
+var fs = require('fs');
+var path = require('path');
+var os = require('os');
+var mammoth = require('mammoth');
+var XLSX = require('xlsx');
+var multer = require('multer');
+
+// ========== HELPER FUNCTIONS CHO ES5 ==========
+// Merge objects (thay thế spread operator)
+function mergeObjects() {
+    var result = {};
+    for (var i = 0; i < arguments.length; i++) {
+        var obj = arguments[i];
+        if (obj) {
+            var keys = Object.keys(obj);
+            for (var j = 0; j < keys.length; j++) {
+                result[keys[j]] = obj[keys[j]];
+            }
+        }
+    }
+    return result;
+}
+
+// Copy array (thay thế [...array])
+function copyArray(arr) {
+    var result = [];
+    for (var i = 0; i < arr.length; i++) {
+        result.push(arr[i]);
+    }
+    return result;
+}
 
 // ========== HỆ THỐNG LICENSE & UPDATE ==========
 // Tải license module với error handling cho Node.js cũ
-let LicenseManager, TrialManager, UpdateManager, MockUpdateServer;
-let licenseManager, trialManager, updateManager;
-let LICENSE_ENABLED = true;
+var LicenseManager, TrialManager, UpdateManager, MockUpdateServer;
+var licenseManager, trialManager, updateManager;
+var LICENSE_ENABLED = true;
 
-const APP_VERSION = '1.0.0';
+var APP_VERSION = '1.0.0';
 
 try {
-    const licenseModule = require('./license/license-manager');
+    var licenseModule = require('./license/license-manager');
     const updateModule = require('./license/update-manager');
     LicenseManager = licenseModule.LicenseManager;
     TrialManager = licenseModule.TrialManager;
@@ -295,10 +320,10 @@ function saveExam(examId, name) {
         fs.mkdirSync(examsDir, { recursive: true });
     }
     
-    const examData = {
+    var examData = {
         name: name,
         questions: questions,
-        settings: { ...examSettings, title: name },
+        settings: mergeObjects(examSettings, { title: name }),
         createdAt: new Date().toISOString()
     };
     
@@ -625,7 +650,7 @@ function loadQuestions() {
         const exam = loadExam(currentSession.examId);
         if (exam) {
             questions = exam.questions || [];
-            examSettings = { ...examSettings, ...exam.settings };
+            examSettings = mergeObjects(examSettings, exam.settings);
             console.log('[OK] Da tai ' + questions.length + ' cau hoi tu bai "' + currentSession.examName + '"');
             return;
         }
@@ -766,11 +791,12 @@ function loadReports() {
 
 // Lấy danh sách học sinh với trạng thái
 app.get('/api/students', (req, res) => {
-    const studentsWithStatus = students.map(s => ({
-        ...s,
-        fullName: `${s.ho} ${s.ten}`,
-        status: studentStatus[s.stt] || { selected: false, selectedBy: null, completed: false, canRetry: false }
-    }));
+    var studentsWithStatus = students.map(function(s) {
+        return mergeObjects(s, {
+            fullName: (s.ho || '') + ' ' + (s.ten || ''),
+            status: studentStatus[s.stt] || { selected: false, selectedBy: null, completed: false, canRetry: false }
+        });
+    });
     res.json(studentsWithStatus);
 });
 
@@ -1121,18 +1147,17 @@ app.delete('/api/questions/:id', (req, res) => {
 
 // Cài đặt bài thi
 app.get('/api/settings', (req, res) => {
-    res.json({ 
-        ...examSettings, 
-        currentSession,
+    res.json(mergeObjects(examSettings, { 
+        currentSession: currentSession,
         currentExamId: currentSession.examId // backward compatible
-    });
+    }));
 });
 
 app.post('/api/settings', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền thực hiện thao tác này' });
     }
-    examSettings = { ...examSettings, ...req.body };
+    examSettings = mergeObjects(examSettings, req.body);
     saveCurrentSession();
     io.emit('examStatusChanged', examSettings.isOpen);
     res.json({ success: true });
@@ -1233,7 +1258,7 @@ app.post('/api/session', (req, res) => {
         
         // Load câu hỏi từ exam
         questions = exam.questions || [];
-        examSettings = { ...examSettings, ...exam.settings, isOpen: false };
+        examSettings = mergeObjects(examSettings, exam.settings, { isOpen: false });
     }
     
     saveCurrentSession();
@@ -1522,7 +1547,7 @@ app.post('/api/exams/switch', (req, res) => {
     
     // Load câu hỏi và cài đặt từ bài kiểm tra
     questions = exam.questions || [];
-    examSettings = { ...examSettings, ...exam.settings, isOpen: false };
+    examSettings = mergeObjects(examSettings, exam.settings, { isOpen: false });
     
     // Cập nhật session
     currentSession.examId = examId;
@@ -1917,14 +1942,15 @@ app.get('/api/results/export', (req, res) => {
     const excelData = [];
     
     // Lấy danh sách học sinh, sắp xếp theo STT
-    const sortedStudents = [...students].sort((a, b) => a.stt - b.stt);
+    var sortedStudents = copyArray(students).sort(function(a, b) { return a.stt - b.stt; });
     
-    for (const student of sortedStudents) {
+    for (var i = 0; i < sortedStudents.length; i++) {
+        var student = sortedStudents[i];
         // Tìm kết quả của học sinh này (theo STT)
-        const result = results.find(r => r.studentSTT === student.stt);
+        var result = results.find(function(r) { return r.studentSTT === student.stt; });
         
         // Ghép họ + tên thành họ tên đầy đủ
-        const fullName = [student.ho, student.ten].filter(Boolean).join(' ').trim();
+        var fullName = [student.ho, student.ten].filter(Boolean).join(' ').trim();
         
         if (result) {
             // Học sinh đã thi - có điểm
@@ -2391,18 +2417,18 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
 
 // Hàm parse câu hỏi từ text
 function parseQuestionsFromText(text) {
-    const questions = [];
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    var questions = [];
+    var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
     
-    let currentQuestion = null;
-    let currentOptions = [];
-    let correctAnswer = -1;
+    var currentQuestion = null;
+    var currentOptions = [];
+    var correctAnswer = -1;
     
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
         
         // Kiểm tra nếu là câu hỏi (bắt đầu bằng "Câu X:" hoặc "Câu X." hoặc số)
-        const questionMatch = line.match(/^(Câu\s*\d+[\.:]\s*|^\d+[\.:]\s*)(.*)/i);
+        var questionMatch = line.match(/^(Câu\s*\d+[\.:]\s*|^\d+[\.:]\s*)(.*)/i);
         
         if (questionMatch) {
             // Lưu câu hỏi trước đó
@@ -2422,11 +2448,11 @@ function parseQuestionsFromText(text) {
         }
         
         // Kiểm tra nếu là đáp án (A. B. C. D. hoặc A) B) C) D))
-        const optionMatch = line.match(/^([A-Da-d])[\.\)]\s*(.*)/);
+        var optionMatch = line.match(/^([A-Da-d])[\.\)]\s*(.*)/);
         
         if (optionMatch && currentQuestion) {
-            let optionText = optionMatch[2];
-            const optionIndex = optionMatch[1].toUpperCase().charCodeAt(0) - 65;
+            var optionText = optionMatch[2];
+            var optionIndex = optionMatch[1].toUpperCase().charCodeAt(0) - 65;
             
             // Kiểm tra đáp án đúng (có dấu * hoặc [x] hoặc (đúng))
             if (optionText.includes('*') || optionText.includes('[x]') || optionText.includes('[X]') || 
@@ -2461,15 +2487,15 @@ function parseQuestionsFromText(text) {
 }
 
 // Socket.IO
-io.on('connection', (socket) => {
+io.on('connection', function(socket) {
     console.log('📱 Có người kết nối:', socket.id);
     
     // Gửi socket ID cho client
     socket.emit('connected', { socketId: socket.id });
     
     // Nhận thông báo khi học sinh rời tab
-    socket.on('tabLeave', (data) => {
-        console.log(`⚠️ Học sinh ${data.name} (STT ${data.stt}) rời khỏi trang lần ${data.count}`);
+    socket.on('tabLeave', function(data) {
+        console.log('⚠️ Học sinh ' + data.name + ' (STT ' + data.stt + ') rời khỏi trang lần ' + data.count);
         
         // Lưu vào student status
         if (studentStatus[data.stt]) {
@@ -2488,17 +2514,19 @@ io.on('connection', (socket) => {
     });
     
     // Khi ngắt kết nối, hủy chọn học sinh nếu chưa hoàn thành
-    socket.on('disconnect', () => {
+    socket.on('disconnect', function() {
         console.log('📴 Ngắt kết nối:', socket.id);
         
         // Tìm và hủy chọn học sinh
-        for (const stt in studentStatus) {
-            const status = studentStatus[stt];
+        var keys = Object.keys(studentStatus);
+        for (var i = 0; i < keys.length; i++) {
+            var stt = keys[i];
+            var status = studentStatus[stt];
             if (status.selectedBy === socket.id && !status.completed) {
                 status.selected = false;
                 status.selectedBy = null;
                 saveStudentStatus();
-                io.emit('studentStatusUpdated', { stt, status: studentStatus[stt] });
+                io.emit('studentStatusUpdated', { stt: stt, status: studentStatus[stt] });
             }
         }
     });

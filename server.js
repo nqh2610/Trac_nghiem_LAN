@@ -2581,6 +2581,30 @@ safeLog('  - Da tai bao cao');
 safeLog('Hoan tat tai du lieu!');
 safeLog('');
 
+// Error handler cho server
+server.on('error', function(err) {
+    console.log('');
+    console.log('LOI SERVER: ' + err.message);
+    if (err.code === 'EADDRINUSE') {
+        console.log('Port ' + PORT + ' dang duoc su dung boi ung dung khac!');
+        console.log('Hay tat ung dung dang chay tren port nay hoac doi port khac.');
+    }
+    console.log('');
+    process.exit(1);
+});
+
+// Global error handler
+process.on('uncaughtException', function(err) {
+    console.log('');
+    console.log('LOI KHONG XU LY DUOC:');
+    console.log('  ' + err.message);
+    if (err.stack) {
+        console.log('  Stack: ' + err.stack.split('\n').slice(0, 3).join('\n  '));
+    }
+    console.log('');
+    process.exit(1);
+});
+
 server.listen(PORT, '0.0.0.0', function() {
     var ip = getLocalIP();
     var hostname = os.hostname().toLowerCase();

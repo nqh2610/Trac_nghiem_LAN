@@ -33,8 +33,8 @@ try {
         dataDir: path.join(__dirname, 'data')
     });
 } catch (e) {
-    console.log('⚠️  Không thể tải module license (Node.js version cũ?)');
-    console.log('   Chạy ở chế độ không có license check');
+    console.log('[!] Khong the tai module license (Node.js version cu?)');
+    console.log('    Chay o che do khong co license check');
     LICENSE_ENABLED = false;
 }
 
@@ -490,7 +490,7 @@ function loadStudentsForClass() {
         const data = XLSX.utils.sheet_to_json(worksheet);
         
         students = parseStudentData(data);
-        console.log(`✓ Đã tải ${students.length} học sinh cho lớp ${currentSession.className}`);
+        console.log('[OK] Da tai ' + students.length + ' hoc sinh cho lop ' + currentSession.className);
     } catch (err) {
         console.error('Lỗi đọc file học sinh:', err);
         loadStudentsFromDefaultFile();
@@ -501,7 +501,7 @@ function loadStudentsFromDefaultFile() {
     try {
         const excelPath = path.join(__dirname, 'danhsach', 'danhsach.xlsx');
         if (!fs.existsSync(excelPath)) {
-            console.log('⚠ Chưa có file danhsach.xlsx trong thư mục danhsach/');
+            console.log('[!] Chua co file danhsach.xlsx trong thu muc danhsach/');
             students = [];
             return;
         }
@@ -512,7 +512,7 @@ function loadStudentsFromDefaultFile() {
         const data = XLSX.utils.sheet_to_json(worksheet);
         
         students = parseStudentData(data);
-        console.log(`✓ Đã tải ${students.length} học sinh từ file mặc định`);
+        console.log('[OK] Da tai ' + students.length + ' hoc sinh tu file mac dinh');
     } catch (err) {
         console.error('Lỗi đọc file Excel:', err);
         students = [];
@@ -583,7 +583,7 @@ function loadQuestions() {
         if (exam) {
             questions = exam.questions || [];
             examSettings = { ...examSettings, ...exam.settings };
-            console.log(`✓ Đã tải ${questions.length} câu hỏi từ bài "${currentSession.examName}"`);
+            console.log('[OK] Da tai ' + questions.length + ' cau hoi tu bai "' + currentSession.examName + '"');
             return;
         }
     }
@@ -592,10 +592,10 @@ function loadQuestions() {
     try {
         const data = fs.readFileSync(path.join(__dirname, 'data', 'questions.json'), 'utf8');
         questions = JSON.parse(data);
-        console.log(`✓ Đã tải ${questions.length} câu hỏi`);
+        console.log('[OK] Da tai ' + questions.length + ' cau hoi');
     } catch (err) {
         questions = [];
-        console.log('⚠ Chưa có file câu hỏi, sẽ tạo mới khi thêm câu hỏi');
+        console.log('[!] Chua co file cau hoi, se tao moi khi them cau hoi');
     }
 }
 
@@ -2475,13 +2475,23 @@ function getLocalIP() {
 }
 
 // Khởi động server
+console.log('Dang tai du lieu...');
 loadClasses();         // Load danh sách lớp
+console.log('  - Da tai danh sach lop');
 loadCurrentSession();  // Load session (lớp + bài đang dùng)
+console.log('  - Da tai session');
 loadQuestions();       // Load câu hỏi theo session
+console.log('  - Da tai cau hoi');
 loadStudents();        // Load học sinh theo lớp
+console.log('  - Da tai hoc sinh');
 loadStudentStatus();   // Load trạng thái theo session
+console.log('  - Da tai trang thai');
 loadResults();         // Load kết quả theo session  
+console.log('  - Da tai ket qua');
 loadReports();         // Load báo cáo
+console.log('  - Da tai bao cao');
+console.log('Hoan tat tai du lieu!');
+console.log('');
 
 server.listen(PORT, '0.0.0.0', function() {
     var ip = getLocalIP();

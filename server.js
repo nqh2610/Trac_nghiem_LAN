@@ -1,12 +1,46 @@
+// DEBUG: Bat loi ngay tu dau
+process.on('uncaughtException', function(err) {
+    console.log('');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('LOI KHONG XU LY DUOC:');
+    console.log('  ' + err.message);
+    console.log('');
+    if (err.stack) {
+        var lines = err.stack.split('\n');
+        for (var i = 0; i < Math.min(lines.length, 15); i++) {
+            console.log('  ' + lines[i]);
+        }
+    }
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('');
+});
+
+console.log('[1] Bat dau load modules...');
+
 var express = require('express');
+console.log('[2] express OK');
+
 var http = require('http');
+console.log('[3] http OK');
+
 var socketIO = require('socket.io');
+console.log('[4] socket.io OK');
+
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
+console.log('[5] fs, path, os OK');
+
 var mammoth = require('mammoth');
+console.log('[6] mammoth OK');
+
 var XLSX = require('xlsx');
+console.log('[7] xlsx OK');
+
 var multer = require('multer');
+console.log('[8] multer OK');
+
+console.log('[9] Tat ca modules da load xong!');
 
 // ========== HELPER FUNCTIONS CHO ES5 ==========
 // Merge objects (thay thế spread operator)

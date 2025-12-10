@@ -378,43 +378,71 @@ function getAllResultsSummary() {
 
 // Load/Save trạng thái phiên hiện tại
 function loadCurrentSession() {
-    try {
-        var sessionPath = path.join(__dirname, 'data', 'current-session.json');
-        if (!fs.existsSync(sessionPath)) {
-            currentSession = { classId: null, className: null, examId: null, examName: null };
-            return;
-        }
-        var data = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
-        if (data.currentSession) {
-            currentSession.classId = data.currentSession.classId || null;
-            currentSession.className = data.currentSession.className || null;
-            currentSession.examId = data.currentSession.examId || null;
-            currentSession.examName = data.currentSession.examName || null;
-        }
-        if (data.examSettings) {
-            Object.keys(data.examSettings).forEach(function(key) {
-                examSettings[key] = data.examSettings[key];
-            });
-        }
-    } catch (e) {
-        console.log('    Loi doc session:', e.message);
+    var sessionPath = path.join(__dirname, 'data', 'current-session.json');
+    
+    // Kiểm tra file tồn tại
+    if (!fs.existsSync(sessionPath)) {
+        console.log('    (Chua co file session, dung mac dinh)');
         currentSession = { classId: null, className: null, examId: null, examName: null };
+        return;
+    }
+    
+    // Đọc file
+    var fileContent;
+    try {
+        fileContent = fs.readFileSync(sessionPath, 'utf8');
+    } catch (e) {
+        console.log('    Loi doc file session:', e.message);
+        currentSession = { classId: null, className: null, examId: null, examName: null };
+        return;
+    }
+    
+    // Parse JSON
+    var data;
+    try {
+        data = JSON.parse(fileContent);
+    } catch (e) {
+        console.log('    Loi parse JSON session:', e.message);
+        currentSession = { classId: null, className: null, examId: null, examName: null };
+        return;
+    }
+    
+    // Gán giá trị
+    if (data && data.currentSession) {
+        currentSession.classId = data.currentSession.classId || null;
+        currentSession.className = data.currentSession.className || null;
+        currentSession.examId = data.currentSession.examId || null;
+        currentSession.examName = data.currentSession.examName || null;
+    }
+    
+    if (data && data.examSettings) {
+        var keys = Object.keys(data.examSettings);
+        for (var i = 0; i < keys.length; i++) {
+            examSettings[keys[i]] = data.examSettings[keys[i]];
+        }
     }
 }
 
 function saveCurrentSession() {
-    const dir = path.join(__dirname, 'data');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'current-session.json'), JSON.stringify({
-        currentSession,
-        examSettings
-    }, null, 2), 'utf8');
+    var dir = path.join(__dirname, 'data');
+    if (!fs.existsSync(dir)) {
+        try {
+            fs.mkdirSync(dir, { recursive: true });
+        } catch (e) {
+            fs.mkdirSync(dir);
+        }
+    }
+    var sessionData = {
+        currentSession: currentSession,
+        examSettings: examSettings
+    };
+    fs.writeFileSync(path.join(dir, 'current-session.json'), JSON.stringify(sessionData, null, 2), 'utf8');
 }
 
 // Lấy key để lưu kết quả theo lớp + bài
 function getSessionResultKey() {
     if (!currentSession.classId || !currentSession.examId) return null;
-    return `${currentSession.classId}__${currentSession.examId}`;
+    return currentSession.classId + '__' + currentSession.examId;
 }
 
 // Load kết quả theo lớp + bài hiện tại

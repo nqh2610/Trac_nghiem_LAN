@@ -802,7 +802,7 @@
         }
         
         .option.practice-answer::after {
-            content: '[v] Đáp án đúng';
+            content: 'Đáp án đúng';
             position: absolute;
             right: 15px;
             top: 50%;
@@ -1570,16 +1570,16 @@
                 </div>
                 
                 <div class="warning-box">
-                    <span class="icon">[!]</span>
+                    <span class="icon"></span>
                     <span class="text">Hãy kiểm tra kỹ! Nếu làm bài với tên người khác, điểm sẽ được tính cho người đó.</span>
                 </div>
                 
                 <div class="btn-group">
                     <button type="button" class="btn btn-success" onclick="confirmSelection()">
-                        [v] Đúng rồi
+                        Đúng rồi
                     </button>
                     <button type="button" class="btn btn-danger" onclick="cancelSelection()">
-                        [X] Chọn lại
+                        Chọn lại
                     </button>
                 </div>
             </div>
@@ -1587,7 +1587,7 @@
             <!-- Step 3: Confirm and start -->
             <div id="step3Content" style="display: none;">
                 <div class="student-card confirmed">
-                    <div class="label">[v] Xác nhận thành công</div>
+                    <div class="label">Xác nhận thành công</div>
                     <div class="name" id="confirmedName"></div>
                     <a href="javascript:void(0)" onclick="goBackToStep1()" style="font-size: 0.85em; color: #666; text-decoration: underline;">Chọn lại tên khác</a>
                 </div>
@@ -1607,7 +1607,7 @@
                     <input type="hidden" id="studentClass" value="">
                     
                     <button type="submit" class="btn btn-primary" id="startBtn">
-                        [Go] Bắt đầu làm bài
+                        Bắt đầu làm bài
                     </button>
                 </form>
             </div>
@@ -1633,9 +1633,9 @@
             
             <div class="btn-group" style="justify-content: center;">
                 <button class="btn btn-primary" onclick="verifyExamPassword()" style="padding: 12px 40px; font-size: 1.1em;">
-                    [v] Xác nhận
+                    Xác nhận
                 </button>
-                <button class="btn btn-danger" onclick="closePasswordModal()">[X] Hủy</button>
+                <button class="btn btn-danger" onclick="closePasswordModal()">Hủy</button>
             </div>
         </div>
     </div>
@@ -1643,11 +1643,11 @@
     <!-- Report Modal -->
     <div class="report-modal" id="reportModal">
         <div class="report-box">
-            <h3>[!] Báo cáo chọn nhầm tên</h3>
+            <h3>Báo cáo chọn nhầm tên</h3>
             <p style="margin-bottom: 15px;">Tên đang làm bài: <strong id="wrongStudentName" style="color: #dc3545;"></strong></p>
             
             <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em;">
-                <strong>[List] Quy trình:</strong><br>
+                <strong>Quy trình:</strong><br>
                 1. Chọn đúng tên của bạn bên dưới<br>
                 2. Gửi yêu cầu cho giáo viên<br>
                 3. Giáo viên duyệt → Điểm được chuyển sang tên đúng
@@ -1662,7 +1662,7 @@
             
             <div class="btn-group">
                 <button class="btn btn-primary" onclick="submitReport()">📤 Gửi yêu cầu</button>
-                <button class="btn btn-danger" onclick="closeReportModal()">[X] Hủy</button>
+                <button class="btn btn-danger" onclick="closeReportModal()">Hủy</button>
             </div>
         </div>
     </div>
@@ -1681,19 +1681,19 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="progress-mini">[v] <strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
+                <div class="progress-mini"><strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
                 <div class="timer" id="timer">⏱ 00:00</div>
                 <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
             </div>
         </div>
         <div class="container">
             <div class="exam-title-bar">
-                <div class="exam-title" id="examTitle">[Edit] Bài kiểm tra</div>
+                <div class="exam-title" id="examTitle">Bài kiểm tra</div>
             </div>
 
             <div class="progress-section">
                 <div class="progress-header">
-                    <span class="progress-title">[Edit] Tiến độ làm bài</span>
+                    <span class="progress-title">Tiến độ làm bài</span>
                     <span class="progress-count"><span id="answeredCount">0</span>/<span id="totalCount">0</span> câu</span>
                 </div>
                 <div class="progress-bar-container">
@@ -1713,7 +1713,7 @@
                     Câu <span id="currentQuestionNum">1</span>/<span id="totalQuestionNum">0</span>
                 </div>
                 <button class="nav-arrow-btn next" id="nextQuestionBtn" onclick="navigateQuestion(1)">
-                    Câu tiếp [>]
+                    Câu tiếp 
                 </button>
             </div>
         </div>
@@ -1732,13 +1732,13 @@
     <div class="watermark-overlay" id="watermarkOverlay"></div>
     
     <!-- Tab Warning Indicator -->
-    <div class="tab-warning" id="tabWarning">[!] Đã rời khỏi trang: <span id="tabLeaveCount">0</span> lần</div>
+    <div class="tab-warning" id="tabWarning">Đã rời khỏi trang: <span id="tabLeaveCount">0</span> lần</div>
 
     <!-- Confirm Submit Modal -->
     <div class="modal confirm-modal" id="confirmModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="icon">[Edit]</div>
+                <div class="icon"></div>
                 <h3>Xác nhận nộp bài?</h3>
             </div>
             
@@ -1758,7 +1758,7 @@
             </div>
             
             <div class="warning-box" id="unansweredWarning" style="display: none;">
-                <span class="icon">[!]</span>
+                <span class="icon"></span>
                 <span class="text">Bạn còn câu hỏi chưa trả lời. Bạn có chắc muốn nộp bài?</span>
             </div>
             
@@ -1768,7 +1768,7 @@
             </div>
             
             <div class="btn-group">
-                <button class="btn btn-success" onclick="submitExam()">[v] Nộp bài</button>
+                <button class="btn btn-success" onclick="submitExam()">Nộp bài</button>
                 <button class="btn btn-danger" onclick="closeConfirmModal()">Tiếp tục làm</button>
             </div>
         </div>
@@ -1777,7 +1777,7 @@
     <!-- Result Screen -->
     <div class="result-screen" id="resultScreen">
         <div class="result-box">
-            <div class="result-icon" id="resultIcon">[*]</div>
+            <div class="result-icon" id="resultIcon"></div>
             <div class="result-score" id="resultScore">0</div>
             <div class="result-label">điểm</div>
             
@@ -1797,7 +1797,7 @@
             </div>
             
             <div class="result-message">
-                [OK] Kết quả đã được gửi về giáo viên!
+                Kết quả đã được gửi về giáo viên!
             </div>
             
             <button class="btn btn-primary" onclick="backToLogin()" style="margin-top: 20px;">
@@ -1812,7 +1812,7 @@
                 <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
                     Phát triển bởi 👨‍💻 <strong>Nguyễn Quang Hùng</strong><br>
                     <span style="margin-right: 10px;">✉️ nqh2610@gmail.com</span>
-                    <span>[Phone] 0976.385.309</span>
+                    <span>0976.385.309</span>
                 </div>
             </div>
         </div>
@@ -1878,7 +1878,7 @@
         function generateOptionOrders(stt, totalQuestions, questionsData) {
             const orders = [];
             for (let i = 0; i < totalQuestions; i++) {
-                const numOptions = questionsData[i].options.length;
+                const numOptions = questionsData.options.length;
                 const optionIndices = Array.from({ length: numOptions }, (_, j) => j);
                 // Seed khác nhau cho mỗi câu hỏi (STT * 1000 + index câu)
                 orders.push(shuffleWithSeed(optionIndices, stt * 1000 + i));
@@ -1893,7 +1893,7 @@
                 const optOrder = optOrders[origIndex];
                 
                 // Đảo thứ tự đáp án
-                const shuffledOptions = optOrder.map(i => origQ.options[i]);
+                const shuffledOptions = optOrder.map(i => origQ.options);
                 
                 return {
                     ...origQ,
@@ -1916,7 +1916,7 @@
 
         socket.on('examStatusChanged', (isOpen) => {
             if (isOpen) {
-                showMessage('success', '[*] Giáo viên đã mở bài thi!');
+                showMessage('success', 'Giáo viên đã mở bài thi!');
             } else {
                 showMessage('error', '⏸️ Giáo viên đã đóng bài thi!');
             }
@@ -1925,7 +1925,7 @@
         socket.on('studentStatusUpdated', () => loadStudents());
         
         socket.on('allStudentsReset', () => {
-            showMessage('info', '[Reload] Danh sách đã được reset!');
+            showMessage('info', 'Danh sách đã được reset!');
             goBackToStep1();
             loadStudents();
         });
@@ -1944,7 +1944,7 @@
             
             // Nếu đang làm bài thì cảnh báo
             if (document.getElementById('examScreen').style.display !== 'none') {
-                showMessage('warning', `[!] Giáo viên đã chuyển sang bài: "${data.examName}". Hãy nộp bài hiện tại!`);
+                showMessage('warning', `Giáo viên đã chuyển sang bài: "${data.examName}". Hãy nộp bài hiện tại!`);
             }
             
             // Reset trạng thái để sẵn sàng cho bài mới
@@ -1962,14 +1962,14 @@
             modal.innerHTML = `
                 <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">
                     <div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                        <div style="font-size: 4em; margin-bottom: 15px;">[Book]</div>
+                        <div style="font-size: 4em; margin-bottom: 15px;"></div>
                         <h2 style="margin: 0 0 10px 0; color: #333;">Bài kiểm tra mới!</h2>
                         <p style="color: #666; margin-bottom: 20px;">Giáo viên đã chuyển sang bài:</p>
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; font-size: 1.2em; font-weight: bold; margin-bottom: 20px;">
                             ${examName}
                         </div>
                         <button onclick="closeNewExamModal()" style="background: #28a745; color: white; border: none; padding: 15px 40px; border-radius: 10px; font-size: 1.1em; cursor: pointer; font-weight: bold;">
-                            [v] Đã hiểu, làm bài mới
+                            Đã hiểu, làm bài mới
                         </button>
                     </div>
                 </div>
@@ -2024,17 +2024,17 @@
                 let extraText = '';
                 
                 if (s.status.completed && !s.status.canRetry) {
-                    statusIcon = ' [OK]';
+                    statusIcon = ' ';
                     disabled = true;
                     style = 'color: #28a745; background: #e8f5e9;';
                     extraText = ' (Đã nộp bài)';
                 } else if (s.status.selected && s.status.selectedBy !== mySocketId) {
-                    statusIcon = ' [Lock]';
+                    statusIcon = ' ';
                     disabled = true;
                     style = 'color: #999; background: #f5f5f5;';
                     extraText = ' (Đang làm)';
                 } else if (s.status.canRetry) {
-                    statusIcon = ' [Reload]';
+                    statusIcon = ' ';
                     style = 'color: #ff9800;';
                     extraText = ' (Được làm lại)';
                 }
@@ -2273,7 +2273,7 @@
                 
                 if (data.success) {
                     closeReportModal();
-                    alert('[OK] Đã gửi yêu cầu cho giáo viên!\n\nBạn có thể tiếp tục làm bài.\nGiáo viên sẽ duyệt và chuyển điểm cho bạn sau.');
+                    alert('Đã gửi yêu cầu cho giáo viên!\n\nBạn có thể tiếp tục làm bài.\nGiáo viên sẽ duyệt và chuyển điểm cho bạn sau.');
                 } else {
                     alert('Lỗi: ' + data.error);
                 }
@@ -2297,7 +2297,7 @@
                 const checkData = await checkRes.json();
                 
                 if (checkData.submitted && !checkData.canRetry) {
-                    showError('[X] Bạn đã nộp bài rồi! Không thể vào lại bài thi này.');
+                    showError('Bạn đã nộp bài rồi! Không thể vào lại bài thi này.');
                     return;
                 }
             } catch (e) {
@@ -2546,14 +2546,14 @@
                 if (result.isCorrect) {
                     // Đúng - highlight xanh
                     options[selectedOption].classList.add('practice-correct');
-                    showPracticeToast('[OK] Chính xác!', 'correct');
+                    showPracticeToast('Chính xác!', 'correct');
                 } else {
                     // Sai - highlight đỏ cho đáp án đã chọn, xanh cho đáp án đúng
                     options[selectedOption].classList.add('practice-wrong');
                     if (correctShuffledIndex >= 0) {
                         options[correctShuffledIndex].classList.add('practice-answer');
                     }
-                    showPracticeToast('[X] Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
+                    showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
                 }
             } catch (err) {
                 console.error('Lỗi kiểm tra đáp án:', err);
@@ -2584,7 +2584,7 @@
             notice.className = 'practice-mode-banner';
             notice.innerHTML = `
                 <div class="practice-banner-content">
-                    <span class="practice-icon">[Book]</span>
+                    <span class="practice-icon"></span>
                     <div class="practice-text">
                         <strong>CHẾ ĐỘ ÔN TẬP</strong>
                         <span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>
@@ -2786,7 +2786,7 @@
                 if (optionOrders.length > 0) {
                     questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
                 } else {
-                    questions = questionOrder.map(i => originalQuestions[i]);
+                    questions = questionOrder.map(i => originalQuestions);
                 }
                 
                 answers = activeSession.answers || {};
@@ -2849,7 +2849,7 @@
             // Update nav buttons
             questions.forEach((_, i) => {
                 const btn = document.getElementById(`nav${i}`);
-                btn.classList.toggle('answered', answers[i] !== undefined);
+                btn.classList.toggle('answered', answers!== undefined);
                 btn.classList.toggle('current', i === currentQuestionIndex);
             });
         }
@@ -3030,7 +3030,7 @@
                 modal.innerHTML = `
                     <div class="modal-content" style="text-align: center;">
                         <div class="modal-header">
-                            <div class="icon">[!]</div>
+                            <div class="icon"></div>
                             <h3 style="color: #dc3545;">Không thể nộp bài!</h3>
                         </div>
                         <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
@@ -3038,13 +3038,13 @@
                         </div>
                         <div style="background: #e8f5e9; border: 1px solid #4caf50; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
                             <p style="margin: 0; color: #2e7d32; font-size: 0.9em;">
-                                <strong>[v] Câu trả lời của bạn vẫn được lưu!</strong><br>
+                                <strong>Câu trả lời của bạn vẫn được lưu!</strong><br>
                                 Khi kết nối được khôi phục, hãy bấm "Thử nộp lại".
                             </p>
                         </div>
                         <div class="btn-group" style="flex-direction: column; gap: 10px;">
                             <button class="btn btn-success" onclick="retrySubmitExam()" style="font-size: 1.1em; padding: 15px;">
-                                [Reload] Thử nộp lại
+                                Thử nộp lại
                             </button>
                             <button class="btn" onclick="closeSubmitErrorModal()" style="background: #6c757d; color: white;">
                                 Đóng (tiếp tục làm bài)
@@ -3100,9 +3100,9 @@
                 // Icon based on score
                 const icon = document.getElementById('resultIcon');
                 if (result.score >= 8) {
-                    icon.textContent = '[*]';
+                    icon.textContent = '';
                 } else if (result.score >= 5) {
-                    icon.textContent = '[OK]';
+                    icon.textContent = '';
                 } else {
                     icon.textContent = '💪';
                 }
@@ -3111,7 +3111,7 @@
                 document.getElementById('resultScore').style.display = 'none';
                 document.querySelector('.result-label').style.display = 'none';
                 document.getElementById('correctCount').parentElement.style.display = 'none';
-                document.getElementById('resultIcon').textContent = '[OK]';
+                document.getElementById('resultIcon').textContent = '';
             }
             
             document.getElementById('timeSpent').textContent = timeSpent;
@@ -3191,14 +3191,14 @@
                 document.getElementById('correctCount').parentElement.style.display = 'flex';
                 
                 const icon = document.getElementById('resultIcon');
-                if (result.score >= 8) icon.textContent = '[*]';
-                else if (result.score >= 5) icon.textContent = '[OK]';
+                if (result.score >= 8) icon.textContent = '';
+                else if (result.score >= 5) icon.textContent = '';
                 else icon.textContent = '💪';
             } else {
                 document.getElementById('resultScore').style.display = 'none';
                 document.querySelector('.result-label').style.display = 'none';
                 document.getElementById('correctCount').parentElement.style.display = 'none';
-                document.getElementById('resultIcon').textContent = '[OK]';
+                document.getElementById('resultIcon').textContent = '';
             }
             
             document.getElementById('timeSpent').textContent = result.timeSpent;
@@ -3228,7 +3228,7 @@
             
             container.innerHTML = `
                 <div class="saved-results-title">
-                    [List] Kết quả đã lưu trên máy này (${results.length})
+                    Kết quả đã lưu trên máy này (${results.length})
                 </div>
                 ${results.map(r => {
                     const date = new Date(r.submittedAt);
@@ -3376,7 +3376,7 @@
             // Disable right-click
             examScreen.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
-                showMessage('warning', '[!] Không được sao chép nội dung!');
+                showMessage('warning', 'Không được sao chép nội dung!');
             });
             
             // Disable copy shortcuts
@@ -3385,7 +3385,7 @@
                     // Ctrl+C, Ctrl+A, Ctrl+V, Ctrl+X
                     if (e.ctrlKey && ['c', 'a', 'v', 'x', 'p', 's'].includes(e.key.toLowerCase())) {
                         e.preventDefault();
-                        showMessage('warning', '[!] Phím tắt bị vô hiệu hóa khi làm bài!');
+                        showMessage('warning', 'Phím tắt bị vô hiệu hóa khi làm bài!');
                     }
                     // F12, Ctrl+Shift+I (DevTools)
                     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i')) {
@@ -3393,7 +3393,7 @@
                     }
                     // Print Screen
                     if (e.key === 'PrintScreen') {
-                        showMessage('warning', '[!] Không được chụp màn hình!');
+                        showMessage('warning', 'Không được chụp màn hình!');
                     }
                 }
             });

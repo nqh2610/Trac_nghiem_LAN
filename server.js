@@ -379,10 +379,25 @@ function getAllResultsSummary() {
 // Load/Save trạng thái phiên hiện tại
 function loadCurrentSession() {
     try {
-        const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'current-session.json'), 'utf8'));
-        currentSession = { ...currentSession, ...data.currentSession };
-        examSettings = { ...examSettings, ...data.examSettings };
+        var sessionPath = path.join(__dirname, 'data', 'current-session.json');
+        if (!fs.existsSync(sessionPath)) {
+            currentSession = { classId: null, className: null, examId: null, examName: null };
+            return;
+        }
+        var data = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
+        if (data.currentSession) {
+            currentSession.classId = data.currentSession.classId || null;
+            currentSession.className = data.currentSession.className || null;
+            currentSession.examId = data.currentSession.examId || null;
+            currentSession.examName = data.currentSession.examName || null;
+        }
+        if (data.examSettings) {
+            Object.keys(data.examSettings).forEach(function(key) {
+                examSettings[key] = data.examSettings[key];
+            });
+        }
     } catch (e) {
+        console.log('    Loi doc session:', e.message);
         currentSession = { classId: null, className: null, examId: null, examName: null };
     }
 }

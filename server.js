@@ -2618,68 +2618,71 @@ process.on('uncaughtException', function(err) {
     process.exit(1);
 });
 
-server.listen(PORT, '0.0.0.0', function() {
-    var ip = getLocalIP();
-    var hostname = os.hostname();
+// Hien thi thong tin TRUOC khi listen
+var ip = getLocalIP();
+var hostname = os.hostname();
+
+console.log('');
+console.log('================================================================');
+console.log('');
+console.log('   TRAC NGHIEM LAN v' + APP_VERSION);
+console.log('   He thong thi trac nghiem qua mang LAN');
+console.log('');
+console.log('================================================================');
+
+// Kiểm tra license
+var licenseStatus = '';
+if (LICENSE_ENABLED && licenseManager && trialManager) {
+    var licenseInfo = licenseManager.getLicenseInfo();
+    var trialInfo = trialManager.getTrialInfo();
     
-    // Kiểm tra license
-    var licenseStatus = '';
-    
-    if (LICENSE_ENABLED && licenseManager && trialManager) {
-        var licenseInfo = licenseManager.getLicenseInfo();
-        var trialInfo = trialManager.getTrialInfo();
-        
-        if (licenseInfo.activated) {
-            licenseStatus = 'License: ' + licenseInfo.type.toUpperCase() + ' - ' + licenseInfo.customerName;
-        } else if (trialInfo.active) {
-            licenseStatus = 'Dung thu: con ' + trialInfo.daysLeft + ' ngay (' + trialInfo.maxStudents + ' hoc sinh)';
-        } else {
-            licenseStatus = 'Het han dung thu - Vui long mua license';
-        }
+    if (licenseInfo.activated) {
+        licenseStatus = 'License: ' + licenseInfo.type.toUpperCase() + ' - ' + licenseInfo.customerName;
+    } else if (trialInfo.active) {
+        licenseStatus = 'Dung thu: con ' + trialInfo.daysLeft + ' ngay (' + trialInfo.maxStudents + ' hoc sinh)';
     } else {
-        licenseStatus = 'Development Mode - No License Check';
+        licenseStatus = 'Het han dung thu - Vui long mua license';
     }
-    
+} else {
+    licenseStatus = 'Development Mode - No License Check';
+}
+console.log('   ' + licenseStatus);
+console.log('================================================================');
+
+if (currentSession.className || currentSession.examName) {
     console.log('');
-    console.log('================================================================');
+    console.log('   PHIEN THI HIEN TAI:');
+    console.log('   - Lop: ' + (currentSession.className || 'Chua chon'));
+    console.log('   - Bai thi: ' + (currentSession.examName || 'Chua chon'));
+}
+
+console.log('');
+console.log('================================================================');
+console.log('   LINK DANH CHO GIAO VIEN (chi truy cap tren may nay):');
+console.log('================================================================');
+console.log('');
+console.log('   http://localhost:' + PORT + '/teacher');
+console.log('   http://127.0.0.1:' + PORT + '/teacher');
+console.log('');
+console.log('================================================================');
+console.log('   LINK GUI CHO HOC SINH (truy cap tu may khac trong mang LAN):');
+console.log('================================================================');
+console.log('');
+console.log('   Cach 1 - Dung ten may (de nho):');
+console.log('   http://' + hostname + ':' + PORT);
+console.log('');
+console.log('   Cach 2 - Dung dia chi IP:');
+console.log('   http://' + ip + ':' + PORT);
+console.log('');
+console.log('================================================================');
+console.log('   Nhan Ctrl+C de tat server');
+console.log('================================================================');
+console.log('');
+console.log('Dang khoi dong server...');
+
+server.listen(PORT, '0.0.0.0', function() {
+    console.log('Server da san sang! Dang cho ket noi...');
     console.log('');
-    console.log('   TRAC NGHIEM LAN v' + APP_VERSION);
-    console.log('   He thong thi trac nghiem qua mang LAN');
-    console.log('');
-    console.log('================================================================');
-    console.log('   ' + licenseStatus);
-    console.log('================================================================');
-    
-    if (currentSession.className || currentSession.examName) {
-        console.log('');
-        console.log('   PHIEN THI HIEN TAI:');
-        console.log('   - Lop: ' + (currentSession.className || 'Chua chon'));
-        console.log('   - Bai thi: ' + (currentSession.examName || 'Chua chon'));
-    }
-    
-    console.log('');
-    console.log('================================================================');
-    console.log('   LINK DANH CHO GIAO VIEN (chi truy cap tren may nay):');
-    console.log('================================================================');
-    console.log('');
-    console.log('   http://localhost:' + PORT + '/teacher');
-    console.log('   http://127.0.0.1:' + PORT + '/teacher');
-    console.log('');
-    console.log('================================================================');
-    console.log('   LINK GUI CHO HOC SINH (truy cap tu may khac trong mang LAN):');
-    console.log('================================================================');
-    console.log('');
-    console.log('   Cach 1 - Dung ten may (de nho):');
-    console.log('   http://' + hostname + ':' + PORT);
-    console.log('');
-    console.log('   Cach 2 - Dung dia chi IP:');
-    console.log('   http://' + ip + ':' + PORT);
-    console.log('');
-    console.log('================================================================');
-    console.log('   Nhan Ctrl+C de tat server');
-    console.log('================================================================');
-    console.log('');
-    console.log('Server dang chay... (giu cua so nay mo)');
 });
 
 // Giu process chay

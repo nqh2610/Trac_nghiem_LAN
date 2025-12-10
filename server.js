@@ -9,18 +9,34 @@ const XLSX = require('xlsx');
 const multer = require('multer');
 
 // ========== HỆ THỐNG LICENSE & UPDATE ==========
-const { LicenseManager, TrialManager } = require('./license/license-manager');
-const { UpdateManager, MockUpdateServer } = require('./license/update-manager');
+// Tải license module với error handling cho Node.js cũ
+let LicenseManager, TrialManager, UpdateManager, MockUpdateServer;
+let licenseManager, trialManager, updateManager;
+let LICENSE_ENABLED = true;
 
 const APP_VERSION = '1.0.0';
-const licenseManager = new LicenseManager(path.join(__dirname, 'data'));
-const trialManager = new TrialManager(path.join(__dirname, 'data'));
-const updateManager = new UpdateManager({
-    currentVersion: APP_VERSION,
-    appName: 'TracNghiemLAN',
-    updateServerUrl: 'http://localhost:3456/api', // Thay bằng server thật khi deploy
-    dataDir: path.join(__dirname, 'data')
-});
+
+try {
+    const licenseModule = require('./license/license-manager');
+    const updateModule = require('./license/update-manager');
+    LicenseManager = licenseModule.LicenseManager;
+    TrialManager = licenseModule.TrialManager;
+    UpdateManager = updateModule.UpdateManager;
+    MockUpdateServer = updateModule.MockUpdateServer;
+    
+    licenseManager = new LicenseManager(path.join(__dirname, 'data'));
+    trialManager = new TrialManager(path.join(__dirname, 'data'));
+    updateManager = new UpdateManager({
+        currentVersion: APP_VERSION,
+        appName: 'TracNghiemLAN',
+        updateServerUrl: 'http://localhost:3456/api',
+        dataDir: path.join(__dirname, 'data')
+    });
+} catch (e) {
+    console.log('⚠️  Không thể tải module license (Node.js version cũ?)');
+    console.log('   Chạy ở chế độ không có license check');
+    LICENSE_ENABLED = false;
+}
 
 // Cấu hình multer để lưu file trong memory
 const upload = multer({ storage: multer.memoryStorage() });
@@ -40,9 +56,18 @@ app.use('/data', express.static('data'));
 
 // ========== API LICENSE ==========
 // Lấy thông tin license hiện tại
-app.get('/api/license/info', (req, res) => {
-    const licenseInfo = licenseManager.getLicenseInfo();
-    const trialInfo = trialManager.getTrialInfo();
+app.get('/api/license/info', function(req, res) {
+    if (!LICENSE_ENABLED) {
+        return res.json({
+            version: APP_VERSION,
+            license: { activated: true, type: 'development', customerName: 'Dev Mode' },
+            trial: null,
+            hardwareId: 'N/A'
+        });
+    }
+    
+    var licenseInfo = licenseManager.getLicenseInfo();
+    var trialInfo = trialManager.getTrialInfo();
     
     res.json({
         version: APP_VERSION,
@@ -53,44 +78,62 @@ app.get('/api/license/info', (req, res) => {
 });
 
 // Kích hoạt license
-app.post('/api/license/activate', (req, res) => {
-    const { licenseKey, licenseData } = req.body;
+app.post('/api/license/activate', function(req, res) {
+    if (!LICENSE_ENABLED) {
+        return res.json({ success: true, message: 'License disabled in dev mode' });
+    }
+    
+    var licenseKey = req.body.licenseKey;
+    var licenseData = req.body.licenseData;
     
     if (!licenseKey || !licenseData) {
         return res.status(400).json({ success: false, error: 'Thiếu thông tin license' });
     }
     
-    const result = licenseManager.activate(licenseKey, licenseData);
+    var result = licenseManager.activate(licenseKey, licenseData);
     res.json(result);
 });
 
 // Hủy kích hoạt
-app.post('/api/license/deactivate', (req, res) => {
-    const result = licenseManager.deactivate();
+app.post('/api/license/deactivate', function(req, res) {
+    if (!LICENSE_ENABLED) {
+        return res.json({ success: true });
+    }
+    var result = licenseManager.deactivate();
     res.json(result);
 });
 
 // ========== API UPDATE ==========
 // Kiểm tra cập nhật
-app.get('/api/update/check', async (req, res) => {
-    try {
-        const updateInfo = await updateManager.checkForUpdates();
-        res.json(updateInfo);
-    } catch (e) {
-        res.json({ 
+app.get('/api/update/check', function(req, res) {
+    if (!LICENSE_ENABLED || !updateManager) {
+        return res.json({ 
             updateAvailable: false, 
-            error: e.message,
             currentVersion: APP_VERSION
         });
     }
+    
+    updateManager.checkForUpdates()
+        .then(function(updateInfo) {
+            res.json(updateInfo);
+        })
+        .catch(function(e) {
+            res.json({ 
+                updateAvailable: false, 
+                error: e.message,
+                currentVersion: APP_VERSION
+            });
+        });
 });
 
-// Mock update server (cho development)
-new MockUpdateServer(app, APP_VERSION);
+// Mock update server (cho development) - chỉ khi có module
+if (LICENSE_ENABLED && MockUpdateServer) {
+    new MockUpdateServer(app, APP_VERSION);
+}
 
 // Middleware kiểm tra quyền truy cập trang giáo viên
 function isLocalhost(req) {
-    const ip = req.ip || req.connection.remoteAddress || '';
+    var ip = req.ip || req.connection.remoteAddress || '';
     // Kiểm tra localhost (127.0.0.1, ::1, ::ffff:127.0.0.1)
     return ip === '127.0.0.1' || 
            ip === '::1' || 
@@ -2439,47 +2482,52 @@ loadStudentStatus();   // Load trạng thái theo session
 loadResults();         // Load kết quả theo session  
 loadReports();         // Load báo cáo
 
-server.listen(PORT, '0.0.0.0', () => {
-    const ip = getLocalIP();
-    const hostname = os.hostname().toLowerCase();
+server.listen(PORT, '0.0.0.0', function() {
+    var ip = getLocalIP();
+    var hostname = os.hostname().toLowerCase();
     
     // Kiểm tra license
-    const licenseInfo = licenseManager.getLicenseInfo();
-    const trialInfo = trialManager.getTrialInfo();
-    let licenseStatus = '';
+    var licenseStatus = '';
     
-    if (licenseInfo.activated) {
-        licenseStatus = `✅ License: ${licenseInfo.type.toUpperCase()} - ${licenseInfo.customerName}`;
-    } else if (trialInfo.active) {
-        licenseStatus = `⏱️  Dùng thử: còn ${trialInfo.daysLeft} ngày (${trialInfo.maxStudents} học sinh)`;
+    if (LICENSE_ENABLED && licenseManager && trialManager) {
+        var licenseInfo = licenseManager.getLicenseInfo();
+        var trialInfo = trialManager.getTrialInfo();
+        
+        if (licenseInfo.activated) {
+            licenseStatus = 'License: ' + licenseInfo.type.toUpperCase() + ' - ' + licenseInfo.customerName;
+        } else if (trialInfo.active) {
+            licenseStatus = 'Dung thu: con ' + trialInfo.daysLeft + ' ngay (' + trialInfo.maxStudents + ' hoc sinh)';
+        } else {
+            licenseStatus = 'Het han dung thu - Vui long mua license';
+        }
     } else {
-        licenseStatus = '❌ Hết hạn dùng thử - Vui lòng mua license';
+        licenseStatus = 'Development Mode - No License Check';
     }
     
     console.log('');
-    console.log('╔════════════════════════════════════════════════════════════╗');
-    console.log('║                                                            ║');
-    console.log(`║   📡 TRẮC NGHIỆM LAN v${APP_VERSION} - Hệ thống thi trắc nghiệm     ║`);
-    console.log('║                                                            ║');
-    console.log('╠════════════════════════════════════════════════════════════╣');
-    console.log(`║   ${licenseStatus.padEnd(55)} ║`);
+    console.log('================================================================');
+    console.log('');
+    console.log('   TRAC NGHIEM LAN v' + APP_VERSION + ' - He thong thi trac nghiem');
+    console.log('');
+    console.log('----------------------------------------------------------------');
+    console.log('   ' + licenseStatus);
     if (currentSession.className || currentSession.examName) {
-        console.log('║                                                            ║');
-        console.log(`║   📚 Lớp: ${(currentSession.className || 'Chưa chọn').padEnd(40)}    ║`);
-        console.log(`║   📝 Bài: ${(currentSession.examName || 'Chưa chọn').padEnd(40)}    ║`);
+        console.log('');
+        console.log('   Lop: ' + (currentSession.className || 'Chua chon'));
+        console.log('   Bai: ' + (currentSession.examName || 'Chua chon'));
     }
-    console.log('║                                                            ║');
-    console.log(`║   📌 Giáo viên truy cập (chỉ trên máy này):                ║`);
-    console.log(`║      http://localhost:${PORT}/teacher                        `);
-    console.log('║                                                            ║');
-    console.log(`║   📌 Link gửi học sinh:                                    ║`);
-    console.log(`║      http://${hostname}:${PORT}                            `);
-    console.log('║                                                            ║');
-    console.log(`║   📌 Link gửi học sinh dự phòng:                           ║`);
-    console.log(`║      http://${ip}:${PORT}                                  `);
-    console.log('║                                                            ║');
-    console.log('╠════════════════════════════════════════════════════════════╣');
-    console.log('║   Nhấn Ctrl+C để tắt server                                ║');
-    console.log('╚════════════════════════════════════════════════════════════╝');
+    console.log('');
+    console.log('   Giao vien truy cap (chi tren may nay):');
+    console.log('      http://localhost:' + PORT + '/teacher');
+    console.log('');
+    console.log('   Link gui hoc sinh:');
+    console.log('      http://' + hostname + ':' + PORT);
+    console.log('');
+    console.log('   Link du phong:');
+    console.log('      http://' + ip + ':' + PORT);
+    console.log('');
+    console.log('----------------------------------------------------------------');
+    console.log('   Nhan Ctrl+C de tat server');
+    console.log('================================================================');
     console.log('');
 });

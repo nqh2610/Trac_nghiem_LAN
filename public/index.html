@@ -1570,8 +1570,8 @@
                 </div>
                 
                 <div class="warning-box">
-                    <span class="icon"></span>
-                    <span class="text">Hãy kiểm tra kỹ! Nếu làm bài với tên người khác, điểm sẽ được tính cho người đó.</span>
+                    <span class="icon">(!)</span>
+                    <span class="text">Hay kiem tra ky! Neu lam bai voi ten nguoi khac, diem se duoc tinh cho nguoi do.</span>
                 </div>
                 
                 <div class="btn-group">
@@ -1595,7 +1595,7 @@
                 <!-- Hiển thị lớp từ session của giáo viên -->
                 <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border: 1px solid #a5d6a7;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.5em;"></span>
+                        <span style="font-size: 1.5em;">[Lop]</span>
                         <div>
                             <div style="font-size: 0.85em; color: #2e7d32;">Lớp đang kiểm tra:</div>
                             <div style="font-size: 1.2em; font-weight: bold; color: #1b5e20;" id="displayCurrentClass">Đang tải...</div>
@@ -1758,13 +1758,13 @@
             </div>
             
             <div class="warning-box" id="unansweredWarning" style="display: none;">
-                <span class="icon"></span>
-                <span class="text">Bạn còn câu hỏi chưa trả lời. Bạn có chắc muốn nộp bài?</span>
+                <span class="icon">(!)</span>
+                <span class="text">Ban con cau hoi chua tra loi. Ban co chac muon nop bai?</span>
             </div>
             
             <div class="warning-box" id="earlySubmitWarning" style="background: #fff3cd; border-color: #ffc107; display: none;">
-                <span class="icon">⏰</span>
-                <span class="text" style="color: #856404;"><strong>Lưu ý:</strong> Sau khi nộp bài sẽ chấm điểm ngay và bạn không thể làm lại!</span>
+                <span class="icon">(!)</span>
+                <span class="text" style="color: #856404;"><strong>Luu y:</strong> Sau khi nop bai se cham diem ngay va ban khong the lam lai!</span>
             </div>
             
             <div class="btn-group">
@@ -2179,7 +2179,7 @@
                 document.getElementById('examTitleDisplay').textContent = data.title;
                 
                 if (!data.isOpen) {
-                    showMessage('info', '⏳ Bài thi chưa mở. Vui lòng chờ giáo viên!');
+                    showMessage('info', 'Bai thi chua mo. Vui long cho giao vien!');
                 }
             } catch (err) {
                 showMessage('error', 'Không thể kết nối server');
@@ -2584,12 +2584,12 @@
             notice.className = 'practice-mode-banner';
             notice.innerHTML = `
                 <div class="practice-banner-content">
-                    <span class="practice-icon"></span>
+                    <span class="practice-icon">[On tap]</span>
                     <div class="practice-text">
-                        <strong>CHẾ ĐỘ ÔN TẬP</strong>
-                        <span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>
+                        <strong>CHE DO ON TAP</strong>
+                        <span>He thong se bao dung/sai ngay khi ban chon dap an</span>
                     </div>
-                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close"></button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close">X</button>
                 </div>
             `;
             

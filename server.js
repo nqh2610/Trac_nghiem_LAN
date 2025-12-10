@@ -1,6 +1,6 @@
 var express = require('express');
 var http = require('http');
-var Server = require('socket.io').Server;
+var socketIO = require('socket.io');
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -68,7 +68,7 @@ var upload = multer({ storage: multer.memoryStorage() });
 
 var app = express();
 var server = http.createServer(app);
-var io = new Server(server);
+var io = socketIO(server);
 
 var PORT = 3456;
 

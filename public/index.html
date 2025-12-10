@@ -1845,41 +1845,54 @@
         let timeRemaining = 0;
         let timerInterval = null;
         let startTime = null;
-        let currentStep = 1;
-        let practiceMode = false; // Chế độ ôn tập
+        var currentStep = 1;
+        var practiceMode = false; // Che do on tap
         
-        // Hàm đảo mảng theo seed (STT học sinh)
+        // Ham dao mang theo seed (STT hoc sinh)
         function shuffleWithSeed(array, seed) {
-            const shuffled = [...array];
-            let currentIndex = shuffled.length;
+            // Copy mang
+            var shuffled = [];
+            for (var k = 0; k < array.length; k++) {
+                shuffled.push(array[k]);
+            }
+            var currentIndex = shuffled.length;
             
             // Simple seeded random
-            const seededRandom = () => {
+            function seededRandom() {
                 seed = (seed * 9301 + 49297) % 233280;
                 return seed / 233280;
-            };
+            }
             
             while (currentIndex > 0) {
-                const randomIndex = Math.floor(seededRandom() * currentIndex);
+                var randomIndex = Math.floor(seededRandom() * currentIndex);
                 currentIndex--;
-                [shuffled[currentIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currentIndex]];
+                // Swap
+                var temp = shuffled[currentIndex];
+                shuffled[currentIndex] = shuffled[randomIndex];
+                shuffled[randomIndex] = temp;
             }
             
             return shuffled;
         }
         
-        // Tạo thứ tự câu hỏi theo STT
+        // Tao thu tu cau hoi theo STT
         function generateQuestionOrder(stt, totalQuestions) {
-            const indices = Array.from({ length: totalQuestions }, (_, i) => i);
+            var indices = [];
+            for (var i = 0; i < totalQuestions; i++) {
+                indices.push(i);
+            }
             return shuffleWithSeed(indices, stt);
         }
         
-        // Tạo thứ tự đáp án cho mỗi câu hỏi
+        // Tao thu tu dap an cho moi cau hoi
         function generateOptionOrders(stt, totalQuestions, questionsData) {
-            const orders = [];
-            for (let i = 0; i < totalQuestions; i++) {
-                const numOptions = questionsData[i].options.length;
-                const optionIndices = Array.from({ length: numOptions }, (_, j) => j);
+            var orders = [];
+            for (var i = 0; i < totalQuestions; i++) {
+                var numOptions = questionsData[i].options.length;
+                var optionIndices = [];
+                for (var j = 0; j < numOptions; j++) {
+                    optionIndices.push(j);
+                }
                 // Seed khac nhau cho moi cau hoi (STT * 1000 + index cau)
                 orders.push(shuffleWithSeed(optionIndices, stt * 1000 + i));
             }
@@ -2797,11 +2810,15 @@
                 questionOrder = activeSession.questionOrder || [];
                 optionOrders = activeSession.optionOrders || [];
                 
-                // Khôi phục câu hỏi đã đảo (cả câu hỏi và đáp án)
+                // Khoi phuc cau hoi da dao (ca cau hoi va dap an)
                 if (optionOrders.length > 0) {
                     questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
                 } else {
-                    questions = questionOrder.map(i => originalQuestions);
+                    // Dao cau hoi theo thu tu da luu
+                    questions = [];
+                    for (var qi = 0; qi < questionOrder.length; qi++) {
+                        questions.push(originalQuestions[questionOrder[qi]]);
+                    }
                 }
                 
                 answers = activeSession.answers || {};

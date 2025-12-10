@@ -2645,6 +2645,7 @@
                 optionOrders: optionOrders,
                 originalQuestions: originalQuestions,
                 timeLimit: timeLimit,
+                practiceMode: practiceMode, // Lưu chế độ ôn tập
                 examTitle: document.getElementById('examTitle')?.textContent || 'Bài kiểm tra',
                 inExam: true,
                 savedAt: new Date().toISOString()
@@ -2765,6 +2766,7 @@
                 }
                 
                 // Kiểm tra với server xem học sinh đã nộp bài chưa và examId có khớp không
+                var serverPracticeMode = activeSession.practiceMode || false;
                 try {
                     const checkRes = await fetch(`/api/check-submitted/${activeSession.stt}`);
                     const checkData = await checkRes.json();
@@ -2780,8 +2782,13 @@
                         clearExamProgress(activeSession.stt, activeSession.examId);
                         return;
                     }
+                    
+                    // Lấy practiceMode mới nhất từ server
+                    const settingsRes = await fetch('/api/settings');
+                    const settingsData = await settingsRes.json();
+                    serverPracticeMode = settingsData.practiceMode || false;
                 } catch (e) {
-                    console.log('Không thể kiểm tra trạng thái nộp bài, tiếp tục khôi phục');
+                    console.log('Không thể kiểm tra trạng thái, tiếp tục khôi phục với practiceMode đã lưu');
                 }
                 
                 // Tính thời gian còn lại
@@ -2822,12 +2829,20 @@
                 timeLimit = activeSession.timeLimit || 30;
                 timeRemaining = remainingTime;
                 
+                // Khôi phục chế độ ôn tập (ưu tiên dùng giá trị từ server)
+                practiceMode = serverPracticeMode;
+                
                 // Hiển thị màn hình làm bài
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('examScreen').style.display = 'block';
                 document.getElementById('displayName').textContent = studentInfo.name;
                 document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
                 document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
+                
+                // Hiển thị banner ôn tập nếu đang ở chế độ ôn tập
+                if (practiceMode) {
+                    showPracticeModeNotice();
+                }
                 
                 // Khôi phục startTime gốc nếu có, nếu không thì tính lại từ timeRemaining
                 if (activeSession.startTime) {

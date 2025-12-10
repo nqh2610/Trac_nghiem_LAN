@@ -2562,37 +2562,40 @@ function getLocalIP() {
     return 'localhost';
 }
 
-// Hàm log không dùng Unicode
+// Hàm log đồng bộ
 function safeLog(msg) {
-    process.stdout.write(msg + '\n');
+    try {
+        var fs = require('fs');
+        fs.writeSync(1, msg + '\n');
+    } catch(e) {
+        console.log(msg);
+    }
 }
 
 // Khởi động server
-safeLog('Dang tai du lieu...');
-
-try { loadClasses(); } catch(e) { safeLog('  LOI loadClasses: ' + e.message); }
-safeLog('  - Da tai danh sach lop');
-
-try { loadCurrentSession(); } catch(e) { safeLog('  LOI loadCurrentSession: ' + e.message); }
-safeLog('  - Da tai session');
-
-try { loadQuestions(); } catch(e) { safeLog('  LOI loadQuestions: ' + e.message); }
-safeLog('  - Da tai cau hoi');
-
-try { loadStudents(); } catch(e) { safeLog('  LOI loadStudents: ' + e.message); }
-safeLog('  - Da tai hoc sinh');
-
-try { loadStudentStatus(); } catch(e) { safeLog('  LOI loadStudentStatus: ' + e.message); }
-safeLog('  - Da tai trang thai');
-
-try { loadResults(); } catch(e) { safeLog('  LOI loadResults: ' + e.message); }
-safeLog('  - Da tai ket qua');
-
-try { loadReports(); } catch(e) { safeLog('  LOI loadReports: ' + e.message); }
-safeLog('  - Da tai bao cao');
-
-safeLog('Hoan tat tai du lieu!');
 safeLog('');
+safeLog('========================================');
+safeLog('Dang tai du lieu...');
+safeLog('========================================');
+
+try { loadClasses(); safeLog('[OK] loadClasses'); } catch(e) { safeLog('[LOI] loadClasses: ' + e.message); }
+
+try { loadCurrentSession(); safeLog('[OK] loadCurrentSession'); } catch(e) { safeLog('[LOI] loadCurrentSession: ' + e.message); }
+
+try { loadQuestions(); safeLog('[OK] loadQuestions'); } catch(e) { safeLog('[LOI] loadQuestions: ' + e.message); }
+
+try { loadStudents(); safeLog('[OK] loadStudents'); } catch(e) { safeLog('[LOI] loadStudents: ' + e.message); }
+
+try { loadStudentStatus(); safeLog('[OK] loadStudentStatus'); } catch(e) { safeLog('[LOI] loadStudentStatus: ' + e.message); }
+
+try { loadResults(); safeLog('[OK] loadResults'); } catch(e) { safeLog('[LOI] loadResults: ' + e.message); }
+
+try { loadReports(); safeLog('[OK] loadReports'); } catch(e) { safeLog('[LOI] loadReports: ' + e.message); }
+
+safeLog('');
+safeLog('========================================');
+safeLog('Hoan tat tai du lieu!');
+safeLog('========================================');
 
 // Error handler cho server
 server.on('error', function(err) {
@@ -2609,80 +2612,65 @@ server.on('error', function(err) {
 // Global error handler
 process.on('uncaughtException', function(err) {
     console.log('');
-    console.log('LOI KHONG XU LY DUOC:');
-    console.log('  ' + err.message);
+    safeLog('LOI KHONG XU LY DUOC:');
+    safeLog('  ' + err.message);
     if (err.stack) {
-        console.log('  Stack: ' + err.stack.split('\n').slice(0, 3).join('\n  '));
+        safeLog('  Stack: ' + err.stack.split('\n').slice(0, 3).join('\n  '));
     }
-    console.log('');
+    safeLog('');
     process.exit(1);
 });
 
 // Hien thi thong tin TRUOC khi listen
+safeLog('');
+safeLog('[HIEN THI LINK]');
+
 var ip = getLocalIP();
 var hostname = os.hostname();
 
-console.log('');
-console.log('================================================================');
-console.log('');
-console.log('   TRAC NGHIEM LAN v' + APP_VERSION);
-console.log('   He thong thi trac nghiem qua mang LAN');
-console.log('');
-console.log('================================================================');
+safeLog('');
+safeLog('================================================================');
+safeLog('   TRAC NGHIEM LAN v' + APP_VERSION);
+safeLog('================================================================');
 
 // Kiểm tra license
-var licenseStatus = '';
+var licenseStatus = 'Development Mode';
 if (LICENSE_ENABLED && licenseManager && trialManager) {
-    var licenseInfo = licenseManager.getLicenseInfo();
-    var trialInfo = trialManager.getTrialInfo();
-    
-    if (licenseInfo.activated) {
-        licenseStatus = 'License: ' + licenseInfo.type.toUpperCase() + ' - ' + licenseInfo.customerName;
-    } else if (trialInfo.active) {
-        licenseStatus = 'Dung thu: con ' + trialInfo.daysLeft + ' ngay (' + trialInfo.maxStudents + ' hoc sinh)';
-    } else {
-        licenseStatus = 'Het han dung thu - Vui long mua license';
+    try {
+        var licenseInfo = licenseManager.getLicenseInfo();
+        var trialInfo = trialManager.getTrialInfo();
+        
+        if (licenseInfo && licenseInfo.activated) {
+            licenseStatus = 'License: ' + licenseInfo.type;
+        } else if (trialInfo && trialInfo.active) {
+            licenseStatus = 'Dung thu: con ' + trialInfo.daysLeft + ' ngay';
+        } else {
+            licenseStatus = 'Het han dung thu';
+        }
+    } catch(e) {
+        licenseStatus = 'Loi license: ' + e.message;
     }
-} else {
-    licenseStatus = 'Development Mode - No License Check';
 }
-console.log('   ' + licenseStatus);
-console.log('================================================================');
+safeLog('   ' + licenseStatus);
+safeLog('================================================================');
 
-if (currentSession.className || currentSession.examName) {
-    console.log('');
-    console.log('   PHIEN THI HIEN TAI:');
-    console.log('   - Lop: ' + (currentSession.className || 'Chua chon'));
-    console.log('   - Bai thi: ' + (currentSession.examName || 'Chua chon'));
-}
-
-console.log('');
-console.log('================================================================');
-console.log('   LINK DANH CHO GIAO VIEN (chi truy cap tren may nay):');
-console.log('================================================================');
-console.log('');
-console.log('   http://localhost:' + PORT + '/teacher');
-console.log('   http://127.0.0.1:' + PORT + '/teacher');
-console.log('');
-console.log('================================================================');
-console.log('   LINK GUI CHO HOC SINH (truy cap tu may khac trong mang LAN):');
-console.log('================================================================');
-console.log('');
-console.log('   Cach 1 - Dung ten may (de nho):');
-console.log('   http://' + hostname + ':' + PORT);
-console.log('');
-console.log('   Cach 2 - Dung dia chi IP:');
-console.log('   http://' + ip + ':' + PORT);
-console.log('');
-console.log('================================================================');
-console.log('   Nhan Ctrl+C de tat server');
-console.log('================================================================');
-console.log('');
-console.log('Dang khoi dong server...');
+safeLog('');
+safeLog('   LINK GIAO VIEN:');
+safeLog('   http://localhost:' + PORT + '/teacher');
+safeLog('');
+safeLog('   LINK HOC SINH:');
+safeLog('   http://' + hostname + ':' + PORT);
+safeLog('   http://' + ip + ':' + PORT);
+safeLog('');
+safeLog('================================================================');
+safeLog('   Nhan Ctrl+C de tat server');
+safeLog('================================================================');
+safeLog('');
+safeLog('Dang khoi dong server...');
 
 server.listen(PORT, '0.0.0.0', function() {
-    console.log('Server da san sang! Dang cho ket noi...');
-    console.log('');
+    safeLog('Server da san sang!');
+    safeLog('');
 });
 
 // Giu process chay
@@ -2690,10 +2678,10 @@ process.stdin.resume();
 
 // Xu ly tat server
 process.on('SIGINT', function() {
-    console.log('');
-    console.log('Dang tat server...');
+    safeLog('');
+    safeLog('Dang tat server...');
     server.close(function() {
-        console.log('Server da tat.');
+        safeLog('Server da tat.');
         process.exit(0);
     });
 });

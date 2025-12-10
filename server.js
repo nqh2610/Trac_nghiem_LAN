@@ -2506,9 +2506,13 @@ io.on('connection', (socket) => {
 
 // Lấy địa chỉ IP
 function getLocalIP() {
-    const interfaces = os.networkInterfaces();
-    for (const name of Object.keys(interfaces)) {
-        for (const iface of interfaces[name]) {
+    var interfaces = os.networkInterfaces();
+    var names = Object.keys(interfaces);
+    for (var i = 0; i < names.length; i++) {
+        var name = names[i];
+        var ifaceList = interfaces[name];
+        for (var j = 0; j < ifaceList.length; j++) {
+            var iface = ifaceList[j];
             if (iface.family === 'IPv4' && !iface.internal) {
                 return iface.address;
             }
@@ -2517,24 +2521,37 @@ function getLocalIP() {
     return 'localhost';
 }
 
+// Hàm log không dùng Unicode
+function safeLog(msg) {
+    process.stdout.write(msg + '\n');
+}
+
 // Khởi động server
-console.log('Dang tai du lieu...');
-loadClasses();         // Load danh sách lớp
-console.log('  - Da tai danh sach lop');
-loadCurrentSession();  // Load session (lớp + bài đang dùng)
-console.log('  - Da tai session');
-loadQuestions();       // Load câu hỏi theo session
-console.log('  - Da tai cau hoi');
-loadStudents();        // Load học sinh theo lớp
-console.log('  - Da tai hoc sinh');
-loadStudentStatus();   // Load trạng thái theo session
-console.log('  - Da tai trang thai');
-loadResults();         // Load kết quả theo session  
-console.log('  - Da tai ket qua');
-loadReports();         // Load báo cáo
-console.log('  - Da tai bao cao');
-console.log('Hoan tat tai du lieu!');
-console.log('');
+safeLog('Dang tai du lieu...');
+
+try { loadClasses(); } catch(e) { safeLog('  LOI loadClasses: ' + e.message); }
+safeLog('  - Da tai danh sach lop');
+
+try { loadCurrentSession(); } catch(e) { safeLog('  LOI loadCurrentSession: ' + e.message); }
+safeLog('  - Da tai session');
+
+try { loadQuestions(); } catch(e) { safeLog('  LOI loadQuestions: ' + e.message); }
+safeLog('  - Da tai cau hoi');
+
+try { loadStudents(); } catch(e) { safeLog('  LOI loadStudents: ' + e.message); }
+safeLog('  - Da tai hoc sinh');
+
+try { loadStudentStatus(); } catch(e) { safeLog('  LOI loadStudentStatus: ' + e.message); }
+safeLog('  - Da tai trang thai');
+
+try { loadResults(); } catch(e) { safeLog('  LOI loadResults: ' + e.message); }
+safeLog('  - Da tai ket qua');
+
+try { loadReports(); } catch(e) { safeLog('  LOI loadReports: ' + e.message); }
+safeLog('  - Da tai bao cao');
+
+safeLog('Hoan tat tai du lieu!');
+safeLog('');
 
 server.listen(PORT, '0.0.0.0', function() {
     var ip = getLocalIP();

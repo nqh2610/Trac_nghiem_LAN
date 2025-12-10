@@ -603,7 +603,7 @@ function loadStudentsFromDefaultFile() {
 function parseStudentData(data) {
     // Log để debug
     if (data.length > 0) {
-        console.log('📋 Các cột trong file Excel:', Object.keys(data[0]));
+        console.log('[INFO] Cac cot trong file Excel:', Object.keys(data[0]));
     }
     
     var index = 0;
@@ -1391,13 +1391,13 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
         var worksheet = workbook.Sheets[sheetName];
         var data = XLSX.utils.sheet_to_json(worksheet);
         
-        console.log(`📋 Sheet: ${sheetName}, Số dòng: ${data.length}`);
+        console.log('[INFO] Sheet: ' + sheetName + ', So dong: ' + data.length);
         if (data.length > 0) {
-            console.log(`📋 Các cột: ${Object.keys(data[0]).join(', ')}`);
+            console.log('[INFO] Cac cot: ' + Object.keys(data[0]).join(', '));
         }
         
         var parsedStudents = parseStudentData(data);
-        console.log(`✅ Parsed: ${parsedStudents.length} học sinh hợp lệ`);
+        console.log('[OK] Parsed: ' + parsedStudents.length + ' hoc sinh hop le');
         
         if (parsedStudents.length === 0) {
             return res.json({ success: false, error: 'Không có học sinh hợp lệ' });
@@ -2406,7 +2406,7 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
         var result = await mammoth.extractRawText({ buffer: req.file.buffer });
         var text = result.value;
         
-        console.log(`📝 Nội dung trích xuất: ${text.substring(0, 200)}...`);
+        console.log('[INFO] Noi dung trich xuat: ' + text.substring(0, 200) + '...');
         
         // Parse câu hỏi từ text
         var parsedQuestions = parseQuestionsFromText(text);
@@ -2501,14 +2501,14 @@ function parseQuestionsFromText(text) {
 
 // Socket.IO
 io.on('connection', function(socket) {
-    console.log('📱 Có người kết nối:', socket.id);
+    console.log('[CONNECT] Co nguoi ket noi:', socket.id);
     
     // Gửi socket ID cho client
     socket.emit('connected', { socketId: socket.id });
     
     // Nhận thông báo khi học sinh rời tab
     socket.on('tabLeave', function(data) {
-        console.log('⚠️ Học sinh ' + data.name + ' (STT ' + data.stt + ') rời khỏi trang lần ' + data.count);
+        console.log('[WARN] Hoc sinh ' + data.name + ' (STT ' + data.stt + ') roi khoi trang lan ' + data.count);
         
         // Lưu vào student status
         if (studentStatus[data.stt]) {
@@ -2528,7 +2528,7 @@ io.on('connection', function(socket) {
     
     // Khi ngắt kết nối, hủy chọn học sinh nếu chưa hoàn thành
     socket.on('disconnect', function() {
-        console.log('📴 Ngắt kết nối:', socket.id);
+        console.log('[DISCONNECT] Ngat ket noi:', socket.id);
         
         // Tìm và hủy chọn học sinh
         var keys = Object.keys(studentStatus);

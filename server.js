@@ -357,9 +357,10 @@ function getAllResultsSummary() {
         try {
             const [classId, examId] = f.replace('.json', '').split('__');
             const data = JSON.parse(fs.readFileSync(path.join(resultsDir, f), 'utf8'));
-            const className = classesData[classId]?.name || classId;
+            const classData = classesData[classId];
+            const className = (classData && classData.name) ? classData.name : classId;
             const exam = loadExam(examId);
-            const examName = exam?.name || examId;
+            const examName = (exam && exam.name) ? exam.name : examId;
             
             return {
                 classId,

@@ -1878,29 +1878,33 @@
         function generateOptionOrders(stt, totalQuestions, questionsData) {
             const orders = [];
             for (let i = 0; i < totalQuestions; i++) {
-                const numOptions = questionsData.options.length;
+                const numOptions = questionsData[i].options.length;
                 const optionIndices = Array.from({ length: numOptions }, (_, j) => j);
-                // Seed khác nhau cho mỗi câu hỏi (STT * 1000 + index câu)
+                // Seed khac nhau cho moi cau hoi (STT * 1000 + index cau)
                 orders.push(shuffleWithSeed(optionIndices, stt * 1000 + i));
             }
             return orders;
         }
         
-        // Đảo câu hỏi và đáp án
+        // Dao cau hoi va dap an
         function shuffleQuestionsAndOptions(originalQs, qOrder, optOrders) {
-            return qOrder.map((origIndex, newIndex) => {
-                const origQ = originalQs[origIndex];
-                const optOrder = optOrders[origIndex];
+            return qOrder.map(function(origIndex, newIndex) {
+                var origQ = originalQs[origIndex];
+                var optOrder = optOrders[origIndex];
                 
-                // Đảo thứ tự đáp án
-                const shuffledOptions = optOrder.map(i => origQ.options);
+                // Dao thu tu dap an
+                var shuffledOptions = optOrder.map(function(i) { return origQ.options[i]; });
                 
-                return {
-                    ...origQ,
-                    options: shuffledOptions,
-                    _optionOrder: optOrder, // Lưu để chuyển đổi khi nộp bài
-                    _originalIndex: origIndex
-                };
+                // Copy object va thay options
+                var newQ = {};
+                for (var key in origQ) {
+                    newQ[key] = origQ[key];
+                }
+                newQ.options = shuffledOptions;
+                newQ._optionOrder = optOrder; // Luu de chuyen doi khi nop bai
+                newQ._originalIndex = origIndex;
+                
+                return newQ;
             });
         }
 
@@ -2365,41 +2369,52 @@
             }
         }
         
-        // Tiến hành vào làm bài (sau khi đã kiểm tra mật khẩu)
+        // Tien hanh vao lam bai (sau khi da kiem tra mat khau)
         async function proceedToExam() {
-            // Check if exam is open and get class name from session
-            const res = await fetch('/api/exam');
-            const data = await res.json();
-            
-            if (data.error) {
-                showError(data.error);
-                return;
+            try {
+                // Check if exam is open and get class name from session
+                var res = await fetch('/api/exam');
+                var data = await res.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+                
+                // Kiem tra co cau hoi khong
+                if (!data.questions || data.questions.length === 0) {
+                    showError('Bai thi chua co cau hoi nao!');
+                    return;
+                }
+                
+                // Lay ten lop va examId tu session cua giao vien
+                var studentClass = data.className || 'Chua chon lop';
+                document.getElementById('studentClass').value = studentClass;
+                currentExamId = data.examId || 'default'; // Luu examId hien tai
+                practiceMode = data.practiceMode || false; // Che do on tap
+                
+                studentInfo = { 
+                    name: selectedStudent.ho + ' ' + selectedStudent.ten, 
+                    class: studentClass, 
+                    stt: selectedStudent.stt 
+                };
+                
+                // Luu cau hoi goc va tao thu tu dao theo STT
+                originalQuestions = data.questions;
+                questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
+                optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
+                
+                // Dao cau hoi VA dap an theo thu tu
+                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                timeLimit = data.timeLimit;
+                
+                document.getElementById('examTitle').textContent = data.title;
+                
+                startExam();
+            } catch (err) {
+                console.error('Loi khi vao lam bai:', err);
+                showError('Khong the vao lam bai. Vui long thu lai! Loi: ' + err.message);
             }
-            
-            // Lấy tên lớp và examId từ session của giáo viên
-            const studentClass = data.className || 'Chưa chọn lớp';
-            document.getElementById('studentClass').value = studentClass;
-            currentExamId = data.examId || 'default'; // Lưu examId hiện tại
-            practiceMode = data.practiceMode || false; // Chế độ ôn tập
-            
-            studentInfo = { 
-                name: `${selectedStudent.ho} ${selectedStudent.ten}`, 
-                class: studentClass, 
-                stt: selectedStudent.stt 
-            };
-            
-            // Lưu câu hỏi gốc và tạo thứ tự đảo theo STT
-            originalQuestions = data.questions;
-            questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
-            optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
-            
-            // Đảo câu hỏi VÀ đáp án theo thứ tự
-            questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
-            timeLimit = data.timeLimit;
-            
-            document.getElementById('examTitle').textContent = data.title;
-            
-            startExam();
         }
 
         // Start exam

@@ -1,46 +1,25 @@
-// DEBUG: Bat loi ngay tu dau
+// Bat loi khong xu ly duoc
 process.on('uncaughtException', function(err) {
     console.log('');
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log('LOI KHONG XU LY DUOC:');
-    console.log('  ' + err.message);
-    console.log('');
+    console.log('LOI: ' + err.message);
     if (err.stack) {
         var lines = err.stack.split('\n');
-        for (var i = 0; i < Math.min(lines.length, 15); i++) {
+        for (var i = 0; i < Math.min(lines.length, 5); i++) {
             console.log('  ' + lines[i]);
         }
     }
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     console.log('');
 });
 
-console.log('[1] Bat dau load modules...');
-
 var express = require('express');
-console.log('[2] express OK');
-
 var http = require('http');
-console.log('[3] http OK');
-
 var socketIO = require('socket.io');
-console.log('[4] socket.io OK');
-
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
-console.log('[5] fs, path, os OK');
-
 var mammoth = require('mammoth');
-console.log('[6] mammoth OK');
-
 var XLSX = require('xlsx');
-console.log('[7] xlsx OK');
-
 var multer = require('multer');
-console.log('[8] multer OK');
-
-console.log('[9] Tat ca modules da load xong!');
 
 // ========== HELPER FUNCTIONS CHO ES5 ==========
 // Merge objects (thay thế spread operator)
@@ -2641,7 +2620,7 @@ process.on('uncaughtException', function(err) {
 
 server.listen(PORT, '0.0.0.0', function() {
     var ip = getLocalIP();
-    var hostname = os.hostname().toLowerCase();
+    var hostname = os.hostname();
     
     // Kiểm tra license
     var licenseStatus = '';
@@ -2664,26 +2643,39 @@ server.listen(PORT, '0.0.0.0', function() {
     console.log('');
     console.log('================================================================');
     console.log('');
-    console.log('   TRAC NGHIEM LAN v' + APP_VERSION + ' - He thong thi trac nghiem');
+    console.log('   TRAC NGHIEM LAN v' + APP_VERSION);
+    console.log('   He thong thi trac nghiem qua mang LAN');
     console.log('');
-    console.log('----------------------------------------------------------------');
+    console.log('================================================================');
     console.log('   ' + licenseStatus);
+    console.log('================================================================');
+    
     if (currentSession.className || currentSession.examName) {
         console.log('');
-        console.log('   Lop: ' + (currentSession.className || 'Chua chon'));
-        console.log('   Bai: ' + (currentSession.examName || 'Chua chon'));
+        console.log('   PHIEN THI HIEN TAI:');
+        console.log('   - Lop: ' + (currentSession.className || 'Chua chon'));
+        console.log('   - Bai thi: ' + (currentSession.examName || 'Chua chon'));
     }
+    
     console.log('');
-    console.log('   Giao vien truy cap (chi tren may nay):');
-    console.log('      http://localhost:' + PORT + '/teacher');
+    console.log('================================================================');
+    console.log('   LINK DANH CHO GIAO VIEN (chi truy cap tren may nay):');
+    console.log('================================================================');
     console.log('');
-    console.log('   Link gui hoc sinh:');
-    console.log('      http://' + hostname + ':' + PORT);
+    console.log('   http://localhost:' + PORT + '/teacher');
+    console.log('   http://127.0.0.1:' + PORT + '/teacher');
     console.log('');
-    console.log('   Link du phong:');
-    console.log('      http://' + ip + ':' + PORT);
+    console.log('================================================================');
+    console.log('   LINK GUI CHO HOC SINH (truy cap tu may khac trong mang LAN):');
+    console.log('================================================================');
     console.log('');
-    console.log('----------------------------------------------------------------');
+    console.log('   Cach 1 - Dung ten may (de nho):');
+    console.log('   http://' + hostname + ':' + PORT);
+    console.log('');
+    console.log('   Cach 2 - Dung dia chi IP:');
+    console.log('   http://' + ip + ':' + PORT);
+    console.log('');
+    console.log('================================================================');
     console.log('   Nhan Ctrl+C de tat server');
     console.log('================================================================');
     console.log('');

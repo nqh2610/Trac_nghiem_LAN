@@ -43,7 +43,7 @@ var APP_VERSION = '1.0.0';
 
 try {
     var licenseModule = require('./license/license-manager');
-    const updateModule = require('./license/update-manager');
+    var updateModule = require('./license/update-manager');
     LicenseManager = licenseModule.LicenseManager;
     TrialManager = licenseModule.TrialManager;
     UpdateManager = updateModule.UpdateManager;
@@ -64,13 +64,13 @@ try {
 }
 
 // Cấu hình multer để lưu file trong memory
-const upload = multer({ storage: multer.memoryStorage() });
+var upload = multer({ storage: multer.memoryStorage() });
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+var app = express();
+var server = http.createServer(app);
+var io = new Server(server);
 
-const PORT = 3456;
+var PORT = 3456;
 
 // Middleware
 app.use(express.json());
@@ -212,27 +212,27 @@ app.get('/teacher', (req, res) => {
 });
 
 // Lưu trữ dữ liệu
-let questions = [];
-let results = [];
-let students = []; // Danh sách học sinh từ Excel
-let studentStatus = {}; // Trạng thái học sinh: { stt: { selected: false, selectedBy: null, completed: false, canRetry: false } }
-let reports = []; // Báo cáo chọn nhầm
+var questions = [];
+var results = [];
+var students = []; // Danh sách học sinh từ Excel
+var studentStatus = {}; // Trạng thái học sinh: { stt: { selected: false, selectedBy: null, completed: false, canRetry: false } }
+var reports = []; // Báo cáo chọn nhầm
 
 // ========== HỆ THỐNG QUẢN LÝ LỚP & BÀI KIỂM TRA ==========
 // Mỗi lớp có thể làm nhiều bài kiểm tra
 // Mỗi bài kiểm tra có thể cho nhiều lớp làm
 // Kết quả lưu theo cặp: classId + examId
 
-let currentSession = {
+var currentSession = {
     classId: null,   // ID lớp hiện tại
     className: null, // Tên lớp hiện tại 
     examId: null,    // ID bài kiểm tra hiện tại
     examName: null   // Tên bài kiểm tra hiện tại
 };
 
-let classesData = {};  // { classId: { id, name, studentFile, studentCount, createdAt } }
+var classesData = {};  // { classId: { id, name, studentFile, studentCount, createdAt } }
 
-let examSettings = {
+var examSettings = {
     title: 'Bài kiểm tra trắc nghiệm',
     timeLimit: 30, // phút
     isOpen: false,
@@ -245,7 +245,7 @@ let examSettings = {
 // ========== QUẢN LÝ LỚP ==========
 function loadClasses() {
     try {
-        const data = fs.readFileSync(path.join(__dirname, 'data', 'classes.json'), 'utf8');
+        var data = fs.readFileSync(path.join(__dirname, 'data', 'classes.json'), 'utf8');
         classesData = JSON.parse(data);
     } catch (err) {
         classesData = {};
@@ -253,7 +253,7 @@ function loadClasses() {
 }
 
 function saveClasses() {
-    const dir = path.join(__dirname, 'data');
+    var dir = path.join(__dirname, 'data');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, 'classes.json'), JSON.stringify(classesData, null, 2), 'utf8');
 }
@@ -269,7 +269,7 @@ function getClassList() {
 }
 
 function createClass(name) {
-    const id = 'class_' + Date.now();
+    var id = 'class_' + Date.now();
     classesData[id] = {
         id,
         name,
@@ -292,16 +292,16 @@ function deleteClass(classId) {
 
 // ========== QUẢN LÝ BÀI KIỂM TRA ==========
 function getSavedExams() {
-    const examsDir = path.join(__dirname, 'data', 'exams');
+    var examsDir = path.join(__dirname, 'data', 'exams');
     if (!fs.existsSync(examsDir)) {
         fs.mkdirSync(examsDir, { recursive: true });
         return [];
     }
     
-    const files = fs.readdirSync(examsDir).filter(f => f.endsWith('.json'));
+    var files = fs.readdirSync(examsDir).filter(f => f.endsWith('.json'));
     return files.map(f => {
         try {
-            const data = JSON.parse(fs.readFileSync(path.join(examsDir, f), 'utf8'));
+            var data = JSON.parse(fs.readFileSync(path.join(examsDir, f), 'utf8'));
             return {
                 id: f.replace('.json', ''),
                 name: data.name || f.replace('.json', ''),
@@ -315,7 +315,7 @@ function getSavedExams() {
 }
 
 function saveExam(examId, name) {
-    const examsDir = path.join(__dirname, 'data', 'exams');
+    var examsDir = path.join(__dirname, 'data', 'exams');
     if (!fs.existsSync(examsDir)) {
         fs.mkdirSync(examsDir, { recursive: true });
     }
@@ -331,7 +331,7 @@ function saveExam(examId, name) {
 }
 
 function loadExam(examId) {
-    const examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+    var examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
     if (!fs.existsSync(examPath)) return null;
     
     try {
@@ -342,7 +342,7 @@ function loadExam(examId) {
 }
 
 function deleteExam(examId) {
-    const examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+    var examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
     if (fs.existsSync(examPath)) {
         fs.unlinkSync(examPath);
         return true;
@@ -356,8 +356,8 @@ function getResultKey(classId, examId) {
 }
 
 function loadResultsForSession(classId, examId) {
-    const key = getResultKey(classId, examId);
-    const filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
+    var key = getResultKey(classId, examId);
+    var filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
     try {
         return JSON.parse(fs.readFileSync(filePath, 'utf8'));
     } catch (e) {
@@ -366,26 +366,26 @@ function loadResultsForSession(classId, examId) {
 }
 
 function saveResultsForSession(classId, examId, resultsData) {
-    const dir = path.join(__dirname, 'data', 'results');
+    var dir = path.join(__dirname, 'data', 'results');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     
-    const key = getResultKey(classId, examId);
+    var key = getResultKey(classId, examId);
     fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(resultsData, null, 2), 'utf8');
 }
 
 function getAllResultsSummary() {
-    const resultsDir = path.join(__dirname, 'data', 'results');
+    var resultsDir = path.join(__dirname, 'data', 'results');
     if (!fs.existsSync(resultsDir)) return [];
     
-    const files = fs.readdirSync(resultsDir).filter(f => f.endsWith('.json'));
+    var files = fs.readdirSync(resultsDir).filter(f => f.endsWith('.json'));
     return files.map(f => {
         try {
-            const [classId, examId] = f.replace('.json', '').split('__');
-            const data = JSON.parse(fs.readFileSync(path.join(resultsDir, f), 'utf8'));
-            const classData = classesData[classId];
-            const className = (classData && classData.name) ? classData.name : classId;
-            const exam = loadExam(examId);
-            const examName = (exam && exam.name) ? exam.name : examId;
+            var [classId, examId] = f.replace('.json', '').split('__');
+            var data = JSON.parse(fs.readFileSync(path.join(resultsDir, f), 'utf8'));
+            var classData = classesData[classId];
+            var className = (classData && classData.name) ? classData.name : classId;
+            var exam = loadExam(examId);
+            var examName = (exam && exam.name) ? exam.name : examId;
             
             return {
                 classId,
@@ -472,13 +472,13 @@ function getSessionResultKey() {
 
 // Load kết quả theo lớp + bài hiện tại
 function loadSessionResults() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (!key) {
         results = [];
         return;
     }
     
-    const filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
+    var filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
     try {
         results = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     } catch (e) {
@@ -488,23 +488,23 @@ function loadSessionResults() {
 
 // Lưu kết quả theo lớp + bài hiện tại
 function saveSessionResults() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (!key) return;
     
-    const dir = path.join(__dirname, 'data', 'results');
+    var dir = path.join(__dirname, 'data', 'results');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(results, null, 2), 'utf8');
 }
 
 // Load trạng thái học sinh theo lớp + bài hiện tại
 function loadSessionStudentStatus() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (!key) {
         studentStatus = {};
         return;
     }
     
-    const filePath = path.join(__dirname, 'data', 'student-status', `${key}.json`);
+    var filePath = path.join(__dirname, 'data', 'student-status', `${key}.json`);
     try {
         studentStatus = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     } catch (e) {
@@ -523,10 +523,10 @@ function loadSessionStudentStatus() {
 
 // Lưu trạng thái học sinh theo lớp + bài hiện tại
 function saveSessionStudentStatus() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (!key) return;
     
-    const dir = path.join(__dirname, 'data', 'student-status');
+    var dir = path.join(__dirname, 'data', 'student-status');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(studentStatus, null, 2), 'utf8');
 }
@@ -539,23 +539,23 @@ function loadStudentsForClass() {
         return;
     }
     
-    const classData = classesData[currentSession.classId];
+    var classData = classesData[currentSession.classId];
     if (!classData || !classData.studentFile) {
         loadStudentsFromDefaultFile();
         return;
     }
     
-    const filePath = path.join(__dirname, 'data', 'class-students', classData.studentFile);
+    var filePath = path.join(__dirname, 'data', 'class-students', classData.studentFile);
     if (!fs.existsSync(filePath)) {
         loadStudentsFromDefaultFile();
         return;
     }
     
     try {
-        const workbook = XLSX.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
+        var workbook = XLSX.readFile(filePath);
+        var sheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[sheetName];
+        var data = XLSX.utils.sheet_to_json(worksheet);
         
         students = parseStudentData(data);
         console.log('[OK] Da tai ' + students.length + ' hoc sinh cho lop ' + currentSession.className);
@@ -567,17 +567,17 @@ function loadStudentsForClass() {
 
 function loadStudentsFromDefaultFile() {
     try {
-        const excelPath = path.join(__dirname, 'danhsach', 'danhsach.xlsx');
+        var excelPath = path.join(__dirname, 'danhsach', 'danhsach.xlsx');
         if (!fs.existsSync(excelPath)) {
             console.log('[!] Chua co file danhsach.xlsx trong thu muc danhsach/');
             students = [];
             return;
         }
         
-        const workbook = XLSX.readFile(excelPath);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
+        var workbook = XLSX.readFile(excelPath);
+        var sheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[sheetName];
+        var data = XLSX.utils.sheet_to_json(worksheet);
         
         students = parseStudentData(data);
         console.log('[OK] Da tai ' + students.length + ' hoc sinh tu file mac dinh');
@@ -593,33 +593,33 @@ function parseStudentData(data) {
         console.log('📋 Các cột trong file Excel:', Object.keys(data[0]));
     }
     
-    let index = 0;
+    var index = 0;
     return data.map(row => {
         index++;
         
         // Hỗ trợ nhiều tên cột STT khác nhau
-        let stt = row['STT'] || row['stt'] || row['Stt'] || row['SỐ TT'] || row['Số TT'] || 
+        var stt = row['STT'] || row['stt'] || row['Stt'] || row['SỐ TT'] || row['Số TT'] || 
                   row['TT'] || row['tt'] || row['Số thứ tự'] || row['So thu tu'] || 
                   row['#'] || row['No'] || row['NO'] || row['no'] || '';
         
         // Hỗ trợ nhiều tên cột Họ
-        let ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] ||
+        var ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] ||
                  row['Họ và tên lót'] || row['Ho va ten lot'] || row['Họ tên lót'] || '';
         
         // Hỗ trợ nhiều tên cột Tên  
-        let ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] ||
+        var ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] ||
                   row['Họ và tên'] || row['Ho va ten'] || row['Họ tên'] || row['Ho ten'] ||
                   row['HỌ VÀ TÊN'] || row['HO VA TEN'] || row['Hovaten'] || row['hovaten'] ||
                   row['FullName'] || row['fullname'] || row['FULLNAME'] || row['Name'] || row['name'] || '';
         
         // Nữ / Giới tính
-        let nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
+        var nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
                  row['Giới tính'] || row['GioiTinh'] || row['GIOITINH'] || row['Gioi tinh'] || 
                  row['GT'] || row['gt'] || row['Gender'] || row['gender'] || '';
         
         // Nếu không có cột HO riêng, lấy tên đầy đủ từ cột TEN
         if (!ho && ten) {
-            const parts = ten.trim().split(/\s+/);
+            var parts = ten.trim().split(/\s+/);
             if (parts.length > 1) {
                 ten = parts.pop();
                 ho = parts.join(' ');
@@ -647,7 +647,7 @@ function parseStudentData(data) {
 function loadQuestions() {
     // Nếu đang có session với examId, load từ exam đã lưu
     if (currentSession.examId) {
-        const exam = loadExam(currentSession.examId);
+        var exam = loadExam(currentSession.examId);
         if (exam) {
             questions = exam.questions || [];
             examSettings = mergeObjects(examSettings, exam.settings);
@@ -658,7 +658,7 @@ function loadQuestions() {
     
     // Load từ file mặc định
     try {
-        const data = fs.readFileSync(path.join(__dirname, 'data', 'questions.json'), 'utf8');
+        var data = fs.readFileSync(path.join(__dirname, 'data', 'questions.json'), 'utf8');
         questions = JSON.parse(data);
         console.log('[OK] Da tai ' + questions.length + ' cau hoi');
     } catch (err) {
@@ -669,7 +669,7 @@ function loadQuestions() {
 
 // Lưu câu hỏi vào file
 function saveQuestions() {
-    const dir = path.join(__dirname, 'data');
+    var dir = path.join(__dirname, 'data');
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
@@ -683,15 +683,15 @@ function saveQuestions() {
 
 // Lưu kết quả vào file - ƯU TIÊN lưu theo session
 function saveResults() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (key) {
         // Lưu theo session
-        const dir = path.join(__dirname, 'data', 'results');
+        var dir = path.join(__dirname, 'data', 'results');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(results, null, 2), 'utf8');
     } else {
         // Lưu vào file chung
-        const dir = path.join(__dirname, 'data');
+        var dir = path.join(__dirname, 'data');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, 'results.json'), JSON.stringify(results, null, 2), 'utf8');
     }
@@ -699,9 +699,9 @@ function saveResults() {
 
 // Load kết quả
 function loadResults() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (key) {
-        const filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
+        var filePath = path.join(__dirname, 'data', 'results', `${key}.json`);
         try {
             results = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         } catch (err) {
@@ -709,7 +709,7 @@ function loadResults() {
         }
     } else {
         try {
-            const data = fs.readFileSync(path.join(__dirname, 'data', 'results.json'), 'utf8');
+            var data = fs.readFileSync(path.join(__dirname, 'data', 'results.json'), 'utf8');
             results = JSON.parse(data);
         } catch (err) {
             results = [];
@@ -736,13 +736,13 @@ function loadStudents() {
 
 // Lưu trạng thái học sinh - ƯU TIÊN lưu theo session
 function saveStudentStatus() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (key) {
-        const dir = path.join(__dirname, 'data', 'student-status');
+        var dir = path.join(__dirname, 'data', 'student-status');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(studentStatus, null, 2), 'utf8');
     } else {
-        const dir = path.join(__dirname, 'data');
+        var dir = path.join(__dirname, 'data');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, 'student-status.json'), JSON.stringify(studentStatus, null, 2), 'utf8');
     }
@@ -750,9 +750,9 @@ function saveStudentStatus() {
 
 // Load trạng thái học sinh
 function loadStudentStatus() {
-    const key = getSessionResultKey();
+    var key = getSessionResultKey();
     if (key) {
-        const filePath = path.join(__dirname, 'data', 'student-status', `${key}.json`);
+        var filePath = path.join(__dirname, 'data', 'student-status', `${key}.json`);
         try {
             studentStatus = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         } catch (err) {
@@ -760,7 +760,7 @@ function loadStudentStatus() {
         }
     } else {
         try {
-            const data = fs.readFileSync(path.join(__dirname, 'data', 'student-status.json'), 'utf8');
+            var data = fs.readFileSync(path.join(__dirname, 'data', 'student-status.json'), 'utf8');
             studentStatus = JSON.parse(data);
         } catch (err) {
             studentStatus = {};
@@ -770,7 +770,7 @@ function loadStudentStatus() {
 
 // Lưu báo cáo
 function saveReports() {
-    const dir = path.join(__dirname, 'data');
+    var dir = path.join(__dirname, 'data');
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
@@ -780,7 +780,7 @@ function saveReports() {
 // Load báo cáo
 function loadReports() {
     try {
-        const data = fs.readFileSync(path.join(__dirname, 'data', 'reports.json'), 'utf8');
+        var data = fs.readFileSync(path.join(__dirname, 'data', 'reports.json'), 'utf8');
         reports = JSON.parse(data);
     } catch (err) {
         reports = [];
@@ -802,10 +802,10 @@ app.get('/api/students', (req, res) => {
 
 // Học sinh chọn tên
 app.post('/api/select-student', (req, res) => {
-    const { stt, socketId } = req.body;
+    var { stt, socketId } = req.body;
     
     // Kiểm tra học sinh có trong danh sách không
-    const student = students.find(s => s.stt == stt);
+    var student = students.find(s => s.stt == stt);
     if (!student) {
         return res.json({ success: false, error: 'Không tìm thấy học sinh' });
     }
@@ -815,7 +815,7 @@ app.post('/api/select-student', (req, res) => {
         studentStatus[stt] = { selected: false, selectedBy: null, completed: false, canRetry: false };
     }
     
-    const status = studentStatus[stt];
+    var status = studentStatus[stt];
     
     // Kiểm tra đã hoàn thành chưa
     if (status.completed && !status.canRetry) {
@@ -843,10 +843,10 @@ app.post('/api/select-student', (req, res) => {
 
 // Hủy chọn học sinh (khi đóng trang hoặc muốn đổi)
 app.post('/api/deselect-student', (req, res) => {
-    const { stt, socketId } = req.body;
+    var { stt, socketId } = req.body;
     
     // Kiểm tra học sinh có trong danh sách không
-    const student = students.find(s => s.stt == stt);
+    var student = students.find(s => s.stt == stt);
     if (!student) {
         return res.json({ success: false, error: 'Không tìm thấy học sinh' });
     }
@@ -856,7 +856,7 @@ app.post('/api/deselect-student', (req, res) => {
         return res.json({ success: true });
     }
     
-    const status = studentStatus[stt];
+    var status = studentStatus[stt];
     
     // Chỉ hủy nếu đúng người đã chọn và chưa hoàn thành
     if (status.selectedBy === socketId && !status.completed) {
@@ -872,16 +872,16 @@ app.post('/api/deselect-student', (req, res) => {
 
 // Báo cáo chọn nhầm
 app.post('/api/report-wrong-selection', (req, res) => {
-    const { wrongSTT, correctSTT, reason, socketId } = req.body;
+    var { wrongSTT, correctSTT, reason, socketId } = req.body;
     
-    const wrongStudent = students.find(s => s.stt == wrongSTT);
-    const correctStudent = students.find(s => s.stt == correctSTT);
+    var wrongStudent = students.find(s => s.stt == wrongSTT);
+    var correctStudent = students.find(s => s.stt == correctSTT);
     
     if (!wrongStudent || !correctStudent) {
         return res.json({ success: false, error: 'Không tìm thấy thông tin học sinh' });
     }
     
-    const report = {
+    var report = {
         id: Date.now(),
         wrongSTT,
         wrongName: `${wrongStudent.ho} ${wrongStudent.ten}`,
@@ -915,9 +915,9 @@ app.post('/api/approve-report', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền thực hiện thao tác này' });
     }
-    const { reportId } = req.body;
+    var { reportId } = req.body;
     
-    const report = reports.find(r => r.id == reportId);
+    var report = reports.find(r => r.id == reportId);
     if (!report) {
         return res.json({ success: false, error: 'Không tìm thấy báo cáo' });
     }
@@ -939,8 +939,8 @@ app.post('/api/approve-report', (req, res) => {
     }
     
     // Chuyển kết quả từ tên sai sang tên đúng (nếu đã nộp bài)
-    const wrongStudent = students.find(s => s.stt == report.wrongSTT);
-    const correctStudent = students.find(s => s.stt == report.correctSTT);
+    var wrongStudent = students.find(s => s.stt == report.wrongSTT);
+    var correctStudent = students.find(s => s.stt == report.correctSTT);
     
     results.forEach(r => {
         if (r.studentSTT == report.wrongSTT && wrongStudent && correctStudent) {
@@ -951,7 +951,7 @@ app.post('/api/approve-report', (req, res) => {
     });
     
     // Cập nhật trạng thái completed cho tên đúng nếu đã có kết quả
-    const hasResult = results.some(r => r.studentSTT == report.correctSTT);
+    var hasResult = results.some(r => r.studentSTT == report.correctSTT);
     if (hasResult && studentStatus[report.correctSTT]) {
         studentStatus[report.correctSTT].completed = true;
         studentStatus[report.correctSTT].selected = false;
@@ -976,9 +976,9 @@ app.post('/api/reject-report', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền thực hiện thao tác này' });
     }
-    const { reportId } = req.body;
+    var { reportId } = req.body;
     
-    const report = reports.find(r => r.id == reportId);
+    var report = reports.find(r => r.id == reportId);
     if (!report) {
         return res.json({ success: false, error: 'Không tìm thấy báo cáo' });
     }
@@ -996,7 +996,7 @@ app.post('/api/allow-retry', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền thực hiện thao tác này' });
     }
-    const { stt } = req.body;
+    var { stt } = req.body;
     
     if (!studentStatus[stt]) {
         return res.json({ success: false, error: 'Không tìm thấy học sinh' });
@@ -1047,7 +1047,7 @@ app.get('/api/exam', (req, res) => {
     if (!examSettings.isOpen) {
         return res.json({ error: 'Bài thi chưa được mở' });
     }
-    const examQuestions = questions.map((q, index) => ({
+    var examQuestions = questions.map((q, index) => ({
         id: index,
         question: q.question,
         options: q.options,
@@ -1070,14 +1070,14 @@ app.post('/api/check-answer', (req, res) => {
         return res.status(403).json({ error: 'Chế độ ôn tập chưa được bật' });
     }
     
-    const { questionIndex, answer } = req.body;
+    var { questionIndex, answer } = req.body;
     
     if (questionIndex < 0 || questionIndex >= questions.length) {
         return res.json({ error: 'Câu hỏi không hợp lệ' });
     }
     
-    const correctAnswer = questions[questionIndex].correct;
-    const isCorrect = answer === correctAnswer;
+    var correctAnswer = questions[questionIndex].correct;
+    var isCorrect = answer === correctAnswer;
     
     res.json({
         isCorrect,
@@ -1088,12 +1088,12 @@ app.post('/api/check-answer', (req, res) => {
 
 // Kiểm tra học sinh đã nộp bài chưa (cho bài thi hiện tại)
 app.get('/api/check-submitted/:stt', (req, res) => {
-    const stt = req.params.stt;
-    const examId = currentSession.examId || 'default';
+    var stt = req.params.stt;
+    var examId = currentSession.examId || 'default';
     
     // Kiểm tra trong studentStatus
-    const status = studentStatus[stt];
-    const hasSubmitted = status && status.completed === true;
+    var status = studentStatus[stt];
+    var hasSubmitted = status && status.completed === true;
     
     res.json({
         submitted: hasSubmitted,
@@ -1107,7 +1107,7 @@ app.post('/api/questions', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền truy cập' });
     }
-    const { question, options, correct, image } = req.body;
+    var { question, options, correct, image } = req.body;
     questions.push({ question, options, correct, image: image || null });
     saveQuestions();
     io.emit('questionsUpdated', questions.length);
@@ -1119,7 +1119,7 @@ app.put('/api/questions/:id', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền truy cập' });
     }
-    const id = parseInt(req.params.id);
+    var id = parseInt(req.params.id);
     if (id >= 0 && id < questions.length) {
         questions[id] = req.body;
         saveQuestions();
@@ -1134,7 +1134,7 @@ app.delete('/api/questions/:id', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền truy cập' });
     }
-    const id = parseInt(req.params.id);
+    var id = parseInt(req.params.id);
     if (id >= 0 && id < questions.length) {
         questions.splice(id, 1);
         saveQuestions();
@@ -1195,7 +1195,7 @@ app.post('/api/exam/close', (req, res) => {
 
 // Kiểm tra mật khẩu bắt đầu làm bài
 app.post('/api/exam/verify-password', (req, res) => {
-    const { password } = req.body;
+    var { password } = req.body;
     
     // Nếu không yêu cầu mật khẩu hoặc mật khẩu trống
     if (!examSettings.requirePassword || !examSettings.examPassword) {
@@ -1235,11 +1235,11 @@ app.post('/api/session', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { classId, examId } = req.body;
+    var { classId, examId } = req.body;
     
     // Validate class nếu có
     if (classId) {
-        const classData = classesData[classId];
+        var classData = classesData[classId];
         if (!classData) {
             return res.json({ success: false, error: 'Không tìm thấy lớp' });
         }
@@ -1249,7 +1249,7 @@ app.post('/api/session', (req, res) => {
     
     // Validate exam nếu có
     if (examId) {
-        const exam = loadExam(examId);
+        var exam = loadExam(examId);
         if (!exam) {
             return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
         }
@@ -1310,21 +1310,21 @@ app.post('/api/classes', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { name } = req.body;
+    var { name } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên lớp' });
     }
     
     // Kiểm tra trùng tên lớp
-    const trimmedName = name.trim().toLowerCase();
-    const existingClass = Object.values(classesData).find(
+    var trimmedName = name.trim().toLowerCase();
+    var existingClass = Object.values(classesData).find(
         c => c.name.toLowerCase() === trimmedName
     );
     if (existingClass) {
         return res.json({ success: false, error: 'Tên lớp đã tồn tại' });
     }
     
-    const newClass = createClass(name.trim());
+    var newClass = createClass(name.trim());
     
     res.json({ 
         success: true, 
@@ -1339,7 +1339,7 @@ app.delete('/api/classes/:classId', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { classId } = req.params;
+    var { classId } = req.params;
     
     if (classId === currentSession.classId) {
         return res.json({ success: false, error: 'Không thể xóa lớp đang sử dụng' });
@@ -1358,8 +1358,8 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
         return res.status(403).json({ error: 'Không có quyền upload danh sách' });
     }
     
-    const { classId } = req.params;
-    const classData = classesData[classId];
+    var { classId } = req.params;
+    var classData = classesData[classId];
     
     console.log(`📤 Upload danh sách cho lớp: ${classId}`);
     console.log(`📦 File: ${req.file ? req.file.originalname : 'không có'}, Size: ${req.file ? req.file.size : 0} bytes`);
@@ -1373,17 +1373,17 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
     }
     
     try {
-        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
+        var workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        var sheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[sheetName];
+        var data = XLSX.utils.sheet_to_json(worksheet);
         
         console.log(`📋 Sheet: ${sheetName}, Số dòng: ${data.length}`);
         if (data.length > 0) {
             console.log(`📋 Các cột: ${Object.keys(data[0]).join(', ')}`);
         }
         
-        const parsedStudents = parseStudentData(data);
+        var parsedStudents = parseStudentData(data);
         console.log(`✅ Parsed: ${parsedStudents.length} học sinh hợp lệ`);
         
         if (parsedStudents.length === 0) {
@@ -1391,10 +1391,10 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
         }
         
         // Lưu file vào thư mục class-students
-        const dir = path.join(__dirname, 'data', 'class-students');
+        var dir = path.join(__dirname, 'data', 'class-students');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         
-        const filename = `${classId}.xlsx`;
+        var filename = `${classId}.xlsx`;
         fs.writeFileSync(path.join(dir, filename), req.file.buffer);
         
         // Cập nhật thông tin lớp
@@ -1439,16 +1439,16 @@ app.post('/api/exams', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { name } = req.body;
+    var { name } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
     }
     
     // Tạo ID unique
-    const examId = 'exam_' + Date.now();
+    var examId = 'exam_' + Date.now();
     
     // Lưu bài kiểm tra trống
-    const examData = {
+    var examData = {
         name: name.trim(),
         questions: [],
         settings: {
@@ -1460,7 +1460,7 @@ app.post('/api/exams', (req, res) => {
         createdAt: new Date().toISOString()
     };
     
-    const dir = path.join(__dirname, 'data', 'exams');
+    var dir = path.join(__dirname, 'data', 'exams');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, `${examId}.json`), JSON.stringify(examData, null, 2), 'utf8');
     
@@ -1477,14 +1477,14 @@ app.delete('/api/exams/:examId', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { examId } = req.params;
+    var { examId } = req.params;
     
     // Không cho xóa bài đang dùng
     if (examId === currentSession.examId) {
         return res.json({ success: false, error: 'Không thể xóa bài đang sử dụng' });
     }
     
-    const examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+    var examPath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
     if (fs.existsSync(examPath)) {
         fs.unlinkSync(examPath);
         res.json({ success: true, message: 'Đã xóa bài kiểm tra' });
@@ -1499,13 +1499,13 @@ app.post('/api/exams/save', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { name } = req.body;
+    var { name } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
     }
     
     // Tạo ID từ tên (loại bỏ ký tự đặc biệt)
-    const examId = name.trim()
+    var examId = name.trim()
         .toLowerCase()
         .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
         .replace(/[èéẹẻẽêềếệểễ]/g, 'e')
@@ -1538,8 +1538,8 @@ app.post('/api/exams/switch', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { examId, resetStudents } = req.body;
-    const exam = loadExam(examId);
+    var { examId, resetStudents } = req.body;
+    var exam = loadExam(examId);
     
     if (!exam) {
         return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
@@ -1600,23 +1600,23 @@ app.post('/api/exams/create', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { name } = req.body;
+    var { name } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
     }
     
     // Tạo examId mới
-    const newExamId = 'exam_' + Date.now();
+    var newExamId = 'exam_' + Date.now();
     
     // Lưu bài kiểm tra mới vào file riêng (trống, chưa có câu hỏi)
-    const examData = {
+    var examData = {
         id: newExamId,
         name: name.trim(),
         questions: [],
         createdAt: new Date().toISOString()
     };
     
-    const examFilePath = path.join(__dirname, 'data', 'exams', `${newExamId}.json`);
+    var examFilePath = path.join(__dirname, 'data', 'exams', `${newExamId}.json`);
     fs.writeFileSync(examFilePath, JSON.stringify(examData, null, 2));
     
     res.json({ 
@@ -1632,7 +1632,7 @@ app.post('/api/exams/:examId/import-json', upload.single('file'), (req, res) => 
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { examId } = req.params;
+    var { examId } = req.params;
     
     if (!req.file) {
         return res.json({ success: false, error: 'Không có file được upload' });
@@ -1640,15 +1640,15 @@ app.post('/api/exams/:examId/import-json', upload.single('file'), (req, res) => 
     
     try {
         // Đọc nội dung file JSON
-        const jsonContent = req.file.buffer.toString('utf8');
-        const uploadedQuestions = JSON.parse(jsonContent);
+        var jsonContent = req.file.buffer.toString('utf8');
+        var uploadedQuestions = JSON.parse(jsonContent);
         
         if (!Array.isArray(uploadedQuestions) || uploadedQuestions.length === 0) {
             return res.json({ success: false, error: 'File JSON không hợp lệ hoặc rỗng' });
         }
         
         // Validate câu hỏi
-        const validQuestions = [];
+        var validQuestions = [];
         uploadedQuestions.forEach((q, index) => {
             if (q.question && q.options && Array.isArray(q.options) && q.options.length >= 2 &&
                 typeof q.correct === 'number' && q.correct >= 0 && q.correct < q.options.length) {
@@ -1666,12 +1666,12 @@ app.post('/api/exams/:examId/import-json', upload.single('file'), (req, res) => 
         }
         
         // Đọc file bài kiểm tra
-        const examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+        var examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
         if (!fs.existsSync(examFilePath)) {
             return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
         }
         
-        const examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
+        var examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
         examData.questions = validQuestions;
         examData.updatedAt = new Date().toISOString();
         
@@ -1695,29 +1695,29 @@ app.post('/api/exams/:examId/import-word', upload.single('file'), (req, res) => 
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { examId } = req.params;
+    var { examId } = req.params;
     
     if (!req.file) {
         return res.json({ success: false, error: 'Không có file được upload' });
     }
     
     try {
-        const result = mammoth.extractRawText({ buffer: req.file.buffer });
+        var result = mammoth.extractRawText({ buffer: req.file.buffer });
         result.then(data => {
-            const text = data.value;
-            const parsedQuestions = parseQuestionsFromText(text);
+            var text = data.value;
+            var parsedQuestions = parseQuestionsFromText(text);
             
             if (parsedQuestions.length === 0) {
                 return res.json({ success: false, error: 'Không tìm thấy câu hỏi hợp lệ trong file' });
             }
             
             // Đọc và cập nhật bài kiểm tra
-            const examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
+            var examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
             if (!fs.existsSync(examFilePath)) {
                 return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
             }
             
-            const examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
+            var examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
             examData.questions = parsedQuestions;
             examData.updatedAt = new Date().toISOString();
             
@@ -1744,13 +1744,13 @@ app.post('/api/exams/new', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { name, resetStudents } = req.body;
+    var { name, resetStudents } = req.body;
     if (!name || name.trim() === '') {
         return res.json({ success: false, error: 'Vui lòng nhập tên bài kiểm tra' });
     }
     
     // Tạo examId mới
-    const newExamId = 'exam_' + Date.now();
+    var newExamId = 'exam_' + Date.now();
     
     // Reset câu hỏi
     questions = [];
@@ -1799,7 +1799,7 @@ app.delete('/api/exams/:examId', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền thực hiện' });
     }
     
-    const { examId } = req.params;
+    var { examId } = req.params;
     
     if (examId === currentSession.examId) {
         return res.json({ success: false, error: 'Không thể xóa bài kiểm tra đang sử dụng' });
@@ -1816,7 +1816,7 @@ app.delete('/api/exams/:examId', (req, res) => {
 
 // Nộp bài
 app.post('/api/submit', (req, res) => {
-    const { studentSTT, studentName, studentClass, answers, timeSpent } = req.body;
+    var { studentSTT, studentName, studentClass, answers, timeSpent } = req.body;
     
     // Kiểm tra học sinh đã nộp bài chưa (không cho nộp lại trừ khi được phép)
     if (studentSTT && studentStatus[studentSTT] && studentStatus[studentSTT].completed && !studentStatus[studentSTT].canRetry) {
@@ -1827,16 +1827,16 @@ app.post('/api/submit', (req, res) => {
     }
     
     // Chấm điểm
-    let correctCount = 0;
-    const details = questions.map((q, index) => {
-        const isCorrect = answers[index] === q.correct;
+    var correctCount = 0;
+    var details = questions.map((q, index) => {
+        var isCorrect = answers[index] === q.correct;
         if (isCorrect) correctCount++;
         
         // Lấy nội dung text của đáp án để dễ kiểm tra (vì đề đã đảo thứ tự)
-        const studentAnswerText = (answers[index] >= 0 && answers[index] < q.options.length) 
+        var studentAnswerText = (answers[index] >= 0 && answers[index] < q.options.length) 
             ? q.options[answers[index]] 
             : null;
-        const correctAnswerText = q.options[q.correct];
+        var correctAnswerText = q.options[q.correct];
         
         return {
             question: q.question,
@@ -1848,9 +1848,9 @@ app.post('/api/submit', (req, res) => {
         };
     });
     
-    const score = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) / 10 : 0;
+    var score = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) / 10 : 0;
     
-    const result = {
+    var result = {
         studentSTT,
         studentName,
         studentClass,
@@ -1863,7 +1863,7 @@ app.post('/api/submit', (req, res) => {
     };
     
     // Tìm và cập nhật kết quả cũ nếu có, hoặc thêm mới
-    const existingIndex = results.findIndex(r => r.studentSTT == studentSTT);
+    var existingIndex = results.findIndex(r => r.studentSTT == studentSTT);
     if (existingIndex >= 0) {
         results[existingIndex] = result;
         io.emit('resultUpdated', result);
@@ -1930,16 +1930,16 @@ app.get('/api/results/export', (req, res) => {
     }
     
     // Tạo tên file: TenLop_TenBai_NgayThang
-    const className = currentSession.className || 'ChuaChonLop';
-    const examName = currentSession.examName || 'ChuaChonBai';
-    const now = new Date();
-    const dateStr = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}`;
+    var className = currentSession.className || 'ChuaChonLop';
+    var examName = currentSession.examName || 'ChuaChonBai';
+    var now = new Date();
+    var dateStr = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}`;
     
-    const fileName = `${removeVietnameseTones(className)}_${removeVietnameseTones(examName)}_${dateStr}.xlsx`;
+    var fileName = `${removeVietnameseTones(className)}_${removeVietnameseTones(examName)}_${dateStr}.xlsx`;
     
     // Tạo dữ liệu cho Excel theo danh sách đầy đủ học sinh trong lớp
     // Sắp xếp theo STT, học sinh chưa thi thì để trống điểm
-    const excelData = [];
+    var excelData = [];
     
     // Lấy danh sách học sinh, sắp xếp theo STT
     var sortedStudents = copyArray(students).sort(function(a, b) { return a.stt - b.stt; });
@@ -1978,7 +1978,7 @@ app.get('/api/results/export', (req, res) => {
     }
     
     // Tạo worksheet và workbook
-    const ws = XLSX.utils.json_to_sheet(excelData);
+    var ws = XLSX.utils.json_to_sheet(excelData);
     ws['!cols'] = [
         { wch: 5 },   // STT
         { wch: 25 },  // Họ tên
@@ -1989,10 +1989,10 @@ app.get('/api/results/export', (req, res) => {
         { wch: 20 }   // Thời gian nộp
     ];
     
-    const wb = XLSX.utils.book_new();
+    var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'KetQua');
     
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    var buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     res.send(buffer);
@@ -2004,7 +2004,7 @@ app.get('/api/sample-excel', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền tải file mẫu' });
     }
     
-    const sampleData = [
+    var sampleData = [
         { STT: 1, HO: 'Nguyễn Văn', TEN: 'An', NU: '' },
         { STT: 2, HO: 'Trần Thị', TEN: 'Bình', NU: 'X' },
         { STT: 3, HO: 'Lê Hoàng', TEN: 'Cường', NU: '' },
@@ -2012,13 +2012,13 @@ app.get('/api/sample-excel', (req, res) => {
         { STT: 5, HO: 'Hoàng Văn', TEN: 'Em', NU: '' }
     ];
     
-    const ws = XLSX.utils.json_to_sheet(sampleData);
+    var ws = XLSX.utils.json_to_sheet(sampleData);
     ws['!cols'] = [{ wch: 5 }, { wch: 20 }, { wch: 15 }, { wch: 5 }];
     
-    const wb = XLSX.utils.book_new();
+    var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'DanhSach');
     
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    var buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=mau-daydu-stt-ho-ten-nu.xlsx');
     res.send(buffer);
@@ -2030,7 +2030,7 @@ app.get('/api/sample-excel-2', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền tải file mẫu' });
     }
     
-    const sampleData = [
+    var sampleData = [
         { STT: 1, TEN: 'Nguyễn Văn An', NU: '' },
         { STT: 2, TEN: 'Trần Thị Bình', NU: 'X' },
         { STT: 3, TEN: 'Lê Hoàng Cường', NU: '' },
@@ -2038,13 +2038,13 @@ app.get('/api/sample-excel-2', (req, res) => {
         { STT: 5, TEN: 'Hoàng Văn Em', NU: '' }
     ];
     
-    const ws = XLSX.utils.json_to_sheet(sampleData);
+    var ws = XLSX.utils.json_to_sheet(sampleData);
     ws['!cols'] = [{ wch: 5 }, { wch: 25 }, { wch: 5 }];
     
-    const wb = XLSX.utils.book_new();
+    var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'DanhSach');
     
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    var buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=mau-phobien-stt-ten-nu.xlsx');
     res.send(buffer);
@@ -2056,7 +2056,7 @@ app.get('/api/sample-excel-3', (req, res) => {
         return res.status(403).json({ error: 'Không có quyền tải file mẫu' });
     }
     
-    const sampleData = [
+    var sampleData = [
         { STT: 1, TEN: 'Nguyễn Văn An' },
         { STT: 2, TEN: 'Trần Thị Bình' },
         { STT: 3, TEN: 'Lê Hoàng Cường' },
@@ -2064,13 +2064,13 @@ app.get('/api/sample-excel-3', (req, res) => {
         { STT: 5, TEN: 'Hoàng Văn Em' }
     ];
     
-    const ws = XLSX.utils.json_to_sheet(sampleData);
+    var ws = XLSX.utils.json_to_sheet(sampleData);
     ws['!cols'] = [{ wch: 5 }, { wch: 25 }];
     
-    const wb = XLSX.utils.book_new();
+    var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'DanhSach');
     
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    var buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=mau-dongian-stt-ten.xlsx');
     res.send(buffer);
@@ -2084,10 +2084,10 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
     
     try {
         // Đọc file Excel từ buffer
-        const workbook = XLSX.read(req.body, { type: 'buffer' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
+        var workbook = XLSX.read(req.body, { type: 'buffer' });
+        var sheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[sheetName];
+        var data = XLSX.utils.sheet_to_json(worksheet);
         
         if (!data || data.length === 0) {
             return res.json({ 
@@ -2097,9 +2097,9 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
         }
         
         // Kiểm tra cột bắt buộc
-        const firstRow = data[0];
-        const hasSTT = 'STT' in firstRow || 'stt' in firstRow || 'Stt' in firstRow;
-        const hasTEN = 'TEN' in firstRow || 'Ten' in firstRow || 'ten' in firstRow || 
+        var firstRow = data[0];
+        var hasSTT = 'STT' in firstRow || 'stt' in firstRow || 'Stt' in firstRow;
+        var hasTEN = 'TEN' in firstRow || 'Ten' in firstRow || 'ten' in firstRow || 
                        'Tên' in firstRow || 'TÊN' in firstRow;
         
         if (!hasSTT) {
@@ -2117,15 +2117,15 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
         }
         
         // Parse dữ liệu học sinh
-        const parsedStudents = [];
-        const errors = [];
+        var parsedStudents = [];
+        var errors = [];
         
         data.forEach((row, index) => {
-            const rowNum = index + 2; // Dòng trong Excel (1-indexed + header)
-            const stt = row['STT'] || row['stt'] || row['Stt'] || '';
-            let ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] || '';
-            let ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] || '';
-            let nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
+            var rowNum = index + 2; // Dòng trong Excel (1-indexed + header)
+            var stt = row['STT'] || row['stt'] || row['Stt'] || '';
+            var ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] || '';
+            var ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] || '';
+            var nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
                      row['Giới tính'] || row['GioiTinh'] || row['GIOITINH'] || row['Gioi tinh'] || '';
             
             // Kiểm tra lỗi từng dòng
@@ -2141,7 +2141,7 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
             
             // Nếu không có cột HO riêng, tách họ tên từ cột TEN
             if (!ho && ten) {
-                const parts = ten.trim().split(/\s+/);
+                var parts = ten.trim().split(/\s+/);
                 if (parts.length > 1) {
                     ten = parts.pop();
                     ho = parts.join(' ');
@@ -2166,7 +2166,7 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
         }
         
         // Lưu file vào thư mục danhsach
-        const dir = path.join(__dirname, 'danhsach');
+        var dir = path.join(__dirname, 'danhsach');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -2207,8 +2207,8 @@ app.post('/api/import-json-file', upload.single('file'), (req, res) => {
     
     try {
         // Đọc nội dung file JSON từ buffer
-        const jsonContent = req.file.buffer.toString('utf8');
-        const uploadedQuestions = JSON.parse(jsonContent);
+        var jsonContent = req.file.buffer.toString('utf8');
+        var uploadedQuestions = JSON.parse(jsonContent);
         
         // Kiểm tra dữ liệu
         if (!Array.isArray(uploadedQuestions)) {
@@ -2226,11 +2226,11 @@ app.post('/api/import-json-file', upload.single('file'), (req, res) => {
         }
         
         // Validate và import câu hỏi
-        const validQuestions = [];
-        const errors = [];
+        var validQuestions = [];
+        var errors = [];
         
         uploadedQuestions.forEach((q, index) => {
-            const qNum = index + 1;
+            var qNum = index + 1;
             
             if (!q.question || typeof q.question !== 'string' || q.question.trim() === '') {
                 errors.push(`Câu ${qNum}: Thiếu nội dung câu hỏi`);
@@ -2290,7 +2290,7 @@ app.post('/api/upload-questions-json', express.json({ limit: '10mb' }), (req, re
     }
     
     try {
-        const uploadedQuestions = req.body;
+        var uploadedQuestions = req.body;
         
         // Kiểm tra dữ liệu
         if (!Array.isArray(uploadedQuestions)) {
@@ -2308,11 +2308,11 @@ app.post('/api/upload-questions-json', express.json({ limit: '10mb' }), (req, re
         }
         
         // Validate từng câu hỏi
-        const validQuestions = [];
-        const errors = [];
+        var validQuestions = [];
+        var errors = [];
         
         uploadedQuestions.forEach((q, index) => {
-            const qNum = index + 1;
+            var qNum = index + 1;
             
             // Kiểm tra câu hỏi
             if (!q.question || typeof q.question !== 'string' || q.question.trim() === '') {
@@ -2390,13 +2390,13 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
     }
     
     try {
-        const result = await mammoth.extractRawText({ buffer: req.file.buffer });
-        const text = result.value;
+        var result = await mammoth.extractRawText({ buffer: req.file.buffer });
+        var text = result.value;
         
         console.log(`📝 Nội dung trích xuất: ${text.substring(0, 200)}...`);
         
         // Parse câu hỏi từ text
-        const parsedQuestions = parseQuestionsFromText(text);
+        var parsedQuestions = parseQuestionsFromText(text);
         
         if (parsedQuestions.length === 0) {
             return res.json({ success: false, error: 'Không tìm thấy câu hỏi nào. Kiểm tra lại định dạng file.' });

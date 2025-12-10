@@ -834,7 +834,7 @@
                         </div>
                     </div>
                     <button class="btn" onclick="showClassManager()" style="background: white; color: #667eea; font-weight: bold; padding: 10px 15px; font-size: 0.9em; white-space: nowrap;">
-                        📋 Quản lý Lớp
+                        [List] Quản lý Lớp
                     </button>
                 </div>
                 
@@ -842,7 +842,7 @@
                 <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
-                            <span style="font-size: 1.8em;">📝</span>
+                            <span style="font-size: 1.8em;">[Edit]</span>
                         </div>
                         <div>
                             <p style="margin: 0; opacity: 0.85; font-size: 0.8em; text-transform: uppercase;">Bài kiểm tra</p>
@@ -851,23 +851,23 @@
                         </div>
                     </div>
                     <button class="btn" onclick="showExamManager()" style="background: white; color: #667eea; font-weight: bold; padding: 10px 15px; font-size: 0.9em; white-space: nowrap;">
-                        📚 Quản lý Đề
+                        [Book] Quản lý Đề
                     </button>
                 </div>
             </div>
             
             <!-- Thông tin kết quả session hiện tại -->
             <div id="sessionResultInfo" style="margin-top: 15px; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 25px;">
-                <span>📊 Kết quả: <strong id="sessionResultCount">0</strong> bài đã nộp</span>
+                <span>[Chart] Kết quả: <strong id="sessionResultCount">0</strong> bài đã nộp</span>
                 <span>⏳ Đang làm: <strong id="sessionInProgressCount">0</strong></span>
-                <span>✅ Hoàn thành: <strong id="sessionCompletedCount">0</strong></span>
+                <span>[OK] Hoàn thành: <strong id="sessionCompletedCount">0</strong></span>
             </div>
         </div>
 
         <div class="tabs">
-            <button class="tab active" onclick="showTab('questions')">📝 Câu hỏi</button>
+            <button class="tab active" onclick="showTab('questions')">[Edit] Câu hỏi</button>
             <button class="tab" onclick="showTab('students')">👨‍🎓 Học sinh</button>
-            <button class="tab" onclick="showTab('results')">📊 Kết quả</button>
+            <button class="tab" onclick="showTab('results')">[Chart] Kết quả</button>
             <button class="tab" onclick="showTab('settings')">⚙️ Cài đặt</button>
         </div>
 
@@ -907,7 +907,7 @@
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.2em;">📋</span> Danh sách lớp đã tạo
+                                <span style="font-size: 1.2em;">[List]</span> Danh sách lớp đã tạo
                             </h4>
                             <span id="classCount" style="background: #1976D2; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.85em;">0 lớp</span>
                         </div>
@@ -941,7 +941,7 @@
                 
                 <!-- Header -->
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin: 0; font-size: 1.3em;">📝 Quản lý Bài kiểm tra</h2>
+                    <h2 style="margin: 0; font-size: 1.3em;">[Edit] Quản lý Bài kiểm tra</h2>
                     <button onclick="hideExamManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;">✕</button>
                 </div>
                 
@@ -967,11 +967,11 @@
                                 ✨ Tạo bài trống
                             </button>
                             <label class="btn" style="background: #2196F3; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;">
-                                📝 Upload Word
+                                [Edit] Upload Word
                                 <input type="file" accept=".docx" style="display: none;" onchange="createExamFromFile(this, 'word')">
                             </label>
                             <label class="btn" style="background: #ff9800; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;">
-                                📋 Upload JSON
+                                [List] Upload JSON
                                 <input type="file" accept=".json" style="display: none;" onchange="createExamFromFile(this, 'json')">
                             </label>
                         </div>
@@ -985,13 +985,13 @@
                     <!-- Lưu bài hiện tại -->
                     <div style="background: #fff8e1; border-radius: 12px; padding: 20px; border: 2px solid #ffcc02; margin-bottom: 25px;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <span style="font-size: 1.5em;">💾</span>
+                            <span style="font-size: 1.5em;">[Save]</span>
                             <h4 style="margin: 0; color: #f57f17;">Lưu bài đang làm</h4>
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="saveExamName" maxlength="40" placeholder="Nhập tên để lưu (tối đa 40 ký tự)" style="flex: 1; padding: 12px; border: 1px solid #ffe082; border-radius: 8px; box-sizing: border-box;">
                             <button class="btn" onclick="saveCurrentExam()" style="background: #ff9800; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; white-space: nowrap;">
-                                💾 Lưu
+                                [Save] Lưu
                             </button>
                         </div>
                     </div>
@@ -1000,7 +1000,7 @@
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.2em;">📚</span> Bài kiểm tra đã lưu
+                                <span style="font-size: 1.2em;">[Book]</span> Bài kiểm tra đã lưu
                             </h4>
                             <span id="examCount" style="background: #667eea; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.85em;">0 bài</span>
                         </div>
@@ -1018,7 +1018,7 @@
             
             <!-- Banner hướng dẫn -->
             <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 1px solid #667eea40; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;">
-                <h4 style="margin: 0 0 5px 0; color: #667eea;">📝 Đang soạn: <span id="currentExamNameInQuestions" style="color: #333;">--</span></h4>
+                <h4 style="margin: 0 0 5px 0; color: #667eea;">[Edit] Đang soạn: <span id="currentExamNameInQuestions" style="color: #333;">--</span></h4>
                 <p style="margin: 0; color: #666; font-size: 0.9em;">Các câu hỏi bên dưới sẽ được thêm vào bài kiểm tra đang chọn</p>
             </div>
             
@@ -1072,7 +1072,7 @@
             
             <!-- Báo cáo chọn nhầm -->
             <div class="settings-card" id="reportsSection" style="display: none;">
-                <h3>⚠️ Báo cáo chọn nhầm (<span id="reportCount">0</span>)</h3>
+                <h3>[!] Báo cáo chọn nhầm (<span id="reportCount">0</span>)</h3>
                 <div id="reportsList"></div>
             </div>
             
@@ -1100,7 +1100,7 @@
             <div class="settings-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 4px solid #1976D2; margin-bottom: 15px;">
                 <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1;">
-                        <h4 style="margin: 0 0 5px 0; color: #1565C0;">📋 Danh sách học sinh của lớp: <span id="currentClassNameInStudents" style="color: #333;">--</span></h4>
+                        <h4 style="margin: 0 0 5px 0; color: #1565C0;">[List] Danh sách học sinh của lớp: <span id="currentClassNameInStudents" style="color: #333;">--</span></h4>
                         <p style="margin: 0; color: #666; font-size: 0.9em;">Để upload hoặc thay đổi danh sách học sinh, vui lòng vào quản lý Lớp</p>
                     </div>
                     <button class="btn btn-primary" onclick="showClassManager()" style="white-space: nowrap;">
@@ -1110,8 +1110,8 @@
             </div>
             
             <div class="btn-group">
-                <button class="btn btn-danger" onclick="resetAllStudents()">🔄 Reset tất cả trạng thái</button>
-                <button class="btn btn-secondary" onclick="loadStudents()">🔄 Làm mới</button>
+                <button class="btn btn-danger" onclick="resetAllStudents()">[Reload] Reset tất cả trạng thái</button>
+                <button class="btn btn-secondary" onclick="loadStudents()">[Reload] Làm mới</button>
             </div>
             
             <table class="results-table" style="margin-top: 20px;">
@@ -1151,7 +1151,7 @@
             <div class="btn-group">
                 <button class="btn btn-success" onclick="exportResults()">📥 Xuất Excel</button>
                 <button class="btn btn-danger" onclick="clearResults()">🗑️ Xóa tất cả kết quả</button>
-                <button class="btn btn-secondary" onclick="loadResults()">🔄 Làm mới</button>
+                <button class="btn btn-secondary" onclick="loadResults()">[Reload] Làm mới</button>
             </div>
 
             <table class="results-table">
@@ -1211,7 +1211,7 @@
                 
                 <div class="setting-row" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 2px solid #ff9800; border-radius: 12px; padding: 15px;">
                     <div>
-                        <strong style="color: #e65100;">📚 Chế độ ÔN TẬP</strong>
+                        <strong style="color: #e65100;">[Book] Chế độ ÔN TẬP</strong>
                         <p style="color: #bf360c; font-size: 0.9em;">Hiển thị đúng/sai ngay khi học sinh chọn đáp án (không tính điểm)</p>
                     </div>
                     <label class="toggle-switch">
@@ -1227,7 +1227,7 @@
                         <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
                             <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;" onchange="saveSettings()">
                             <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên">🎲</button>
-                            <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu">📋</button>
+                            <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu">[List]</button>
                         </div>
                     </div>
                     <label class="toggle-switch" style="margin-left: 15px;">
@@ -1236,11 +1236,11 @@
                     </label>
                 </div>
                 
-                <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px;">💾 Lưu cài đặt</button>
+                <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px;">[Save] Lưu cài đặt</button>
             </div>
 
             <div class="settings-card">
-                <h3>📋 Hướng dẫn</h3>
+                <h3>[List] Hướng dẫn</h3>
                 <ol style="line-height: 2; padding-left: 20px;">
                     <li>Thêm câu hỏi vào hệ thống</li>
                     <li>Cài đặt thời gian làm bài</li>
@@ -1263,12 +1263,12 @@
                 <input type="hidden" id="editQuestionId">
                 
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">📝 Nội dung câu hỏi:</label>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">[Edit] Nội dung câu hỏi:</label>
                     <textarea id="editQuestionText" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; resize: vertical; box-sizing: border-box;" placeholder="Nhập nội dung câu hỏi..."></textarea>
                 </div>
                 
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">📋 Các đáp án (chọn đáp án đúng):</label>
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">[List] Các đáp án (chọn đáp án đúng):</label>
                     <div style="display: grid; gap: 12px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <input type="radio" name="editCorrect" value="0" id="editCorrect0" style="width: 20px; height: 20px; cursor: pointer;">
@@ -1294,8 +1294,8 @@
                 </div>
                 
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px;">
-                    <button onclick="closeEditQuestionModal()" style="padding: 12px 25px; background: #e0e0e0; color: #333; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">❌ Hủy</button>
-                    <button onclick="saveEditQuestion()" style="padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">💾 Lưu thay đổi</button>
+                    <button onclick="closeEditQuestionModal()" style="padding: 12px 25px; background: #e0e0e0; color: #333; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">[X] Hủy</button>
+                    <button onclick="saveEditQuestion()" style="padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">[Save] Lưu thay đổi</button>
                 </div>
             </div>
         </div>
@@ -1305,7 +1305,7 @@
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>📋 Chi tiết bài làm</h3>
+                <h3>[List] Chi tiết bài làm</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div id="detailContent"></div>
@@ -1321,7 +1321,7 @@
                 <div id="customAlertModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center;backdrop-filter:blur(3px);">
                     <div style="background:white;border-radius:16px;padding:0;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalPop 0.3s ease;">
                         <div id="alertHeader" style="padding:20px 24px 15px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px;">
-                            <span id="alertIcon" style="font-size:28px;">⚠️</span>
+                            <span id="alertIcon" style="font-size:28px;">[!]</span>
                             <span id="alertTitle" style="font-size:18px;font-weight:600;color:#333;">Thông báo</span>
                         </div>
                         <div style="padding:20px 24px;">
@@ -1343,11 +1343,11 @@
             
             // Custom alert
             window.showAlert = function(message, type = 'warning') {
-                const icons = {warning:'⚠️', error:'❌', success:'✅', info:'ℹ️'};
+                const icons = {warning:'[!]', error:'[X]', success:'[OK]', info:'[i]'};
                 const titles = {warning:'Cảnh báo', error:'Lỗi', success:'Thành công', info:'Thông báo'};
                 const colors = {warning:'#f59e0b', error:'#ef4444', success:'#10b981', info:'#3b82f6'};
                 
-                icon.textContent = icons[type] || '⚠️';
+                icon.textContent = icons[type] || '[!]';
                 title.textContent = titles[type] || 'Thông báo';
                 title.style.color = colors[type] || '#333';
                 msg.innerHTML = message;
@@ -1371,7 +1371,7 @@
             modal.onclick = function(e) { if(e.target === modal) closeAlert(); };
             
             // Override alert
-            window.alert = function(msg) { showAlert(msg, msg.includes('❌') || msg.includes('Lỗi') ? 'error' : msg.includes('✅') ? 'success' : 'warning'); };
+            window.alert = function(msg) { showAlert(msg, msg.includes('[X]') || msg.includes('Lỗi') ? 'error' : msg.includes('[OK]') ? 'success' : 'warning'); };
         })();
         // ========== END CUSTOM ALERT ==========
         
@@ -1391,13 +1391,13 @@
 
         // Socket events
         socket.on('newResult', (result) => {
-            showNotification(`🎉 ${result.studentName} đã nộp bài - Điểm: ${result.score}`);
+            showNotification(`[*] ${result.studentName} đã nộp bài - Điểm: ${result.score}`);
             loadResults();
             loadStudents();
         });
 
         socket.on('resultUpdated', (result) => {
-            showNotification(`🔄 ${result.studentName} đã cập nhật bài - Điểm: ${result.score}`);
+            showNotification(`[Reload] ${result.studentName} đã cập nhật bài - Điểm: ${result.score}`);
             loadResults();
             loadStudents();
         });
@@ -1412,17 +1412,17 @@
         });
 
         socket.on('studentTabLeave', (data) => {
-            showNotification(`⚠️ ${data.name} (STT ${data.stt}) rời trang lần ${data.count}!`, 'warning');
+            showNotification(`[!] ${data.name} (STT ${data.stt}) rời trang lần ${data.count}!`, 'warning');
             loadStudents(); // Refresh to show tab leave count
         });
 
         socket.on('newReport', (report) => {
-            showNotification(`⚠️ Có báo cáo mới: ${report.wrongName} → ${report.correctName}`);
+            showNotification(`[!] Có báo cáo mới: ${report.wrongName} → ${report.correctName}`);
             loadReports();
         });
 
         socket.on('allStudentsReset', () => {
-            showNotification('🔄 Đã reset tất cả trạng thái học sinh!');
+            showNotification('[Reload] Đã reset tất cả trạng thái học sinh!');
             loadStudents();
         });
 
@@ -1466,7 +1466,7 @@
                             <div class="question-option ${j === q.correct ? 'correct' : ''}">
                                 <span class="option-label">${String.fromCharCode(65 + j)}</span>
                                 ${escapeHtml(opt)}
-                                ${j === q.correct ? ' ✓' : ''}
+                                ${j === q.correct ? ' [v]' : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -1494,7 +1494,7 @@
             });
 
             if (res.ok) {
-                showNotification('✅ Đã thêm câu hỏi!');
+                showNotification('[OK] Đã thêm câu hỏi!');
                 e.target.reset();
                 loadQuestions();
             }
@@ -1547,11 +1547,11 @@
             
             // Validate
             if (!question) {
-                alert('⚠️ Vui lòng nhập nội dung câu hỏi!');
+                alert('[!] Vui lòng nhập nội dung câu hỏi!');
                 return;
             }
             if (!optionA || !optionB) {
-                alert('⚠️ Cần ít nhất 2 đáp án!');
+                alert('[!] Cần ít nhất 2 đáp án!');
                 return;
             }
             
@@ -1577,14 +1577,14 @@
                 });
                 
                 if (res.ok) {
-                    showNotification('✅ Đã cập nhật câu hỏi!');
+                    showNotification('[OK] Đã cập nhật câu hỏi!');
                     closeEditQuestionModal();
                     loadQuestions();
                 } else {
-                    alert('❌ Lỗi khi lưu câu hỏi!');
+                    alert('[X] Lỗi khi lưu câu hỏi!');
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -1661,7 +1661,7 @@
             function formatAnswer(answerIndex, answerText, questionIndex, isCorrectAnswer) {
                 // Kiểm tra học sinh có chọn đáp án không
                 if (!hasAnswer(answerIndex)) {
-                    return '<em style="color: #ff9800; font-weight: bold;">⚠️ Không chọn đáp án</em>';
+                    return '<em style="color: #ff9800; font-weight: bold;">[!] Không chọn đáp án</em>';
                 }
                 
                 const letter = String.fromCharCode(65 + answerIndex);
@@ -1693,14 +1693,14 @@
                     <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
                     <div style="margin-top: 5px;">
                         <span style="color: ${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
-                            📝 HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
+                            [Edit] HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
                         </span>
                     </div>`;
                 
                 if (!d.isCorrect) {
                     html += `<div style="margin-top: 3px;">
                         <span style="color: #2e7d32;">
-                            ✅ Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
+                            [OK] Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
                         </span>
                     </div>`;
                 }
@@ -1714,7 +1714,7 @@
                 <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
                 <p><strong>STT:</strong> ${r.studentSTT || r.studentId || '-'}</p>
                 <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng)</p>
-                ${unansweredCount > 0 ? `<p style="color: #ff9800; font-weight: bold;">⚠️ Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
+                ${unansweredCount > 0 ? `<p style="color: #ff9800; font-weight: bold;">[!] Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
                 <hr style="margin: 15px 0;">
                 <h4>Chi tiết từng câu:</h4>
                 ${detailsHtml}
@@ -1754,7 +1754,7 @@
             const isValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
             
             if (!isValidExtension) {
-                showNotification('❌ Chỉ chấp nhận file Excel (.xlsx hoặc .xls)!', 'error');
+                showNotification('[X] Chỉ chấp nhận file Excel (.xlsx hoặc .xls)!', 'error');
                 input.value = '';
                 return;
             }
@@ -1773,13 +1773,13 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    showNotification(`✅ ${result.message}`, 'success');
+                    showNotification(`[OK] ${result.message}`, 'success');
                     loadStudents();
                     
                     // Hiện cảnh báo nếu có
                     if (result.warnings && result.warnings.length > 0) {
                         setTimeout(() => {
-                            alert('⚠️ Một số dòng có lỗi:\n\n' + result.warnings.join('\n'));
+                            alert('[!] Một số dòng có lỗi:\n\n' + result.warnings.join('\n'));
                         }, 500);
                     }
                 } else {
@@ -1790,12 +1790,12 @@
                             errorMsg += `\n... và ${result.details.length - 5} lỗi khác`;
                         }
                     }
-                    showNotification('❌ ' + result.error, 'error');
-                    alert('❌ Lỗi định dạng file!\n\n' + errorMsg);
+                    showNotification('[X] ' + result.error, 'error');
+                    alert('[X] Lỗi định dạng file!\n\n' + errorMsg);
                 }
             } catch (err) {
                 console.error('Lỗi upload:', err);
-                showNotification('❌ Lỗi kết nối server!', 'error');
+                showNotification('[X] Lỗi kết nối server!', 'error');
             }
             
             // Reset input để có thể upload lại cùng file
@@ -1846,7 +1846,7 @@
             });
 
             if (res.ok) {
-                showNotification('💾 Đã lưu cài đặt!');
+                showNotification('[Save] Đã lưu cài đặt!');
             }
         }
         
@@ -1867,13 +1867,13 @@
         function copyPassword() {
             const password = document.getElementById('examPassword').value;
             if (!password) {
-                showNotification('⚠️ Chưa có mật khẩu!', 'warning');
+                showNotification('[!] Chưa có mật khẩu!', 'warning');
                 return;
             }
             navigator.clipboard.writeText(password).then(() => {
-                showNotification('📋 Đã sao chép: ' + password);
+                showNotification('[List] Đã sao chép: ' + password);
             }).catch(() => {
-                showNotification('❌ Không thể sao chép', 'error');
+                showNotification('[X] Không thể sao chép', 'error');
             });
         }
 
@@ -1900,25 +1900,25 @@
             const container = document.getElementById('toastContainer');
             
             // Xác định loại thông báo
-            let icon = '✅';
+            let icon = '[OK]';
             let title = 'Thành công';
-            if (message.includes('❌') || type === 'error') {
+            if (message.includes('[X]') || type === 'error') {
                 type = 'error';
-                icon = '❌';
+                icon = '[X]';
                 title = 'Lỗi';
-                message = message.replace('❌ ', '');
-            } else if (message.includes('⚠️') || type === 'warning') {
+                message = message.replace('[X] ', '');
+            } else if (message.includes('[!]') || type === 'warning') {
                 type = 'warning';
-                icon = '⚠️';
+                icon = '[!]';
                 title = 'Cảnh báo';
-                message = message.replace('⚠️ ', '');
-            } else if (message.includes('ℹ️') || type === 'info') {
+                message = message.replace('[!] ', '');
+            } else if (message.includes('[i]') || type === 'info') {
                 type = 'info';
-                icon = 'ℹ️';
+                icon = '[i]';
                 title = 'Thông tin';
-                message = message.replace('ℹ️ ', '');
+                message = message.replace('[i] ', '');
             } else {
-                message = message.replace('✅ ', '');
+                message = message.replace('[OK] ', '');
             }
             
             const toast = document.createElement('div');
@@ -1939,27 +1939,27 @@
         // Alert modal đẹp - thay thế alert() mặc định
         function showAlert(message, type = 'warning', callback = null) {
             // Xác định loại
-            let icon = '⚠️';
+            let icon = '[!]';
             let title = 'Thông báo';
             let btnClass = 'primary';
             
-            if (message.includes('❌') || type === 'error') {
+            if (message.includes('[X]') || type === 'error') {
                 type = 'error';
-                icon = '❌';
+                icon = '[X]';
                 title = 'Có lỗi xảy ra';
-                message = message.replace('❌ ', '');
-            } else if (message.includes('⚠️') || type === 'warning') {
+                message = message.replace('[X] ', '');
+            } else if (message.includes('[!]') || type === 'warning') {
                 type = 'warning';
-                icon = '⚠️';
+                icon = '[!]';
                 title = 'Cảnh báo';
-                message = message.replace('⚠️ ', '');
-            } else if (message.includes('✅') || type === 'success') {
+                message = message.replace('[!] ', '');
+            } else if (message.includes('[OK]') || type === 'success') {
                 type = 'success';
-                icon = '✅';
+                icon = '[OK]';
                 title = 'Thành công';
-                message = message.replace('✅ ', '');
+                message = message.replace('[OK] ', '');
             } else if (type === 'info') {
-                icon = 'ℹ️';
+                icon = '[i]';
                 title = 'Thông tin';
             }
             
@@ -2121,7 +2121,7 @@
                                         ${cls.id === currentSession.classId ? '<span style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
                                         <div style="color: #888; font-size: 0.85em; margin-top: 3px;">
                                             👨‍🎓 ${cls.studentCount || 0} học sinh
-                                            ${cls.studentFile ? '✅' : '<span style="color: #ff9800;">⚠️ Chưa upload danh sách</span>'}
+                                            ${cls.studentFile ? '[OK]' : '<span style="color: #ff9800;">[!] Chưa upload danh sách</span>'}
                                         </div>
                                     </div>
                                 </div>
@@ -2134,13 +2134,13 @@
                                 </label>
                                 ${cls.id !== currentSession.classId ? `
                                     <button onclick="switchToClass('${cls.id}')" style="background: #1976D2; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                                        ▶️ Chọn
+                                        [>] Chọn
                                     </button>
                                     <button onclick="deleteClass('${cls.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer;" title="Xóa lớp">
                                         🗑️
                                     </button>
                                 ` : `
-                                    <span style="color: #1976D2; font-weight: bold; padding: 10px;">✓ Đang chọn</span>
+                                    <span style="color: #1976D2; font-weight: bold; padding: 10px;">[v] Đang chọn</span>
                                 `}
                             </div>
                         </div>
@@ -2167,7 +2167,7 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('✅ ' + result.message);
+                    showNotification('[OK] ' + result.message);
                     loadClasses();
                     // Nếu là lớp đang chọn, reload students
                     if (classId === currentSession.classId) {
@@ -2175,10 +2175,10 @@
                         updateSessionDisplay();
                     }
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi upload: ' + err.message);
+                alert('[X] Lỗi upload: ' + err.message);
             }
             
             input.value = ''; // Reset input
@@ -2187,7 +2187,7 @@
         async function createNewClass() {
             const name = document.getElementById('newClassName').value.trim();
             if (!name) {
-                alert('⚠️ Vui lòng nhập tên lớp!');
+                alert('[!] Vui lòng nhập tên lớp!');
                 document.getElementById('newClassName').focus();
                 return;
             }
@@ -2201,14 +2201,14 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('✅ ' + result.message);
+                    showNotification('[OK] ' + result.message);
                     document.getElementById('newClassName').value = '';
                     loadClasses();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2222,16 +2222,16 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('✅ Đã chọn lớp: ' + result.currentSession.className);
+                    showNotification('[OK] Đã chọn lớp: ' + result.currentSession.className);
                     hideClassManager();
                     updateSessionDisplay();
                     loadStudents();
                     loadResults();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2246,10 +2246,10 @@
                     showNotification('🗑️ Đã xóa lớp');
                     loadClasses();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -2291,20 +2291,20 @@
                                 <div>
                                     <strong style="font-size: 1.05em; color: #333;">${escapeHtml(exam.name)}</strong>
                                     ${exam.id === currentSession.examId ? '<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
-                                    <div style="color: #888; font-size: 0.85em; margin-top: 3px;">📝 ${exam.questionCount} câu hỏi</div>
+                                    <div style="color: #888; font-size: 0.85em; margin-top: 3px;">[Edit] ${exam.questionCount} câu hỏi</div>
                                 </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px;">
                             ${exam.id !== currentSession.examId ? `
                                 <button onclick="switchToExam('${exam.id}')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5a6fd6'" onmouseout="this.style.background='#667eea'">
-                                    ▶️ Sử dụng
+                                    [>] Sử dụng
                                 </button>
                                 <button onclick="deleteExam('${exam.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#ffcdd2'" onmouseout="this.style.background='#ffebee'" title="Xóa bài này">
                                     🗑️
                                 </button>
                             ` : `
-                                <span style="color: #667eea; font-weight: bold; padding: 10px;">✓ Đang sử dụng</span>
+                                <span style="color: #667eea; font-weight: bold; padding: 10px;">[v] Đang sử dụng</span>
                             `}
                         </div>
                     </div>
@@ -2317,7 +2317,7 @@
         async function createNewExam() {
             const name = document.getElementById('newExamName').value.trim();
             if (!name) {
-                alert('⚠️ Vui lòng nhập tên bài kiểm tra!');
+                alert('[!] Vui lòng nhập tên bài kiểm tra!');
                 document.getElementById('newExamName').focus();
                 return;
             }
@@ -2333,14 +2333,14 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification(`✅ Đã tạo bài "${name}" (chưa sử dụng)`);
+                    showNotification(`[OK] Đã tạo bài "${name}" (chưa sử dụng)`);
                     document.getElementById('newExamName').value = '';
                     loadSavedExams(); // Chỉ load lại danh sách bài
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2349,7 +2349,7 @@
             if (!name) {
                 name = document.getElementById('currentExamName').textContent;
                 if (!name || name === 'Chưa chọn bài') {
-                    alert('⚠️ Vui lòng nhập tên để lưu!');
+                    alert('[!] Vui lòng nhập tên để lưu!');
                     document.getElementById('saveExamName').focus();
                     return;
                 }
@@ -2364,15 +2364,15 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('💾 Đã lưu: ' + name);
+                    showNotification('[Save] Đã lưu: ' + name);
                     document.getElementById('saveExamName').value = '';
                     loadSavedExams();
                     updateSessionDisplay();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2387,7 +2387,7 @@
                 
                 const result = await res.json();
                 if (result.success) {
-                    showNotification('✅ Đã chuyển sang: ' + result.examName);
+                    showNotification('[OK] Đã chuyển sang: ' + result.examName);
                     hideExamManager();
                     loadQuestions();
                     loadResults();
@@ -2395,10 +2395,10 @@
                     loadSettings();
                     updateSessionDisplay();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2413,10 +2413,10 @@
                     showNotification('🗑️ Đã xóa bài kiểm tra');
                     loadSavedExams();
                 } else {
-                    alert('❌ ' + result.error);
+                    alert('[X] ' + result.error);
                 }
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
         }
         
@@ -2427,7 +2427,7 @@
             
             const examName = document.getElementById('newExamName').value.trim();
             if (!examName) {
-                alert('⚠️ Vui lòng nhập tên bài kiểm tra trước khi upload!');
+                alert('[!] Vui lòng nhập tên bài kiểm tra trước khi upload!');
                 document.getElementById('newExamName').focus();
                 input.value = '';
                 return;
@@ -2443,7 +2443,7 @@
                 
                 const createResult = await createRes.json();
                 if (!createResult.success) {
-                    alert('❌ ' + createResult.error);
+                    alert('[X] ' + createResult.error);
                     input.value = '';
                     return;
                 }
@@ -2466,9 +2466,9 @@
                 const uploadResult = await uploadRes.json();
                 if (uploadResult.success) {
                     const count = uploadResult.count || 0;
-                    showNotification(`✅ Đã tạo "${examName}" với ${count} câu hỏi (chưa sử dụng)`);
+                    showNotification(`[OK] Đã tạo "${examName}" với ${count} câu hỏi (chưa sử dụng)`);
                 } else {
-                    showNotification('⚠️ Đã tạo bài nhưng import lỗi: ' + uploadResult.error);
+                    showNotification('[!] Đã tạo bài nhưng import lỗi: ' + uploadResult.error);
                 }
                 
                 // Cập nhật danh sách bài - KHÔNG thay đổi bài đang dùng
@@ -2476,7 +2476,7 @@
                 loadSavedExams(); // Chỉ load lại danh sách bài đã lưu
                 
             } catch (err) {
-                alert('❌ Lỗi: ' + err.message);
+                alert('[X] Lỗi: ' + err.message);
             }
             
             input.value = '';
@@ -2494,7 +2494,7 @@
         
         // Listen for exam switch events
         socket.on('examSwitched', (data) => {
-            showNotification(`📚 Đã chuyển sang: ${data.examName}`);
+            showNotification(`[Book] Đã chuyển sang: ${data.examName}`);
             loadQuestions();
             loadResults();
             loadSettings();
@@ -2544,10 +2544,10 @@
                 
                 if (s.status.completed) {
                     statusClass = 'completed';
-                    statusText = '✅ Đã hoàn thành';
+                    statusText = '[OK] Đã hoàn thành';
                 } else if (s.status.canRetry) {
                     statusClass = 'can-retry';
-                    statusText = '🔄 Được làm lại';
+                    statusText = '[Reload] Được làm lại';
                 } else if (s.status.selected) {
                     statusClass = 'selected';
                     statusText = '⏳ Đang làm bài';
@@ -2555,16 +2555,16 @@
 
                 const actions = [];
                 if (s.status.completed && !s.status.canRetry) {
-                    actions.push(`<button class="btn btn-warning" onclick="allowRetry(${s.stt})">🔄 Cho làm lại</button>`);
+                    actions.push(`<button class="btn btn-warning" onclick="allowRetry(${s.stt})">[Reload] Cho làm lại</button>`);
                 }
                 if (s.status.selected && !s.status.completed) {
-                    actions.push(`<button class="btn btn-danger" onclick="forceDeselect(${s.stt})">❌ Hủy chọn</button>`);
+                    actions.push(`<button class="btn btn-danger" onclick="forceDeselect(${s.stt})">[X] Hủy chọn</button>`);
                 }
                 
                 // Show tab leave warning
                 const tabLeaveCount = s.status.tabLeaveCount || 0;
                 const tabLeaveWarning = tabLeaveCount > 0 
-                    ? `<span style="color: #dc3545; font-weight: bold; margin-left: 8px;" title="Rời trang ${tabLeaveCount} lần">⚠️ ${tabLeaveCount}</span>` 
+                    ? `<span style="color: #dc3545; font-weight: bold; margin-left: 8px;" title="Rời trang ${tabLeaveCount} lần">[!] ${tabLeaveCount}</span>` 
                     : '';
 
                 return `
@@ -2607,11 +2607,11 @@
                 });
 
                 if (res.ok) {
-                    showNotification('✅ Đã cho phép làm lại!');
+                    showNotification('[OK] Đã cho phép làm lại!');
                     loadStudents();
                 }
             } catch (err) {
-                showNotification('❌ Lỗi: ' + err.message);
+                showNotification('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -2631,27 +2631,27 @@
                 });
 
                 if (res.ok) {
-                    showNotification('✅ Đã hủy chọn!');
+                    showNotification('[OK] Đã hủy chọn!');
                     loadStudents();
                 }
             } catch (err) {
-                showNotification('❌ Lỗi: ' + err.message);
+                showNotification('[X] Lỗi: ' + err.message);
             }
         }
 
         // Reset all students
         async function resetAllStudents() {
-            if (!confirm('⚠️ Reset TẤT CẢ trạng thái học sinh?\n\nĐiều này sẽ:\n- Hủy tất cả lựa chọn hiện tại\n- Cho phép tất cả học sinh chọn lại\n- KHÔNG xóa kết quả bài thi')) return;
+            if (!confirm('[!] Reset TẤT CẢ trạng thái học sinh?\n\nĐiều này sẽ:\n- Hủy tất cả lựa chọn hiện tại\n- Cho phép tất cả học sinh chọn lại\n- KHÔNG xóa kết quả bài thi')) return;
 
             try {
                 const res = await fetch('/api/reset-all-students', { method: 'POST' });
 
                 if (res.ok) {
-                    showNotification('✅ Đã reset tất cả!');
+                    showNotification('[OK] Đã reset tất cả!');
                     loadStudents();
                 }
             } catch (err) {
-                showNotification('❌ Lỗi: ' + err.message);
+                showNotification('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -2689,8 +2689,8 @@
                         ${r.reason ? `<strong>Lý do:</strong> ${escapeHtml(r.reason)}` : ''}
                     </div>
                     <div class="report-actions">
-                        <button class="btn btn-success" onclick="approveReport(${r.id})">✅ Duyệt</button>
-                        <button class="btn btn-danger" onclick="rejectReport(${r.id})">❌ Từ chối</button>
+                        <button class="btn btn-success" onclick="approveReport(${r.id})">[OK] Duyệt</button>
+                        <button class="btn btn-danger" onclick="rejectReport(${r.id})">[X] Từ chối</button>
                     </div>
                 </div>
             `).join('');
@@ -2706,12 +2706,12 @@
                 });
 
                 if (res.ok) {
-                    showNotification('✅ Đã duyệt báo cáo!');
+                    showNotification('[OK] Đã duyệt báo cáo!');
                     loadReports();
                     loadStudents();
                 }
             } catch (err) {
-                showNotification('❌ Lỗi: ' + err.message);
+                showNotification('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -2725,11 +2725,11 @@
                 });
 
                 if (res.ok) {
-                    showNotification('✅ Đã từ chối báo cáo!');
+                    showNotification('[OK] Đã từ chối báo cáo!');
                     loadReports();
                 }
             } catch (err) {
-                showNotification('❌ Lỗi: ' + err.message);
+                showNotification('[X] Lỗi: ' + err.message);
             }
         }
 
@@ -2753,13 +2753,13 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    statusDiv.innerHTML = `<span style="color: #28a745;">✅ Đã import ${result.imported} câu hỏi! Tổng: ${result.total} câu</span>`;
+                    statusDiv.innerHTML = `<span style="color: #28a745;">[OK] Đã import ${result.imported} câu hỏi! Tổng: ${result.total} câu</span>`;
                     loadQuestions();
                 } else {
-                    statusDiv.innerHTML = `<span style="color: #dc3545;">❌ ${result.error}</span>`;
+                    statusDiv.innerHTML = `<span style="color: #dc3545;">[X] ${result.error}</span>`;
                 }
             } catch (err) {
-                statusDiv.innerHTML = `<span style="color: #dc3545;">❌ Lỗi: ${err.message}</span>`;
+                statusDiv.innerHTML = `<span style="color: #dc3545;">[X] Lỗi: ${err.message}</span>`;
             }
             
             input.value = ''; // Reset input
@@ -2812,7 +2812,7 @@
                 try {
                     jsonData = JSON.parse(text);
                 } catch (parseErr) {
-                    statusDiv.innerHTML = '<span style="color: #dc3545;">❌ File JSON không hợp lệ. Kiểm tra cú pháp JSON.</span>';
+                    statusDiv.innerHTML = '<span style="color: #dc3545;">[X] File JSON không hợp lệ. Kiểm tra cú pháp JSON.</span>';
                     input.value = '';
                     return;
                 }
@@ -2826,12 +2826,12 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    statusDiv.innerHTML = `<span style="color: #28a745;">✅ Đã import ${result.imported} câu hỏi! Tổng: ${result.total} câu</span>`;
+                    statusDiv.innerHTML = `<span style="color: #28a745;">[OK] Đã import ${result.imported} câu hỏi! Tổng: ${result.total} câu</span>`;
                     loadQuestions();
                     
                     if (result.warnings && result.warnings.length > 0) {
                         setTimeout(() => {
-                            alert('⚠️ Một số câu hỏi có lỗi:\n\n' + result.warnings.slice(0, 5).join('\n') + 
+                            alert('[!] Một số câu hỏi có lỗi:\n\n' + result.warnings.slice(0, 5).join('\n') + 
                                   (result.warnings.length > 5 ? `\n... và ${result.warnings.length - 5} lỗi khác` : ''));
                         }, 500);
                     }
@@ -2840,11 +2840,11 @@
                     if (result.details && result.details.length > 0) {
                         errorMsg += '\n\n' + result.details.slice(0, 3).join('\n');
                     }
-                    statusDiv.innerHTML = `<span style="color: #dc3545;">❌ ${result.error}</span>`;
-                    alert('❌ Lỗi import:\n\n' + errorMsg);
+                    statusDiv.innerHTML = `<span style="color: #dc3545;">[X] ${result.error}</span>`;
+                    alert('[X] Lỗi import:\n\n' + errorMsg);
                 }
             } catch (err) {
-                statusDiv.innerHTML = `<span style="color: #dc3545;">❌ Lỗi: ${err.message}</span>`;
+                statusDiv.innerHTML = `<span style="color: #dc3545;">[X] Lỗi: ${err.message}</span>`;
             }
             
             input.value = ''; // Reset input
@@ -2872,7 +2872,7 @@
                         <span style="font-size: 1.2em;">✉️</span> nqh2610@gmail.com
                     </a>
                     <a href="tel:0976385309" style="color: #81c784; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
-                        <span style="font-size: 1.2em;">📱</span> 0976.385.309
+                        <span style="font-size: 1.2em;">[Phone]</span> 0976.385.309
                     </a>
                 </div>
             </div>

@@ -825,7 +825,7 @@
                 <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
-                            <span style="font-size: 1.8em;">🏫</span>
+                            <span style="font-size: 1.8em;"></span>
                         </div>
                         <div>
                             <p style="margin: 0; opacity: 0.85; font-size: 0.8em; text-transform: uppercase;">Lớp đang dạy</p>
@@ -866,9 +866,9 @@
 
         <div class="tabs">
             <button class="tab active" onclick="showTab('questions')">Câu hỏi</button>
-            <button class="tab" onclick="showTab('students')">👨‍🎓 Học sinh</button>
+            <button class="tab" onclick="showTab('students')">Học sinh</button>
             <button class="tab" onclick="showTab('results')">Kết quả</button>
-            <button class="tab" onclick="showTab('settings')">⚙️ Cài đặt</button>
+            <button class="tab" onclick="showTab('settings')">️ Cài đặt</button>
         </div>
 
         <!-- ========== MODAL QUẢN LÝ LỚP ========== -->
@@ -876,8 +876,8 @@
             <div style="background: white; border-radius: 20px; padding: 0; max-width: 700px; width: 95%; max-height: 90vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
                 
                 <div style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin: 0; font-size: 1.3em;">🏫 Quản lý Lớp học</h2>
-                    <button onclick="hideClassManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;">✕</button>
+                    <h2 style="margin: 0; font-size: 1.3em;">Quản lý Lớp học</h2>
+                    <button onclick="hideClassManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;"></button>
                 </div>
                 
                 <div style="padding: 25px; max-height: calc(90vh - 80px); overflow-y: auto;">
@@ -885,20 +885,20 @@
                     <!-- Hướng dẫn -->
                     <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
                         <p style="margin: 0; color: #1565c0; font-size: 0.95em;">
-                            💡 <strong>Cách dùng:</strong> Tạo lớp → Upload danh sách học sinh (📤 DS) → Chọn lớp để dạy
+                            <strong>Cách dùng:</strong> Tạo lớp → Upload danh sách học sinh (DS) → Chọn lớp để dạy
                         </p>
                     </div>
                     
                     <!-- Tạo lớp mới -->
                     <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; border: 2px solid #e0e0e0; margin-bottom: 25px;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <span style="font-size: 1.5em;">➕</span>
+                            <span style="font-size: 1.5em;"></span>
                             <h4 style="margin: 0; color: #333;">Tạo lớp mới</h4>
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="newClassName" placeholder="VD: 10A1, Lớp Tin học K11..." style="flex: 1; padding: 12px; border: 1px solid #bdbdbd; border-radius: 8px;">
                             <button class="btn" onclick="createNewClass()" style="background: #1976D2; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; white-space: nowrap;">
-                                ➕ Tạo lớp
+                                Tạo lớp
                             </button>
                         </div>
                     </div>
@@ -918,16 +918,16 @@
                     
                     <!-- Tải mẫu Excel -->
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #e0e0e0;">
-                        <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;">📥 <strong>Tải mẫu Excel danh sách học sinh:</strong></p>
+                        <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;"><strong>Tải mẫu Excel danh sách học sinh:</strong></p>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button onclick="downloadSampleExcel(1)" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;">
-                                📄 Mẫu đầy đủ (STT, HO, TEN, NU)
+                                Mẫu đầy đủ (STT, HO, TEN, NU)
                             </button>
                             <button onclick="downloadSampleExcel(2)" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;">
-                                📄 Mẫu phổ biến (STT, TEN, NU)
+                                Mẫu phổ biến (STT, TEN, NU)
                             </button>
                             <button onclick="downloadSampleExcel(3)" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;">
-                                📄 Mẫu đơn giản (STT, TEN)
+                                Mẫu đơn giản (STT, TEN)
                             </button>
                         </div>
                     </div>
@@ -942,7 +942,7 @@
                 <!-- Header -->
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
                     <h2 style="margin: 0; font-size: 1.3em;">Quản lý Bài kiểm tra</h2>
-                    <button onclick="hideExamManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;">✕</button>
+                    <button onclick="hideExamManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;"></button>
                 </div>
                 
                 <div style="padding: 25px; max-height: calc(90vh - 80px); overflow-y: auto;">
@@ -950,21 +950,21 @@
                     <!-- Hướng dẫn -->
                     <div style="background: #f0f7ff; border: 1px solid #b3d4ff; border-radius: 10px; padding: 15px; margin-bottom: 25px;">
                         <p style="margin: 0; color: #0066cc; font-size: 0.95em;">
-                            💡 <strong>Mẹo:</strong> Cùng một bài kiểm tra có thể dùng cho nhiều lớp. Mỗi lớp có kết quả riêng!
+                            <strong>Mẹo:</strong> Cùng một bài kiểm tra có thể dùng cho nhiều lớp. Mỗi lớp có kết quả riêng!
                         </p>
                     </div>
                     
                     <!-- Tạo bài mới từ file -->
                     <div style="background: #e8f5e9; border-radius: 12px; padding: 20px; border: 2px solid #81c784; margin-bottom: 20px;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <span style="font-size: 1.5em;">📄</span>
+                            <span style="font-size: 1.5em;"></span>
                             <h4 style="margin: 0; color: #2e7d32;">Tạo bài mới từ file</h4>
                         </div>
                         <input type="text" id="newExamName" maxlength="40" placeholder="Tên bài kiểm tra (tối đa 40 ký tự)" style="width: 100%; padding: 12px; border: 1px solid #a5d6a7; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box;">
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                             <button class="btn" onclick="createNewExam()" style="background: #4caf50; color: white; padding: 12px; border-radius: 8px; font-weight: bold;">
-                                ✨ Tạo bài trống
+                                Tạo bài trống
                             </button>
                             <label class="btn" style="background: #2196F3; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;">
                                 Upload Word
@@ -977,8 +977,8 @@
                         </div>
                         
                         <div style="margin-top: 12px; display: flex; gap: 10px; justify-content: center;">
-                            <a href="/data/mau-cau-hoi.docx" download style="color: #666; font-size: 0.85em; text-decoration: underline;">📥 Tải mẫu Word</a>
-                            <a href="/data/mau-cau-hoi.json" download style="color: #666; font-size: 0.85em; text-decoration: underline;">📥 Tải mẫu JSON</a>
+                            <a href="/data/mau-cau-hoi.docx" download style="color: #666; font-size: 0.85em; text-decoration: underline;">Tải mẫu Word</a>
+                            <a href="/data/mau-cau-hoi.json" download style="color: #666; font-size: 0.85em; text-decoration: underline;">Tải mẫu JSON</a>
                         </div>
                     </div>
                     
@@ -1024,7 +1024,7 @@
             
             <h2>Thêm câu hỏi mới</h2>
             
-            <h3>✏️ Thêm câu hỏi thủ công</h3>
+            <h3>️ Thêm câu hỏi thủ công</h3>
             <form id="questionForm">
                 <div class="form-group">
                     <label>Nội dung câu hỏi:</label>
@@ -1057,7 +1057,7 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-primary">➕ Thêm câu hỏi</button>
+                <button type="submit" class="btn btn-primary">Thêm câu hỏi</button>
             </form>
 
             <div class="question-list">
@@ -1068,7 +1068,7 @@
 
         <!-- Panel Học sinh -->
         <div id="students" class="panel">
-            <h2>👨‍🎓 Quản lý Học sinh</h2>
+            <h2>Quản lý Học sinh</h2>
             
             <!-- Báo cáo chọn nhầm -->
             <div class="settings-card" id="reportsSection" style="display: none;">
@@ -1104,7 +1104,7 @@
                         <p style="margin: 0; color: #666; font-size: 0.9em;">Để upload hoặc thay đổi danh sách học sinh, vui lòng vào quản lý Lớp</p>
                     </div>
                     <button class="btn btn-primary" onclick="showClassManager()" style="white-space: nowrap;">
-                        🏫 Quản lý Lớp
+                        Quản lý Lớp
                     </button>
                 </div>
             </div>
@@ -1149,8 +1149,8 @@
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-success" onclick="exportResults()">📥 Xuất Excel</button>
-                <button class="btn btn-danger" onclick="clearResults()">🗑️ Xóa tất cả kết quả</button>
+                <button class="btn btn-success" onclick="exportResults()">Xuất Excel</button>
+                <button class="btn btn-danger" onclick="clearResults()">️ Xóa tất cả kết quả</button>
                 <button class="btn btn-secondary" onclick="loadResults()">Làm mới</button>
             </div>
 
@@ -1175,7 +1175,7 @@
         <!-- Panel Cài đặt -->
         <div id="settings" class="panel">
             <div class="settings-card">
-                <h3>⚙️ Cài đặt bài thi</h3>
+                <h3>️ Cài đặt bài thi</h3>
                 
                 <div class="form-group">
                     <label>Tiêu đề bài thi:</label>
@@ -1222,11 +1222,11 @@
                 
                 <div class="setting-row" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #1976d2; border-radius: 12px; padding: 15px; margin-top: 15px;">
                     <div style="flex: 1;">
-                        <strong style="color: #0d47a1;">🔐 Mật khẩu bắt đầu làm bài</strong>
+                        <strong style="color: #0d47a1;">Mật khẩu bắt đầu làm bài</strong>
                         <p style="color: #1565c0; font-size: 0.9em;">Học sinh phải nhập mật khẩu mới được làm bài (để tất cả bắt đầu cùng lúc)</p>
                         <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
                             <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;" onchange="saveSettings()">
-                            <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên">🎲</button>
+                            <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên"></button>
                             <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu"></button>
                         </div>
                     </div>
@@ -1256,7 +1256,7 @@
     <div id="editQuestionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
         <div style="background: white; border-radius: 16px; width: 95%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0;">✏️ Sửa câu hỏi</h3>
+                <h3 style="margin: 0;">️ Sửa câu hỏi</h3>
                 <button onclick="closeEditQuestionModal()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5em; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">&times;</button>
             </div>
             <div style="padding: 25px;">
@@ -1357,7 +1357,7 @@
             
             // Custom confirm
             window.showConfirm = function(message, onYes, onNo) {
-                icon.textContent = '❓';
+                icon.textContent = '';
                 title.textContent = 'Xác nhận';
                 title.style.color = '#3b82f6';
                 msg.innerHTML = message;
@@ -1455,8 +1455,8 @@
                     <div class="question-header">
                         <span class="question-number">Câu ${i + 1}</span>
                         <div class="question-actions">
-                            <button class="btn btn-warning" onclick="editQuestion(${i})">✏️ Sửa</button>
-                            <button class="btn btn-danger" onclick="deleteQuestion(${i})">🗑️ Xóa</button>
+                            <button class="btn btn-warning" onclick="editQuestion(${i})">️ Sửa</button>
+                            <button class="btn btn-danger" onclick="deleteQuestion(${i})">️ Xóa</button>
                         </div>
                     </div>
                     <div class="question-text">${escapeHtml(q.question)}</div>
@@ -1506,7 +1506,7 @@
             
             const res = await fetch(`/api/questions/${id}`, { method: 'DELETE' });
             if (res.ok) {
-                showNotification('🗑️ Đã xóa câu hỏi!');
+                showNotification('️ Đã xóa câu hỏi!');
                 loadQuestions();
             }
         }
@@ -1615,7 +1615,7 @@
                     <td>${r.correctCount}/${r.totalQuestions}</td>
                     <td>${r.timeSpent || '-'}</td>
                     <td>${r.submittedAt}</td>
-                    <td><button class="btn btn-secondary" onclick="showDetail(${i})">👁️ Xem</button></td>
+                    <td><button class="btn btn-secondary" onclick="showDetail(${i})">️ Xem</button></td>
                 </tr>
             `).join('');
         }
@@ -1808,7 +1808,7 @@
             
             const res = await fetch('/api/results', { method: 'DELETE' });
             if (res.ok) {
-                showNotification('🗑️ Đã xóa tất cả kết quả!');
+                showNotification('️ Đã xóa tất cả kết quả!');
                 loadResults();
             }
         }
@@ -1860,7 +1860,7 @@
             document.getElementById('examPassword').value = password;
             document.getElementById('requirePassword').checked = true;
             saveSettings();
-            showNotification('🎲 Mật khẩu mới: ' + password);
+            showNotification('Mật khẩu mới: ' + password);
         }
         
         // Sao chép mật khẩu
@@ -1886,10 +1886,10 @@
         function updateExamStatus(isOpen) {
             const badge = document.getElementById('examStatus');
             if (isOpen) {
-                badge.textContent = '🟢 Đang mở thi';
+                badge.textContent = 'Đang mở thi';
                 badge.className = 'status-badge status-open';
             } else {
-                badge.textContent = '🔴 Chưa mở thi';
+                badge.textContent = 'Chưa mở thi';
                 badge.className = 'status-badge status-closed';
             }
         }
@@ -2008,7 +2008,7 @@
             overlay.innerHTML = `
                 <div class="alert-modal">
                     <div class="alert-modal-header">
-                        <div class="alert-modal-icon warning">❓</div>
+                        <div class="alert-modal-icon warning"></div>
                         <div class="alert-modal-title">Xác nhận</div>
                     </div>
                     <div class="alert-modal-body">${message}</div>
@@ -2102,7 +2102,7 @@
                 if (data.classes.length === 0) {
                     listDiv.innerHTML = `
                         <div style="text-align: center; padding: 40px 20px; color: #666;">
-                            <div style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;">🏫</div>
+                            <div style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;"></div>
                             <p style="margin: 0;">Chưa có lớp nào</p>
                             <p style="margin: 10px 0 0 0; font-size: 0.9em; opacity: 0.7;">Tạo lớp mới để quản lý học sinh và kết quả</p>
                         </div>
@@ -2115,12 +2115,12 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.3em;">${cls.id === currentSession.classId ? '📌' : '🏫'}</span>
+                                    <span style="font-size: 1.3em;">${cls.id === currentSession.classId ? '' : ''}</span>
                                     <div>
                                         <strong style="font-size: 1.05em; color: #333;">${escapeHtml(cls.name)}</strong>
                                         ${cls.id === currentSession.classId ? '<span style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
                                         <div style="color: #888; font-size: 0.85em; margin-top: 3px;">
-                                            👨‍🎓 ${cls.studentCount || 0} học sinh
+                                            ${cls.studentCount || 0} học sinh
                                             ${cls.studentFile ? '' : '<span style="color: #ff9800;">Chưa upload danh sách</span>'}
                                         </div>
                                     </div>
@@ -2129,7 +2129,7 @@
                             <div style="display: flex; gap: 8px; align-items: center;">
                                 <!-- Nút upload danh sách -->
                                 <label style="background: #e3f2fd; color: #1565c0; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em;" title="Upload danh sách học sinh">
-                                    📤 DS
+                                    DS
                                     <input type="file" accept=".xlsx,.xls" style="display: none;" onchange="uploadClassStudents('${cls.id}', this)">
                                 </label>
                                 ${cls.id !== currentSession.classId ? `
@@ -2137,7 +2137,7 @@
                                         Chọn
                                     </button>
                                     <button onclick="deleteClass('${cls.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer;" title="Xóa lớp">
-                                        🗑️
+                                        ️
                                     </button>
                                 ` : `
                                     <span style="color: #1976D2; font-weight: bold; padding: 10px;">Đang chọn</span>
@@ -2236,14 +2236,14 @@
         }
         
         async function deleteClass(classId) {
-            if (!confirm('🗑️ Xóa lớp này?\n\nHành động này không thể hoàn tác!')) return;
+            if (!confirm('️ Xóa lớp này?\n\nHành động này không thể hoàn tác!')) return;
             
             try {
                 const res = await fetch(`/api/classes/${classId}`, { method: 'DELETE' });
                 const result = await res.json();
                 
                 if (result.success) {
-                    showNotification('🗑️ Đã xóa lớp');
+                    showNotification('️ Đã xóa lớp');
                     loadClasses();
                 } else {
                     alert('' + result.error);
@@ -2275,7 +2275,7 @@
                 if (data.exams.length === 0) {
                     listDiv.innerHTML = `
                         <div style="text-align: center; padding: 40px 20px; color: #666;">
-                            <div style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;">📭</div>
+                            <div style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;"></div>
                             <p style="margin: 0;">Chưa có bài kiểm tra nào được lưu</p>
                             <p style="margin: 10px 0 0 0; font-size: 0.9em; opacity: 0.7;">Lưu bài kiểm tra để dùng lại cho các lớp khác</p>
                         </div>
@@ -2287,7 +2287,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 18px; background: ${exam.id === currentSession.examId ? 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)' : 'white'}; border-bottom: 1px solid #eee; ${exam.id === currentSession.examId ? 'border-left: 4px solid #667eea;' : ''}">
                         <div style="flex: 1;">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 1.3em;">${exam.id === currentSession.examId ? '📌' : '📄'}</span>
+                                <span style="font-size: 1.3em;">${exam.id === currentSession.examId ? '' : ''}</span>
                                 <div>
                                     <strong style="font-size: 1.05em; color: #333;">${escapeHtml(exam.name)}</strong>
                                     ${exam.id === currentSession.examId ? '<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
@@ -2301,7 +2301,7 @@
                                     Sử dụng
                                 </button>
                                 <button onclick="deleteExam('${exam.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#ffcdd2'" onmouseout="this.style.background='#ffebee'" title="Xóa bài này">
-                                    🗑️
+                                    ️
                                 </button>
                             ` : `
                                 <span style="color: #667eea; font-weight: bold; padding: 10px;">Đang sử dụng</span>
@@ -2322,7 +2322,7 @@
                 return;
             }
             
-            if (!confirm(`✨ Tạo bài kiểm tra mới: "${name}"\n\nBài mới sẽ được lưu vào danh sách.\nBài đang dùng KHÔNG thay đổi.\nTiếp tục?`)) return;
+            if (!confirm(`Tạo bài kiểm tra mới: "${name}"\n\nBài mới sẽ được lưu vào danh sách.\nBài đang dùng KHÔNG thay đổi.\nTiếp tục?`)) return;
             
             try {
                 const res = await fetch('/api/exams/create', {
@@ -2403,14 +2403,14 @@
         }
         
         async function deleteExam(examId) {
-            if (!confirm('🗑️ Xóa bài kiểm tra này?\n\nHành động này không thể hoàn tác!')) return;
+            if (!confirm('️ Xóa bài kiểm tra này?\n\nHành động này không thể hoàn tác!')) return;
             
             try {
                 const res = await fetch(`/api/exams/${examId}`, { method: 'DELETE' });
                 const result = await res.json();
                 
                 if (result.success) {
-                    showNotification('🗑️ Đã xóa bài kiểm tra');
+                    showNotification('️ Đã xóa bài kiểm tra');
                     loadSavedExams();
                 } else {
                     alert('' + result.error);
@@ -2570,7 +2570,7 @@
                 return `
                     <tr>
                         <td>${s.stt}</td>
-                        <td>${escapeHtml(s.ho)} ${escapeHtml(s.ten)} ${s.nu === 'X' ? '👧' : ''}</td>
+                        <td>${escapeHtml(s.ho)} ${escapeHtml(s.ten)} ${s.nu === 'X' ? '' : ''}</td>
                         <td><span class="student-status ${statusClass}">${statusText}</span>${tabLeaveWarning}</td>
                         <td>${actions.join(' ') || '-'}</td>
                     </tr>
@@ -2865,11 +2865,11 @@
             </div>
             <div style="flex: 1; min-width: 250px; text-align: center;">
                 <div style="font-size: 1.1em; font-weight: 600; margin-bottom: 10px;">
-                    Phát triển bởi 👨‍💻 <span style="color: #ffd700;">Nguyễn Quang Hùng</span>
+                    Phát triển bởi <span style="color: #ffd700;">Nguyễn Quang Hùng</span>
                 </div>
                 <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap;">
                     <a href="mailto:nqh2610@gmail.com" style="color: #4fc3f7; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
-                        <span style="font-size: 1.2em;">✉️</span> nqh2610@gmail.com
+                        <span style="font-size: 1.2em;">️</span> nqh2610@gmail.com
                     </a>
                     <a href="tel:0976385309" style="color: #81c784; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
                         <span style="font-size: 1.2em;"></span> 0976.385.309

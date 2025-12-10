@@ -126,7 +126,7 @@
         }
         
         .search-box::before {
-            content: "🔍";
+            content: "";
             position: absolute;
             left: 14px;
             top: 50%;
@@ -1595,7 +1595,7 @@
                 <!-- Hiển thị lớp từ session của giáo viên -->
                 <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border: 1px solid #a5d6a7;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.5em;">🏫</span>
+                        <span style="font-size: 1.5em;"></span>
                         <div>
                             <div style="font-size: 0.85em; color: #2e7d32;">Lớp đang kiểm tra:</div>
                             <div style="font-size: 1.2em; font-weight: bold; color: #1b5e20;" id="displayCurrentClass">Đang tải...</div>
@@ -1619,7 +1619,7 @@
     <!-- Password Modal -->
     <div class="report-modal" id="passwordModal">
         <div class="report-box" style="text-align: center;">
-            <h3 style="color: #1976d2;">🔐 Nhập mật khẩu làm bài</h3>
+            <h3 style="color: #1976d2;">Nhập mật khẩu làm bài</h3>
             <p style="margin-bottom: 20px; color: #666;">Giáo viên sẽ công bố mật khẩu khi tất cả đã sẵn sàng</p>
             
             <div style="margin-bottom: 20px;">
@@ -1661,7 +1661,7 @@
             </div>
             
             <div class="btn-group">
-                <button class="btn btn-primary" onclick="submitReport()">📤 Gửi yêu cầu</button>
+                <button class="btn btn-primary" onclick="submitReport()">Gửi yêu cầu</button>
                 <button class="btn btn-danger" onclick="closeReportModal()">Hủy</button>
             </div>
         </div>
@@ -1682,8 +1682,8 @@
             </div>
             <div class="header-right">
                 <div class="progress-mini"><strong><span id="answeredCount2">0</span></strong>/<span id="totalCount2">0</span></div>
-                <div class="timer" id="timer">⏱ 00:00</div>
-                <button class="header-submit-btn" onclick="confirmSubmit()">✔ Nộp bài</button>
+                <div class="timer" id="timer">00:00</div>
+                <button class="header-submit-btn" onclick="confirmSubmit()">Nộp bài</button>
             </div>
         </div>
         <div class="container">
@@ -1707,7 +1707,7 @@
             <!-- Question Navigation -->
             <div class="question-navigation" id="questionNavigation">
                 <button class="nav-arrow-btn prev" id="prevQuestionBtn" onclick="navigateQuestion(-1)">
-                    ◀ Câu trước
+                    Câu trước
                 </button>
                 <div class="question-indicator">
                     Câu <span id="currentQuestionNum">1</span>/<span id="totalQuestionNum">0</span>
@@ -1723,7 +1723,7 @@
                 Đã trả lời <strong><span id="answeredCount2">0</span>/<span id="totalCount2">0</span></strong> câu hỏi
             </div>
             <button class="btn-submit" onclick="confirmSubmit()">
-                📤 Nộp bài
+                Nộp bài
             </button>
         </div>
     </div>
@@ -1810,8 +1810,8 @@
                 <p style="margin: 0; font-weight: bold; color: #667eea;">Trắc Nghiệm LAN</p>
                 <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #888;">Hệ thống thi trắc nghiệm mạng LAN</p>
                 <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
-                    Phát triển bởi 👨‍💻 <strong>Nguyễn Quang Hùng</strong><br>
-                    <span style="margin-right: 10px;">✉️ nqh2610@gmail.com</span>
+                    Phát triển bởi <strong>Nguyễn Quang Hùng</strong><br>
+                    <span style="margin-right: 10px;">️ nqh2610@gmail.com</span>
                     <span>0976.385.309</span>
                 </div>
             </div>
@@ -2441,7 +2441,7 @@
                 
                 const minutesLeft = Math.floor(timeRemaining / 60);
                 const secondsLeft = timeRemaining % 60;
-                showMessage('success', `📥 Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
+                showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
             } else {
                 startTime = new Date();
                 timeRemaining = timeLimit * 60;
@@ -2589,7 +2589,7 @@
                         <strong>CHẾ ĐỘ ÔN TẬP</strong>
                         <span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>
                     </div>
-                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close">✕</button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="practice-close"></button>
                 </div>
             `;
             
@@ -2820,7 +2820,7 @@
                 
                 const minutesLeft = Math.floor(timeRemaining / 60);
                 const secondsLeft = timeRemaining % 60;
-                showMessage('success', `📥 Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
+                showMessage('success', `Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
                 
             } catch (e) {
                 console.error('Lỗi khôi phục session:', e);
@@ -2917,7 +2917,7 @@
             const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             const timer = document.getElementById('timer');
-            timer.textContent = `⏱ ${display}`;
+            timer.textContent = `${display}`;
             
             // Warning colors
             timer.classList.remove('warning', 'danger');
@@ -3104,7 +3104,7 @@
                 } else if (result.score >= 5) {
                     icon.textContent = '';
                 } else {
-                    icon.textContent = '💪';
+                    icon.textContent = '';
                 }
             } else {
                 // Ẩn điểm nếu giáo viên không cho phép
@@ -3193,7 +3193,7 @@
                 const icon = document.getElementById('resultIcon');
                 if (result.score >= 8) icon.textContent = '';
                 else if (result.score >= 5) icon.textContent = '';
-                else icon.textContent = '💪';
+                else icon.textContent = '';
             } else {
                 document.getElementById('resultScore').style.display = 'none';
                 document.querySelector('.result-label').style.display = 'none';

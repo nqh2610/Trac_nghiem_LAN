@@ -69,17 +69,19 @@ if exist "test-compat.js" (
 
 echo Dang khoi dong server...
 echo.
+echo (Neu khong thay link, hay cho vai giay...)
+echo.
 
 node server.js
 
-if %ERRORLEVEL% NEQ 0 (
-    echo.
-    echo ========================================
-    echo LOI: Server gap loi!
-    echo Ma loi: %ERRORLEVEL%
-    echo ========================================
-)
-
 echo.
-echo Server da dung. Nhan phim bat ky de dong.
+echo ========================================
+if %ERRORLEVEL% NEQ 0 (
+    echo LOI: Server gap loi! Ma loi: %ERRORLEVEL%
+) else (
+    echo Server da dung binh thuong.
+)
+echo ========================================
+echo.
+echo Nhan phim bat ky de dong cua so nay...
 pause >nul

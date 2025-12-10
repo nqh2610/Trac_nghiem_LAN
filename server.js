@@ -2679,4 +2679,18 @@ server.listen(PORT, '0.0.0.0', function() {
     console.log('   Nhan Ctrl+C de tat server');
     console.log('================================================================');
     console.log('');
+    console.log('Server dang chay... (giu cua so nay mo)');
+});
+
+// Giu process chay
+process.stdin.resume();
+
+// Xu ly tat server
+process.on('SIGINT', function() {
+    console.log('');
+    console.log('Dang tat server...');
+    server.close(function() {
+        console.log('Server da tat.');
+        process.exit(0);
+    });
 });

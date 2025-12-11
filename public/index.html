@@ -1979,7 +1979,7 @@
         }
 
         // ==================== SOCKET EVENTS ====================
-        socket.on('connected', (data) => {
+        socket.on('connected', function(data) {
             mySocketId = data.socketId;
             loadStudents();
             checkExam();
@@ -1988,7 +1988,7 @@
             checkAndRestoreSession();
         });
 
-        socket.on('examStatusChanged', (isOpen) => {
+        socket.on('examStatusChanged', function(isOpen) {
             if (isOpen) {
                 showMessage('success', 'Giáo viên đã mở bài thi!');
             } else {
@@ -1996,16 +1996,16 @@
             }
         });
 
-        socket.on('studentStatusUpdated', () => loadStudents());
+        socket.on('studentStatusUpdated', function() { loadStudents(); });
         
-        socket.on('allStudentsReset', () => {
+        socket.on('allStudentsReset', function() {
             showMessage('info', 'Danh sách đã được reset!');
             goBackToStep1();
             loadStudents();
         });
         
         // Lắng nghe khi giáo viên đổi bài thi
-        socket.on('examSwitched', (data) => {
+        socket.on('examSwitched', function(data) {
             console.log('Exam switched:', data);
             
             // Nếu đang ở màn hình kết quả hoặc màn hình chọn tên
@@ -2239,10 +2239,10 @@
             if (!search) {
                 filteredStudents = copyArray(students);
             } else {
-                filteredStudents = students.filter(s => 
-                    s.fullName.toLowerCase().includes(search) || 
-                    s.stt.toString().includes(search)
-                );
+                filteredStudents = students.filter(function(s) {
+                    return s.fullName.toLowerCase().indexOf(search) !== -1 || 
+                           s.stt.toString().indexOf(search) !== -1;
+                });
             }
             
             renderStudentList();
@@ -3527,7 +3527,7 @@
         // Hiển thị modal lỗi khi nộp bài thất bại
         function showSubmitErrorModal(errorMessage) {
             // Tạo modal nếu chưa có
-            let modal = document.getElementById('submitErrorModal');
+            var modal = document.getElementById('submitErrorModal');
             if (!modal) {
                 modal = document.createElement('div');
                 modal.id = 'submitErrorModal';
@@ -3567,7 +3567,7 @@
         
         // Đóng modal lỗi
         function closeSubmitErrorModal() {
-            const modal = document.getElementById('submitErrorModal');
+            var modal = document.getElementById('submitErrorModal');
             if (modal) {
                 modal.classList.remove('show');
             }
@@ -3579,7 +3579,7 @@
         
         // Thử nộp bài lại
         function retrySubmitExam() {
-            const modal = document.getElementById('submitErrorModal');
+            var modal = document.getElementById('submitErrorModal');
             if (modal) {
                 modal.classList.remove('show');
             }
@@ -3593,17 +3593,17 @@
             document.getElementById('resultScreen').style.display = 'flex';
             
             // Kiểm tra nếu giáo viên cho phép xem điểm
-            const showScore = result.showScore !== false;
+            var showScore = result.showScore !== false;
             
             if (showScore) {
                 document.getElementById('resultScore').textContent = result.score;
                 document.getElementById('resultScore').style.display = 'block';
                 document.querySelector('.result-label').style.display = 'block';
-                document.getElementById('correctCount').textContent = `${result.correctCount}/${result.totalQuestions}`;
+                document.getElementById('correctCount').textContent = result.correctCount + '/' + result.totalQuestions;
                 document.getElementById('correctCount').parentElement.style.display = 'flex';
                 
                 // Icon based on score
-                const icon = document.getElementById('resultIcon');
+                var icon = document.getElementById('resultIcon');
                 if (result.score >= 8) {
                     icon.textContent = '';
                 } else if (result.score >= 5) {
@@ -3637,11 +3637,11 @@
         }
         
         // ==================== LOCAL STORAGE ====================
-        const STORAGE_KEY = 'quiz_results';
+        var STORAGE_KEY = 'quiz_results';
         
         function getSavedResults() {
             try {
-                const data = localStorage.getItem(STORAGE_KEY);
+                var data = localStorage.getItem(STORAGE_KEY);
                 return data ? JSON.parse(data) : [];
             } catch (e) {
                 return [];
@@ -3649,10 +3649,16 @@
         }
         
         function saveResultToLocal(result) {
-            const results = getSavedResults();
+            var results = getSavedResults();
             
             // Check if this student already has a result, update it
-            const existingIndex = results.findIndex(r => r.stt === result.stt);
+            var existingIndex = -1;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].stt === result.stt) {
+                    existingIndex = i;
+                    break;
+                }
+            }
             if (existingIndex >= 0) {
                 results[existingIndex] = result;
             } else {
@@ -3671,14 +3677,26 @@
         function deleteSavedResult(stt) {
             if (!confirm('Xóa kết quả này?')) return;
             
-            const results = getSavedResults().filter(r => r.stt !== stt);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+            var results = getSavedResults();
+            var filtered = [];
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].stt !== stt) {
+                    filtered.push(results[i]);
+                }
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
             renderSavedResults();
         }
         
         function viewSavedResult(stt) {
-            const results = getSavedResults();
-            const result = results.find(r => r.stt === stt);
+            var results = getSavedResults();
+            var result = null;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].stt === stt) {
+                    result = results[i];
+                    break;
+                }
+            }
             if (!result) return;
             
             // Show result screen with saved data
@@ -3686,16 +3704,16 @@
             document.getElementById('resultScreen').style.display = 'flex';
             
             // Kiểm tra nếu giáo viên cho phép xem điểm
-            const showScore = result.showScore !== false;
+            var showScore = result.showScore !== false;
             
             if (showScore) {
                 document.getElementById('resultScore').textContent = result.score;
                 document.getElementById('resultScore').style.display = 'block';
                 document.querySelector('.result-label').style.display = 'block';
-                document.getElementById('correctCount').textContent = `${result.correctCount}/${result.totalQuestions}`;
+                document.getElementById('correctCount').textContent = result.correctCount + '/' + result.totalQuestions;
                 document.getElementById('correctCount').parentElement.style.display = 'flex';
                 
-                const icon = document.getElementById('resultIcon');
+                var icon = document.getElementById('resultIcon');
                 if (result.score >= 8) icon.textContent = '';
                 else if (result.score >= 5) icon.textContent = '';
                 else icon.textContent = '';
@@ -3711,7 +3729,7 @@
         }
         
         function renderSavedResults() {
-            let container = document.getElementById('savedResultsContainer');
+            var container = document.getElementById('savedResultsContainer');
             
             // Create container if not exists
             if (!container) {
@@ -3721,7 +3739,7 @@
                 document.querySelector('.login-box').appendChild(container);
             }
             
-            const results = getSavedResults();
+            var results = getSavedResults();
             
             if (results.length === 0) {
                 container.innerHTML = '';
@@ -3729,32 +3747,28 @@
             }
             
             // Sort by submission time, newest first
-            results.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+            results.sort(function(a, b) { return new Date(b.submittedAt) - new Date(a.submittedAt); });
             
-            container.innerHTML = `
-                <div class="saved-results-title">
-                    Kết quả đã lưu trên máy này (${results.length})
-                </div>
-                ${results.map(r => {
-                    const date = new Date(r.submittedAt);
-                    const timeStr = date.toLocaleString('vi-VN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        day: '2-digit',
-                        month: '2-digit'
-                    });
-                    return `
-                        <div class="saved-result-item" onclick="viewSavedResult(${r.stt})">
-                            <div class="saved-result-info">
-                                <div class="saved-result-name">${r.stt}. ${escapeHtml(r.name)}</div>
-                                <div class="saved-result-meta">Lớp ${escapeHtml(r.class)} • ${timeStr}</div>
-                            </div>
-                            <div class="saved-result-score">${r.score}</div>
-                            <span class="saved-result-delete" onclick="event.stopPropagation(); deleteSavedResult(${r.stt})" title="Xóa">×</span>
-                        </div>
-                    `;
-                }).join('')}
-            `;
+            var html = '<div class="saved-results-title">Kết quả đã lưu trên máy này (' + results.length + ')</div>';
+            for (var i = 0; i < results.length; i++) {
+                var r = results[i];
+                var date = new Date(r.submittedAt);
+                var timeStr = date.toLocaleString('vi-VN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit'
+                });
+                html += '<div class="saved-result-item" onclick="viewSavedResult(' + r.stt + ')">';
+                html += '<div class="saved-result-info">';
+                html += '<div class="saved-result-name">' + r.stt + '. ' + escapeHtml(r.name) + '</div>';
+                html += '<div class="saved-result-meta">Lớp ' + escapeHtml(r.class) + ' • ' + timeStr + '</div>';
+                html += '</div>';
+                html += '<div class="saved-result-score">' + r.score + '</div>';
+                html += '<span class="saved-result-delete" onclick="event.stopPropagation(); deleteSavedResult(' + r.stt + ')" title="Xóa">×</span>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
         }
         
         function backToLogin() {
@@ -3769,7 +3783,7 @@
         }
 
         // Listen for report processed
-        socket.on('reportProcessed', (data) => {
+        socket.on('reportProcessed', function(data) {
             if (data.status === 'approved') {
                 showSuccess('Báo cáo đã được duyệt! Vui lòng chọn lại tên.');
                 selectedStudent = null;
@@ -3780,7 +3794,7 @@
         });
 
         // Listen for all students reset (legacy)
-        socket.on('allStudentsReset', () => {
+        socket.on('allStudentsReset', function() {
             showSuccess('Danh sách đã được reset!');
             selectedStudent = null;
             document.getElementById('selectedStudentInfo').style.display = 'none';
@@ -3789,7 +3803,7 @@
         });
 
         // Listen for retry allowed
-        socket.on('retryAllowed', (data) => {
+        socket.on('retryAllowed', function(data) {
             if (selectedStudent && selectedStudent.stt == data.stt) {
                 showSuccess('Giáo viên cho phép bạn làm lại bài!');
             }
@@ -3798,20 +3812,21 @@
 
         // ========== CHỐNG GIAN LẬN ==========
         
-        let currentQuestionIndex = 0;
-        let tabLeaveCount = 0;
+        var currentQuestionIndex = 0;
+        var tabLeaveCount = 0;
         
         // Show current question (always single question mode)
         function showCurrentQuestion() {
-            const cards = document.querySelectorAll('.question-card');
-            cards.forEach((card, i) => {
-                card.classList.toggle('active', i === currentQuestionIndex);
-            });
+            var cards = document.querySelectorAll('.question-card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.toggle('active', i === currentQuestionIndex);
+            }
             
             // Update nav buttons highlight
-            document.querySelectorAll('.nav-btn').forEach((btn, i) => {
-                btn.classList.toggle('current', i === currentQuestionIndex);
-            });
+            var navBtns = document.querySelectorAll('.nav-btn');
+            for (var j = 0; j < navBtns.length; j++) {
+                navBtns[j].classList.toggle('current', j === currentQuestionIndex);
+            }
             
             updateQuestionNavigation();
             
@@ -3821,7 +3836,7 @@
         
         // Navigate between questions
         function navigateQuestion(direction) {
-            const totalQuestions = questions.length;
+            var totalQuestions = questions.length;
             currentQuestionIndex += direction;
             
             if (currentQuestionIndex < 0) currentQuestionIndex = 0;
@@ -3838,10 +3853,10 @@
         
         // Update navigation buttons
         function updateQuestionNavigation() {
-            const prevBtn = document.getElementById('prevQuestionBtn');
-            const nextBtn = document.getElementById('nextQuestionBtn');
-            const currentNum = document.getElementById('currentQuestionNum');
-            const totalNum = document.getElementById('totalQuestionNum');
+            var prevBtn = document.getElementById('prevQuestionBtn');
+            var nextBtn = document.getElementById('nextQuestionBtn');
+            var currentNum = document.getElementById('currentQuestionNum');
+            var totalNum = document.getElementById('totalQuestionNum');
             
             if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
             if (nextBtn) nextBtn.disabled = currentQuestionIndex >= questions.length - 1;
@@ -3853,17 +3868,17 @@
         function createWatermark() {
             if (!studentInfo.name || !studentInfo.stt) return;
             
-            const overlay = document.getElementById('watermarkOverlay');
+            var overlay = document.getElementById('watermarkOverlay');
             overlay.innerHTML = '';
             overlay.style.display = 'block';
             
-            const text = `${studentInfo.name} - STT ${studentInfo.stt}`;
-            const rows = 8;
-            const cols = 5;
+            var text = studentInfo.name + ' - STT ' + studentInfo.stt;
+            var rows = 8;
+            var cols = 5;
             
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < cols; j++) {
-                    const watermark = document.createElement('div');
+            for (var i = 0; i < rows; i++) {
+                for (var j = 0; j < cols; j++) {
+                    var watermark = document.createElement('div');
                     watermark.className = 'watermark-text';
                     watermark.textContent = text;
                     watermark.style.top = `${(i * 14) + 5}%`;
@@ -3875,20 +3890,21 @@
         
         // Anti-copy measures
         function enableAntiCopy() {
-            const examScreen = document.getElementById('examScreen');
+            var examScreen = document.getElementById('examScreen');
             examScreen.classList.add('no-select');
             
             // Disable right-click
-            examScreen.addEventListener('contextmenu', (e) => {
+            examScreen.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 showMessage('warning', 'Không được sao chép nội dung!');
             });
             
             // Disable copy shortcuts
-            document.addEventListener('keydown', (e) => {
+            document.addEventListener('keydown', function(e) {
                 if (document.getElementById('examScreen').style.display === 'block') {
                     // Ctrl+C, Ctrl+A, Ctrl+V, Ctrl+X
-                    if (e.ctrlKey && ['c', 'a', 'v', 'x', 'p', 's'].includes(e.key.toLowerCase())) {
+                    var blockedKeys = ['c', 'a', 'v', 'x', 'p', 's'];
+                    if (e.ctrlKey && blockedKeys.indexOf(e.key.toLowerCase()) !== -1) {
                         e.preventDefault();
                         showMessage('warning', 'Phím tắt bị vô hiệu hóa khi làm bài!');
                     }
@@ -3908,7 +3924,7 @@
         
         // Tab visibility detection
         function setupTabDetection() {
-            document.addEventListener('visibilitychange', () => {
+            document.addEventListener('visibilitychange', function() {
                 if (document.getElementById('examScreen').style.display !== 'block') return;
                 
                 if (document.hidden) {
@@ -3927,11 +3943,11 @@
             });
             
             // Detect window blur (user clicks outside)
-            window.addEventListener('blur', () => {
+            window.addEventListener('blur', function() {
                 if (document.getElementById('examScreen').style.display !== 'block') return;
                 
                 // Only count if actually leaving for a while
-                setTimeout(() => {
+                setTimeout(function() {
                     if (document.hidden) {
                         // Already counted by visibilitychange
                     }

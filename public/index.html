@@ -2075,17 +2075,10 @@
         var loadStudentsRetryCount = 0;
         var maxRetries = 5;
         
-        // Hàm hiện debug lên giao diện
+        // Hàm hiện debug lên giao diện (đã tắt - chỉ log ra console)
         function showDebugStatus(msg) {
-            var debugDiv = document.getElementById('debugStatus');
-            if (!debugDiv) {
-                debugDiv = document.createElement('div');
-                debugDiv.id = 'debugStatus';
-                debugDiv.style.cssText = 'background:#e3f2fd;border:2px solid #2196F3;padding:10px;margin:10px;border-radius:8px;font-size:12px;font-family:monospace;';
-                var step1 = document.getElementById('step1Content');
-                if (step1) step1.insertBefore(debugDiv, step1.firstChild);
-            }
-            debugDiv.innerHTML += msg + '<br>';
+            // Chỉ log ra console, không hiển thị trên giao diện
+            console.log('[DEBUG] ' + msg);
         }
         
         // Dùng XMLHttpRequest thay vì fetch để tương thích trình duyệt cũ

@@ -8,9 +8,9 @@
   "examSettings": {
     "title": "Kiểm tra TX 33 K11",
     "timeLimit": 30,
-    "isOpen": false,
-    "showScore": false,
-    "practiceMode": false,
+    "isOpen": true,
+    "showScore": true,
+    "practiceMode": true,
     "examPassword": "",
     "requirePassword": false,
     "currentSession": {

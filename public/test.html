@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test ket noi</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .box { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #ccc; }
+        .ok { border-left-color: #4CAF50; }
+        .err { border-left-color: #f44336; }
+        .wait { border-left-color: #ff9800; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        #log { background: #333; color: #0f0; padding: 15px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Kiem tra ket noi may hoc sinh</h1>
+    <p>Trang nay dung cu phap ES5 de tuong thich voi trinh duyet cu nhat.</p>
+    
+    <div class="box" id="box1">
+        <strong>1. Thoi gian may tinh:</strong>
+        <div id="localTime">Dang kiem tra...</div>
+    </div>
+    
+    <div class="box" id="box2">
+        <strong>2. Ket noi HTTP co ban (XMLHttpRequest):</strong>
+        <div id="httpTest">Chua kiem tra</div>
+        <button onclick="testHTTP()">Test HTTP</button>
+    </div>
+    
+    <div class="box" id="box3">
+        <strong>3. Lay danh sach hoc sinh:</strong>
+        <div id="studentTest">Chua kiem tra</div>
+        <button onclick="testStudents()">Test Danh sach</button>
+    </div>
+    
+    <div class="box" id="box4">
+        <strong>4. Socket.IO:</strong>
+        <div id="socketTest">Chua kiem tra</div>
+        <button onclick="testSocket()">Test Socket</button>
+    </div>
+    
+    <div class="box">
+        <strong>Console Log:</strong>
+        <div id="log"></div>
+    </div>
+    
+    <button onclick="runAllTests()">CHAY TAT CA TEST</button>
+    <button onclick="location.reload()">TAI LAI TRANG</button>
+    <button onclick="location.href='/'">VE TRANG CHINH</button>
+    
+    <script>
+        // Override console.log de hien thi len trang
+        var logDiv = document.getElementById('log');
+        var originalLog = console.log;
+        var originalError = console.error;
+        
+        console.log = function(msg) {
+            originalLog.apply(console, arguments);
+            var text = '';
+            for (var i = 0; i < arguments.length; i++) {
+                if (typeof arguments[i] === 'object') {
+                    try { text += JSON.stringify(arguments[i]); }
+                    catch(e) { text += String(arguments[i]); }
+                } else {
+                    text += String(arguments[i]);
+                }
+                text += ' ';
+            }
+            logDiv.innerHTML += '[LOG] ' + text + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+        
+        console.error = function(msg) {
+            originalError.apply(console, arguments);
+            var text = '';
+            for (var i = 0; i < arguments.length; i++) {
+                text += String(arguments[i]) + ' ';
+            }
+            logDiv.innerHTML += '[ERROR] ' + text + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+        
+        // Test 1: Thoi gian may
+        function testLocalTime() {
+            var now = new Date();
+            var str = now.toString();
+            str += '\nNam: ' + now.getFullYear();
+            str += ' | Thang: ' + (now.getMonth() + 1);
+            str += ' | Ngay: ' + now.getDate();
+            document.getElementById('localTime').innerText = str;
+            
+            var box = document.getElementById('box1');
+            if (now.getFullYear() < 2020 || now.getFullYear() > 2030) {
+                box.className = 'box err';
+                console.log('CANH BAO: Dong ho may sai! Nam = ' + now.getFullYear());
+            } else {
+                box.className = 'box ok';
+                console.log('Dong ho may: ' + now.toISOString());
+            }
+        }
+        
+        // Test 2: HTTP co ban
+        function testHTTP() {
+            var div = document.getElementById('httpTest');
+            var box = document.getElementById('box2');
+            div.innerText = 'Dang ket noi...';
+            box.className = 'box wait';
+            
+            console.log('Bat dau test HTTP...');
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/ping', true);
+            xhr.timeout = 10000;
+            
+            xhr.onload = function() {
+                console.log('HTTP Status: ' + xhr.status);
+                console.log('Response: ' + xhr.responseText);
+                
+                if (xhr.status === 200) {
+                    div.innerText = 'OK! Server phan hoi: ' + xhr.responseText;
+                    box.className = 'box ok';
+                } else {
+                    div.innerText = 'LOI! Status: ' + xhr.status;
+                    box.className = 'box err';
+                }
+            };
+            
+            xhr.onerror = function() {
+                console.error('HTTP ERROR - Khong the ket noi');
+                div.innerText = 'LOI KET NOI! Khong the ket noi den server.\nCo the do: Sai IP, firewall, hoac mang chua ket noi.';
+                box.className = 'box err';
+            };
+            
+            xhr.ontimeout = function() {
+                console.error('HTTP TIMEOUT - Qua 10 giay');
+                div.innerText = 'TIMEOUT! Server khong phan hoi trong 10 giay.';
+                box.className = 'box err';
+            };
+            
+            try {
+                xhr.send();
+            } catch(e) {
+                console.error('Exception khi gui request: ' + e.message);
+                div.innerText = 'LOI: ' + e.message;
+                box.className = 'box err';
+            }
+        }
+        
+        // Test 3: Lay danh sach hoc sinh
+        function testStudents() {
+            var div = document.getElementById('studentTest');
+            var box = document.getElementById('box3');
+            div.innerText = 'Dang tai...';
+            box.className = 'box wait';
+            
+            console.log('Bat dau tai danh sach hoc sinh...');
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/students', true);
+            xhr.timeout = 10000;
+            
+            xhr.onload = function() {
+                console.log('Students API Status: ' + xhr.status);
+                
+                if (xhr.status === 200) {
+                    try {
+                        var students = JSON.parse(xhr.responseText);
+                        console.log('So hoc sinh: ' + students.length);
+                        
+                        var text = 'OK! Co ' + students.length + ' hoc sinh.\n';
+                        if (students.length > 0) {
+                            text += 'Vi du: ' + students[0].stt + '. ' + students[0].fullName;
+                        }
+                        div.innerText = text;
+                        box.className = 'box ok';
+                    } catch(e) {
+                        console.error('Loi parse JSON: ' + e.message);
+                        div.innerText = 'LOI parse JSON: ' + e.message;
+                        box.className = 'box err';
+                    }
+                } else {
+                    div.innerText = 'LOI! Status: ' + xhr.status;
+                    box.className = 'box err';
+                }
+            };
+            
+            xhr.onerror = function() {
+                console.error('Students API ERROR');
+                div.innerText = 'LOI KET NOI!';
+                box.className = 'box err';
+            };
+            
+            xhr.ontimeout = function() {
+                console.error('Students API TIMEOUT');
+                div.innerText = 'TIMEOUT!';
+                box.className = 'box err';
+            };
+            
+            try {
+                xhr.send();
+            } catch(e) {
+                console.error('Exception: ' + e.message);
+                div.innerText = 'LOI: ' + e.message;
+                box.className = 'box err';
+            }
+        }
+        
+        // Test 4: Socket.IO
+        function testSocket() {
+            var div = document.getElementById('socketTest');
+            var box = document.getElementById('box4');
+            div.innerText = 'Dang ket noi Socket.IO...';
+            box.className = 'box wait';
+            
+            console.log('Bat dau test Socket.IO...');
+            
+            // Kiem tra xem socket.io da load chua
+            if (typeof io === 'undefined') {
+                console.error('Socket.IO chua duoc load!');
+                div.innerText = 'LOI: Thu vien Socket.IO chua duoc tai!\nCo the do trinh duyet khong tuong thich.';
+                box.className = 'box err';
+                return;
+            }
+            
+            console.log('Socket.IO library OK, dang ket noi...');
+            
+            try {
+                var testSocket = io({
+                    reconnection: false,
+                    timeout: 10000
+                });
+                
+                var timeout = setTimeout(function() {
+                    console.error('Socket timeout sau 10 giay');
+                    div.innerText = 'TIMEOUT! Socket khong ket noi duoc trong 10 giay.';
+                    box.className = 'box err';
+                    testSocket.close();
+                }, 10000);
+                
+                testSocket.on('connect', function() {
+                    clearTimeout(timeout);
+                    console.log('Socket connected! ID: ' + testSocket.id);
+                    div.innerText = 'OK! Da ket noi Socket.\nSocket ID: ' + testSocket.id;
+                    box.className = 'box ok';
+                });
+                
+                testSocket.on('connected', function(data) {
+                    console.log('Received connected event:', data);
+                });
+                
+                testSocket.on('connect_error', function(err) {
+                    clearTimeout(timeout);
+                    console.error('Socket connect error: ' + err.message);
+                    div.innerText = 'LOI KET NOI SOCKET!\n' + err.message;
+                    box.className = 'box err';
+                });
+                
+                testSocket.on('error', function(err) {
+                    console.error('Socket error: ' + err);
+                });
+                
+            } catch(e) {
+                console.error('Exception khi tao socket: ' + e.message);
+                div.innerText = 'LOI: ' + e.message;
+                box.className = 'box err';
+            }
+        }
+        
+        // Chay tat ca
+        function runAllTests() {
+            logDiv.innerHTML = '';
+            console.log('=== BAT DAU KIEM TRA ===');
+            console.log('URL: ' + window.location.href);
+            console.log('User Agent: ' + navigator.userAgent);
+            
+            testLocalTime();
+            
+            setTimeout(function() {
+                testHTTP();
+            }, 100);
+            
+            setTimeout(function() {
+                testStudents();
+            }, 500);
+            
+            setTimeout(function() {
+                testSocket();
+            }, 1000);
+        }
+        
+        // Tu dong chay khi load
+        testLocalTime();
+        console.log('Trang test da load. Nhan nut de chay test.');
+        console.log('User Agent: ' + navigator.userAgent);
+    </script>
+    
+    <!-- Load socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+</body>
+</html>

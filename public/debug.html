@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Kiem tra ket noi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #333; }
+        .test-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+        .test-item.success { border-left-color: #4CAF50; background: #e8f5e9; }
+        .test-item.error { border-left-color: #f44336; background: #ffebee; }
+        .test-item.warning { border-left-color: #ff9800; background: #fff3e0; }
+        .test-item h3 { margin: 0 0 10px 0; }
+        .test-item pre { 
+            background: #f5f5f5; 
+            padding: 10px; 
+            border-radius: 4px; 
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #1976D2; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Trang kiem tra ket noi</h1>
+    <p>Trang nay giup kiem tra xem may tinh co ket noi duoc voi server khong.</p>
+    
+    <div>
+        <button onclick="runAllTests()">Chay tat ca kiem tra</button>
+        <button onclick="location.reload()">Tai lai trang</button>
+        <button onclick="window.location.href='/'">Quay ve trang chinh</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        // Dung ES5 de tuong thich trinh duyet cu
+        var results = document.getElementById('results');
+        
+        function addResult(title, status, content) {
+            var div = document.createElement('div');
+            div.className = 'test-item ' + status;
+            div.innerHTML = '<h3>' + title + '</h3><pre>' + content + '</pre>';
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            results.innerHTML = '';
+        }
+        
+        // Test 1: Kiem tra thoi gian may
+        function testLocalTime() {
+            var now = new Date();
+            var timeStr = 'Thoi gian may tinh: ' + now.toString() + '\n';
+            timeStr += 'Ngay: ' + now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + '\n';
+            timeStr += 'Gio: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+            
+            // Kiem tra nam co hop ly khong
+            var year = now.getFullYear();
+            if (year < 2020 || year > 2030) {
+                addResult('1. Thoi gian may tinh', 'error', timeStr + '\n\nLOI: Nam khong hop ly! Hay chinh lai dong ho may tinh.');
+            } else {
+                addResult('1. Thoi gian may tinh', 'success', timeStr);
+            }
+        }
+        
+        // Test 2: Kiem tra ket noi server bang XMLHttpRequest (tuong thich IE)
+        function testServerConnection() {
+            addResult('2. Ket noi server', 'warning', 'Dang kiem tra...');
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/ping', true);
+            xhr.timeout = 10000; // 10 giay timeout
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    var lastResult = results.lastChild;
+                    results.removeChild(lastResult);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            var content = 'Server hoat dong!\n';
+                            content += 'Thoi gian server: ' + data.serverTime + '\n';
+                            content += 'Message: ' + data.message;
+                            addResult('2. Ket noi server', 'success', content);
+                            
+                            // So sanh thoi gian
+                            testTimeSync(data.serverTime);
+                        } catch (e) {
+                            addResult('2. Ket noi server', 'error', 'Loi parse JSON: ' + e.message + '\nResponse: ' + xhr.responseText);
+                        }
+                    } else {
+                        addResult('2. Ket noi server', 'error', 'Loi ket noi!\nStatus: ' + xhr.status + '\nResponse: ' + xhr.responseText);
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                var lastResult = results.lastChild;
+                results.removeChild(lastResult);
+                addResult('2. Ket noi server', 'error', 'Khong the ket noi den server!\n\nCo the do:\n- Server chua khoi dong\n- Sai dia chi IP\n- Firewall chan ket noi');
+            };
+            
+            xhr.ontimeout = function() {
+                var lastResult = results.lastChild;
+                results.removeChild(lastResult);
+                addResult('2. Ket noi server', 'error', 'Timeout - Server khong phan hoi trong 10 giay');
+            };
+            
+            xhr.send();
+        }
+        
+        // Test 3: So sanh thoi gian may va server
+        function testTimeSync(serverTimeStr) {
+            var serverTime = new Date(serverTimeStr);
+            var localTime = new Date();
+            var diffMs = Math.abs(serverTime - localTime);
+            var diffMinutes = Math.floor(diffMs / 60000);
+            var diffHours = Math.floor(diffMs / 3600000);
+            
+            var content = 'Thoi gian server: ' + serverTime.toString() + '\n';
+            content += 'Thoi gian may: ' + localTime.toString() + '\n';
+            content += 'Chenh lech: ' + diffMinutes + ' phut (' + diffHours + ' gio)';
+            
+            if (diffMinutes > 60) {
+                content += '\n\nCANH BAO: Dong ho may chenh lech qua nhieu!\nHay chinh lai dong ho may tinh.';
+                addResult('3. Dong bo thoi gian', 'error', content);
+            } else if (diffMinutes > 5) {
+                content += '\n\nCHU Y: Dong ho may co chenh lech nhe.';
+                addResult('3. Dong bo thoi gian', 'warning', content);
+            } else {
+                addResult('3. Dong bo thoi gian', 'success', content);
+            }
+        }
+        
+        // Test 4: Lay danh sach hoc sinh
+        function testStudentsList() {
+            addResult('4. Tai danh sach hoc sinh', 'warning', 'Dang tai...');
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/students', true);
+            xhr.timeout = 10000;
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    var lastResult = results.lastChild;
+                    results.removeChild(lastResult);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            var students = JSON.parse(xhr.responseText);
+                            var content = 'Thanh cong!\n';
+                            content += 'So luong hoc sinh: ' + students.length + '\n\n';
+                            
+                            if (students.length > 0) {
+                                content += 'Danh sach (5 hoc sinh dau):\n';
+                                for (var i = 0; i < Math.min(5, students.length); i++) {
+                                    content += '  ' + students[i].stt + '. ' + students[i].fullName + '\n';
+                                }
+                            } else {
+                                content += 'Chua co hoc sinh nao trong danh sach.';
+                            }
+                            
+                            addResult('4. Tai danh sach hoc sinh', 'success', content);
+                        } catch (e) {
+                            addResult('4. Tai danh sach hoc sinh', 'error', 'Loi parse JSON: ' + e.message);
+                        }
+                    } else {
+                        addResult('4. Tai danh sach hoc sinh', 'error', 'Loi: Status ' + xhr.status);
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                var lastResult = results.lastChild;
+                results.removeChild(lastResult);
+                addResult('4. Tai danh sach hoc sinh', 'error', 'Khong the tai danh sach');
+            };
+            
+            xhr.send();
+        }
+        
+        // Test 5: Kiem tra trinh duyet
+        function testBrowser() {
+            var ua = navigator.userAgent;
+            var content = 'User Agent: ' + ua + '\n\n';
+            
+            // Kiem tra cac tinh nang
+            var features = [];
+            if (typeof Promise !== 'undefined') features.push('Promise: OK');
+            else features.push('Promise: KHONG HO TRO');
+            
+            if (typeof fetch !== 'undefined') features.push('Fetch API: OK');
+            else features.push('Fetch API: KHONG HO TRO (dung XMLHttpRequest thay the)');
+            
+            if (typeof JSON !== 'undefined') features.push('JSON: OK');
+            else features.push('JSON: KHONG HO TRO');
+            
+            if (typeof localStorage !== 'undefined') features.push('localStorage: OK');
+            else features.push('localStorage: KHONG HO TRO');
+            
+            content += 'Tinh nang:\n' + features.join('\n');
+            
+            // Kiem tra IE
+            var isIE = ua.indexOf('MSIE') > -1 || ua.indexOf('Trident') > -1;
+            if (isIE) {
+                content += '\n\nCANH BAO: Ban dang dung Internet Explorer.\nMot so tinh nang co the khong hoat dong.';
+                addResult('5. Trinh duyet', 'warning', content);
+            } else {
+                addResult('5. Trinh duyet', 'success', content);
+            }
+        }
+        
+        // Chay tat ca test
+        function runAllTests() {
+            clearResults();
+            testLocalTime();
+            testBrowser();
+            testServerConnection();
+            
+            // Test danh sach sau 1 giay (cho server connection test xong)
+            setTimeout(testStudentsList, 1500);
+        }
+        
+        // Tu dong chay khi load trang
+        window.onload = runAllTests;
+    </script>
+</body>
+</html>

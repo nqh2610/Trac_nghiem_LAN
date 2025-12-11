@@ -802,6 +802,15 @@ function loadReports() {
 
 // API Routes
 
+// API ping để test kết nối - endpoint đơn giản nhất
+app.get('/api/ping', (req, res) => {
+    res.json({ 
+        ok: true, 
+        serverTime: new Date().toISOString(),
+        message: 'Server hoạt động bình thường'
+    });
+});
+
 // Lấy danh sách học sinh với trạng thái
 app.get('/api/students', (req, res) => {
     var studentsWithStatus = students.map(function(s) {

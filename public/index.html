@@ -2020,23 +2020,85 @@
         }
 
         // ==================== LOAD & RENDER ====================
+        var loadStudentsRetryCount = 0;
+        var maxRetries = 5;
+        
         async function loadStudents() {
             try {
-                console.log('Đang tải danh sách học sinh...');
+                console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
+                
+                // Thử ping server trước
+                try {
+                    var pingRes = await fetch('/api/ping');
+                    var pingData = await pingRes.json();
+                    console.log('Server OK:', pingData.message);
+                } catch (pingErr) {
+                    console.error('Không thể ping server:', pingErr);
+                }
+                
                 const res = await fetch('/api/students');
                 if (!res.ok) {
                     throw new Error('Server trả về lỗi: ' + res.status);
                 }
                 students = await res.json();
-                filteredStudents = [...students];
+                filteredStudents = copyArray(students);
                 console.log('Đã tải ' + students.length + ' học sinh');
+                loadStudentsRetryCount = 0; // Reset counter khi thành công
                 renderStudentList();
             } catch (err) {
                 console.error('Lỗi tải danh sách:', err);
-                showMessage('error', 'Không thể tải danh sách học sinh. Đang thử lại...');
-                // Thử lại sau 2 giây
-                setTimeout(loadStudents, 2000);
+                loadStudentsRetryCount++;
+                
+                if (loadStudentsRetryCount < maxRetries) {
+                    showMessage('error', 'Không thể tải danh sách (lần ' + loadStudentsRetryCount + '). Đang thử lại...');
+                    // Thử lại sau 2 giây
+                    setTimeout(loadStudents, 2000);
+                } else {
+                    showMessage('error', 'Không thể kết nối server sau ' + maxRetries + ' lần thử. Vui lòng kiểm tra kết nối mạng và thử F5.');
+                    showConnectionHelp();
+                }
             }
+        }
+        
+        // Hiển thị hướng dẫn khi không kết nối được
+        function showConnectionHelp() {
+            var helpDiv = document.createElement('div');
+            helpDiv.id = 'connectionHelp';
+            helpDiv.style.cssText = 'background: #fff3e0; border: 2px solid #ff9800; border-radius: 12px; padding: 20px; margin: 15px; text-align: left;';
+            helpDiv.innerHTML = 
+                '<h3 style="color: #e65100; margin-top: 0;">Không thể kết nối server</h3>' +
+                '<p><strong>Nguyên nhân có thể:</strong></p>' +
+                '<ul style="margin: 10px 0;">' +
+                '<li>Đồng hồ máy tính bị sai ngày/giờ</li>' +
+                '<li>Mạng LAN chưa kết nối đúng</li>' +
+                '<li>Server chưa được khởi động</li>' +
+                '</ul>' +
+                '<p><strong>Cách khắc phục:</strong></p>' +
+                '<ol style="margin: 10px 0;">' +
+                '<li><strong>Kiểm tra đồng hồ:</strong> Chuột phải vào đồng hồ góc phải > Adjust date/time > Đặt đúng ngày giờ</li>' +
+                '<li><strong>Kiểm tra IP:</strong> Địa chỉ đang truy cập có đúng IP của máy giáo viên không?</li>' +
+                '<li><strong>Thử lại:</strong> <button onclick="location.reload()" style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">Tải lại trang (F5)</button></li>' +
+                '</ol>' +
+                '<div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px;">' +
+                '<strong>Thông tin debug:</strong><br>' +
+                '<small>Thời gian máy: ' + new Date().toString() + '</small><br>' +
+                '<small>URL: ' + window.location.href + '</small>' +
+                '</div>';
+            
+            // Tìm vị trí để chèn
+            var step1Content = document.getElementById('step1Content');
+            if (step1Content && !document.getElementById('connectionHelp')) {
+                step1Content.insertBefore(helpDiv, step1Content.firstChild);
+            }
+        }
+        
+        // Copy array helper cho trình duyệt cũ
+        function copyArray(arr) {
+            var result = [];
+            for (var i = 0; i < arr.length; i++) {
+                result.push(arr[i]);
+            }
+            return result;
         }
 
         function renderStudentList() {
@@ -2079,7 +2141,7 @@
             const search = document.getElementById('studentSearch').value.toLowerCase().trim();
             
             if (!search) {
-                filteredStudents = [...students];
+                filteredStudents = copyArray(students);
             } else {
                 filteredStudents = students.filter(s => 
                     s.fullName.toLowerCase().includes(search) || 
@@ -2143,7 +2205,7 @@
             nameConfirmed = false;
             document.getElementById('studentSelect').value = '';
             document.getElementById('studentSearch').value = '';
-            filteredStudents = [...students];
+            filteredStudents = copyArray(students);
             renderStudentList();
             updateSteps(1);
         }

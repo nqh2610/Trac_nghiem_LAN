@@ -2465,6 +2465,13 @@
             // Hiển thị banner chế độ ôn tập nếu được bật
             if (practiceMode) {
                 showPracticeModeNotice();
+                // Ẩn timer và hiển thị badge ôn tập
+                document.getElementById('timer').style.display = 'none';
+                showPracticeModeBadge();
+            } else {
+                // Chế độ thi - hiện timer bình thường
+                document.getElementById('timer').style.display = '';
+                hidePracticeModeBadge();
             }
             
             // Check for saved progress
@@ -2493,13 +2500,20 @@
                 
                 const minutesLeft = Math.floor(timeRemaining / 60);
                 const secondsLeft = timeRemaining % 60;
-                showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
+                if (practiceMode) {
+                    showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! (Chế độ ôn tập - không giới hạn thời gian)`);
+                } else {
+                    showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
+                }
             } else {
                 startTime = new Date();
                 timeRemaining = timeLimit * 60;
             }
             
-            startTimer();
+            // Chỉ start timer khi không phải chế độ ôn tập
+            if (!practiceMode) {
+                startTimer();
+            }
             
             // Initialize anti-cheat measures
             initAntiCheat();
@@ -2638,7 +2652,7 @@
                 '<span class="practice-icon" style="background:#ff9800;color:white;padding:5px 10px;border-radius:6px;font-weight:bold;">Ôn tập</span>' +
                 '<div class="practice-text">' +
                 '<strong>CHẾ ĐỘ ÔN TẬP</strong>' +
-                '<span>Hệ thống sẽ báo đúng/sai ngay khi bạn chọn đáp án</span>' +
+                '<span>Không giới hạn thời gian - Hệ thống báo đúng/sai ngay khi chọn đáp án</span>' +
                 '</div>' +
                 '</div>';
             
@@ -2646,6 +2660,30 @@
             const examScreen = document.getElementById('examScreen');
             const container = examScreen.querySelector('.container');
             container.insertBefore(notice, container.firstChild);
+        }
+        
+        // Hiển thị badge ôn tập thay thế timer trên header
+        function showPracticeModeBadge() {
+            // Xóa badge cũ nếu có
+            hidePracticeModeBadge();
+            
+            var badge = document.createElement('div');
+            badge.id = 'practiceModeBadge';
+            badge.style.cssText = 'background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.95em; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(255,152,0,0.3);';
+            badge.innerHTML = '<span style="font-size: 1.1em;">*</span> ÔN TẬP';
+            badge.title = 'Chế độ ôn tập - Không giới hạn thời gian';
+            
+            // Chèn vào vị trí của timer
+            var timer = document.getElementById('timer');
+            timer.parentNode.insertBefore(badge, timer);
+        }
+        
+        // Ẩn badge ôn tập
+        function hidePracticeModeBadge() {
+            var badge = document.getElementById('practiceModeBadge');
+            if (badge) {
+                badge.remove();
+            }
         }
         
         // ==================== EXAM PROGRESS STORAGE ====================
@@ -2842,7 +2880,8 @@
                 const timePassed = Math.floor((serverTime - savedTime) / 1000);
                 const remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
                 
-                if (remainingTime <= 0) {
+                // Chỉ kiểm tra hết giờ khi không phải chế độ ôn tập
+                if (!serverPracticeMode && remainingTime <= 0) {
                     clearExamProgress(activeSession.stt, activeSession.examId);
                     return;
                 }
@@ -2889,6 +2928,13 @@
                 // Hiển thị banner ôn tập nếu đang ở chế độ ôn tập
                 if (practiceMode) {
                     showPracticeModeNotice();
+                    // Ẩn timer và hiển thị badge ôn tập
+                    document.getElementById('timer').style.display = 'none';
+                    showPracticeModeBadge();
+                } else {
+                    // Chế độ thi - hiện timer bình thường
+                    document.getElementById('timer').style.display = '';
+                    hidePracticeModeBadge();
                 }
                 
                 // Khôi phục startTime gốc nếu có, nếu không thì tính lại từ timeRemaining
@@ -2904,14 +2950,22 @@
                 renderQuestions();
                 renderNavigation();
                 applyRestoredAnswers();
-                startTimer();
+                
+                // Chỉ start timer khi không phải chế độ ôn tập
+                if (!practiceMode) {
+                    startTimer();
+                }
                 
                 // Initialize anti-cheat measures khi khôi phục
                 initAntiCheat();
                 
                 const minutesLeft = Math.floor(timeRemaining / 60);
                 const secondsLeft = timeRemaining % 60;
-                showMessage('success', `Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
+                if (practiceMode) {
+                    showMessage('success', `Đã khôi phục bài làm! (Chế độ ôn tập - không giới hạn thời gian)`);
+                } else {
+                    showMessage('success', `Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
+                }
                 
             } catch (e) {
                 console.error('Lỗi khôi phục session:', e);

@@ -1211,6 +1211,7 @@
                     <div>
                         <strong style="color: #e65100;">Chế độ ÔN TẬP</strong>
                         <p style="color: #bf360c; font-size: 0.9em;">Hiển thị đúng/sai ngay khi học sinh chọn đáp án (không tính điểm)</p>
+                        <p style="color: #e65100; font-size: 0.85em; margin-top: 5px; font-style: italic;">* Không giới hạn thời gian làm bài</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="practiceMode" onchange="saveSettings()">
@@ -2568,7 +2569,7 @@
                 return `
                     <tr>
                         <td>${s.stt}</td>
-                        <td>${escapeHtml(s.ho)} ${escapeHtml(s.ten)} ${s.nu === 'X' ?'(Nu)' : ''}</td>
+                        <td>${escapeHtml(s.ho)} ${escapeHtml(s.ten)} ${s.nu === 'X' ? '<span style="color: #e91e63; font-weight: bold;" title="Nữ">(N)</span>' : ''}</td>
                         <td><span class="student-status ${statusClass}">${statusText}</span>${tabLeaveWarning}</td>
                         <td>${actions.join(' ') || '-'}</td>
                     </tr>

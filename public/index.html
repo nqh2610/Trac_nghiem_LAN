@@ -1840,7 +1840,44 @@
             return false;
         };
         
-        var socket = io();
+        // Khởi tạo Socket.IO với error handling
+        var socket = null;
+        var socketConnected = false;
+        
+        try {
+            if (typeof io !== 'undefined') {
+                socket = io({
+                    reconnection: true,
+                    reconnectionAttempts: 5,
+                    reconnectionDelay: 1000,
+                    timeout: 10000
+                });
+                
+                socket.on('connect', function() {
+                    socketConnected = true;
+                    console.log('Socket connected!');
+                });
+                
+                socket.on('connect_error', function(err) {
+                    console.error('Socket connect error:', err);
+                    socketConnected = false;
+                });
+            } else {
+                console.warn('Socket.IO not loaded, running in fallback mode');
+            }
+        } catch(e) {
+            console.error('Socket.IO init error:', e);
+            socket = null;
+        }
+        
+        // Tạo socket giả nếu không có để code không bị lỗi
+        if (!socket) {
+            socket = {
+                on: function() {},
+                emit: function() {},
+                id: 'fallback_' + Date.now()
+            };
+        }
         
         // Hàm escape HTML để hiển thị các thẻ HTML như text
         function escapeHtml(text) {
@@ -1850,21 +1887,21 @@
             return div.innerHTML;
         }
         
-        let mySocketId = null;
-        let studentInfo = { name: '', class: '', stt: '' };
-        let selectedStudent = null;
-        let nameConfirmed = false;
-        let students = [];
-        let filteredStudents = [];
-        let questions = [];
-        let originalQuestions = []; // Câu hỏi gốc từ server
-        let questionOrder = []; // Thứ tự câu hỏi đã đảo
-        let optionOrders = []; // Thứ tự đáp án cho mỗi câu hỏi
-        let answers = {};
-        let timeLimit = 30;
-        let timeRemaining = 0;
-        let timerInterval = null;
-        let startTime = null;
+        var mySocketId = null;
+        var studentInfo = { name: '', class: '', stt: '' };
+        var selectedStudent = null;
+        var nameConfirmed = false;
+        var students = [];
+        var filteredStudents = [];
+        var questions = [];
+        var originalQuestions = []; // Câu hỏi gốc từ server
+        var questionOrder = []; // Thứ tự câu hỏi đã đảo
+        var optionOrders = []; // Thứ tự đáp án cho mỗi câu hỏi
+        var answers = {};
+        var timeLimit = 30;
+        var timeRemaining = 0;
+        var timerInterval = null;
+        var startTime = null;
         var currentStep = 1;
         var practiceMode = false; // Che do on tap
         

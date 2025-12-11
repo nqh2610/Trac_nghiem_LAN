@@ -2028,10 +2028,10 @@
         // Hiển thị thông báo bài thi mới
         function showNewExamNotification(examName) {
             // Tạo modal thông báo
-            const existingModal = document.getElementById('newExamModal');
+            var existingModal = document.getElementById('newExamModal');
             if (existingModal) existingModal.remove();
             
-            const modal = document.createElement('div');
+            var modal = document.createElement('div');
             modal.id = 'newExamModal';
             modal.innerHTML = `
                 <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">
@@ -2052,7 +2052,7 @@
         }
         
         function closeNewExamModal() {
-            const modal = document.getElementById('newExamModal');
+            var modal = document.getElementById('newExamModal');
             if (modal) modal.remove();
             
             // Nếu đang ở màn hình kết quả, quay về màn hình chọn tên
@@ -2198,18 +2198,18 @@
         }
 
         function renderStudentList() {
-            const select = document.getElementById('studentSelect');
+            var select = document.getElementById('studentSelect');
             
             if (filteredStudents.length === 0) {
                 select.innerHTML = '<option value="" disabled>Không tìm thấy học sinh</option>';
                 return;
             }
             
-            select.innerHTML = filteredStudents.map(s => {
-                let statusIcon = '';
-                let disabled = false;
-                let style = '';
-                let extraText = '';
+            select.innerHTML = filteredStudents.map(function(s) {
+                var statusIcon = '';
+                var disabled = false;
+                var style = '';
+                var extraText = '';
                 
                 if (s.status.completed && !s.status.canRetry) {
                     statusIcon = ' ';
@@ -2234,7 +2234,7 @@
         }
 
         function filterStudents() {
-            const search = document.getElementById('studentSearch').value.toLowerCase().trim();
+            var search = document.getElementById('studentSearch').value.toLowerCase().trim();
             
             if (!search) {
                 filteredStudents = copyArray(students);
@@ -2272,21 +2272,31 @@
         }
         
         // Load tên lớp hiện tại từ session của giáo viên
-        async function loadCurrentClassName() {
-            try {
-                const res = await fetch('/api/exam');
-                const data = await res.json();
-                if (data.className) {
-                    document.getElementById('displayCurrentClass').textContent = data.className;
-                    document.getElementById('studentClass').value = data.className;
-                } else if (data.error) {
-                    document.getElementById('displayCurrentClass').textContent = 'Phòng thi chưa mở';
-                } else {
-                    document.getElementById('displayCurrentClass').textContent = 'Chưa chọn lớp';
+        function loadCurrentClassName() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/exam', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data.className) {
+                                document.getElementById('displayCurrentClass').textContent = data.className;
+                                document.getElementById('studentClass').value = data.className;
+                            } else if (data.error) {
+                                document.getElementById('displayCurrentClass').textContent = 'Phòng thi chưa mở';
+                            } else {
+                                document.getElementById('displayCurrentClass').textContent = 'Chưa chọn lớp';
+                            }
+                        } catch(e) {
+                            document.getElementById('displayCurrentClass').textContent = 'Lỗi dữ liệu';
+                        }
+                    } else {
+                        document.getElementById('displayCurrentClass').textContent = 'Lỗi kết nối';
+                    }
                 }
-            } catch (err) {
-                document.getElementById('displayCurrentClass').textContent = 'Lỗi kết nối';
-            }
+            };
+            xhr.send();
         }
 
         function goBackToStep1() {
@@ -2307,33 +2317,38 @@
         }
 
         // ==================== SELECT & CONFIRM ====================
-        document.getElementById('studentSelect').addEventListener('change', async (e) => {
-            const stt = e.target.value;
+        document.getElementById('studentSelect').addEventListener('change', function(e) {
+            var stt = e.target.value;
             if (!stt) return;
             
-            try {
-                const res = await fetch('/api/select-student', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stt, socketId: mySocketId })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    selectedStudent = data.student;
-                    document.getElementById('selectedStudentName').textContent = 
-                        `${selectedStudent.ho} ${selectedStudent.ten}`;
-                    document.getElementById('selectedStudentSTT').textContent = 
-                        `STT: ${selectedStudent.stt}`;
-                    updateSteps(2);
-                } else {
-                    showMessage('error', data.error);
-                    e.target.value = '';
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/select-student', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data.success) {
+                                selectedStudent = data.student;
+                                document.getElementById('selectedStudentName').textContent = 
+                                    selectedStudent.ho + ' ' + selectedStudent.ten;
+                                document.getElementById('selectedStudentSTT').textContent = 
+                                    'STT: ' + selectedStudent.stt;
+                                updateSteps(2);
+                            } else {
+                                showMessage('error', data.error);
+                                e.target.value = '';
+                            }
+                        } catch(err) {
+                            showMessage('error', 'Lỗi dữ liệu');
+                        }
+                    } else {
+                        showMessage('error', 'Không thể chọn học sinh');
+                    }
                 }
-            } catch (err) {
-                showMessage('error', 'Không thể chọn học sinh');
-            }
+            };
+            xhr.send(JSON.stringify({ stt: stt, socketId: mySocketId }));
         });
 
         function confirmSelection() {
@@ -2360,26 +2375,34 @@
         }
 
         // ==================== CHECK EXAM & MESSAGES ====================
-        async function checkExam() {
-            try {
-                const res = await fetch('/api/settings');
-                const data = await res.json();
-                document.getElementById('examTitleDisplay').textContent = data.title;
-                
-                if (!data.isOpen) {
-                    showMessage('info', 'Bài thi chưa mở. Vui lòng chờ giáo viên!');
+        function checkExam() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/settings', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            document.getElementById('examTitleDisplay').textContent = data.title;
+                            
+                            if (!data.isOpen) {
+                                showMessage('info', 'Bài thi chưa mở. Vui lòng chờ giáo viên!');
+                            }
+                        } catch(e) {}
+                    } else {
+                        showMessage('error', 'Không thể kết nối server');
+                    }
                 }
-            } catch (err) {
-                showMessage('error', 'Không thể kết nối server');
-            }
+            };
+            xhr.send();
         }
 
         function showMessage(type, text) {
-            const el = document.getElementById(type + 'Message');
+            var el = document.getElementById(type + 'Message');
             if (el) {
                 el.innerHTML = text;
-                el.className = `message ${type} show`;
-                setTimeout(() => el.classList.remove('show'), 4000);
+                el.className = 'message ' + type + ' show';
+                setTimeout(function() { el.classList.remove('show'); }, 4000);
             }
         }
 
@@ -2405,12 +2428,16 @@
 
         // Render dropdown cho báo cáo
         function renderCorrectStudentSelect() {
-            const select = document.getElementById('correctStudentSelect');
+            var select = document.getElementById('correctStudentSelect');
             
-            select.innerHTML = '<option value="">-- Chọn tên đúng --</option>' + 
-                students.filter(s => !s.status.completed && !s.status.selected)
-                    .map(s => `<option value="${s.stt}">${s.stt}. ${escapeHtml(s.fullName)}</option>`)
-                    .join('');
+            var html = '<option value="">-- Chọn tên đúng --</option>';
+            for (var i = 0; i < students.length; i++) {
+                var s = students[i];
+                if (!s.status.completed && !s.status.selected) {
+                    html += '<option value="' + s.stt + '">' + s.stt + '. ' + escapeHtml(s.fullName) + '</option>';
+                }
+            }
+            select.innerHTML = html;
         }
 
         // Báo sai tên khi đang làm bài
@@ -2419,11 +2446,15 @@
             document.getElementById('wrongStudentName').textContent = studentInfo.name;
             
             // Render danh sách học sinh có thể chọn
-            const select = document.getElementById('correctStudentSelect');
-            select.innerHTML = '<option value="">-- Chọn tên đúng của bạn --</option>' + 
-                students.filter(s => s.stt !== studentInfo.stt && !s.status.completed)
-                    .map(s => `<option value="${s.stt}">${s.stt}. ${escapeHtml(s.fullName)}</option>`)
-                    .join('');
+            var select = document.getElementById('correctStudentSelect');
+            var html = '<option value="">-- Chọn tên đúng của bạn --</option>';
+            for (var i = 0; i < students.length; i++) {
+                var s = students[i];
+                if (s.stt !== studentInfo.stt && !s.status.completed) {
+                    html += '<option value="' + s.stt + '">' + s.stt + '. ' + escapeHtml(s.fullName) + '</option>';
+                }
+            }
+            select.innerHTML = html;
             
             // Mở modal
             document.getElementById('reportModal').classList.add('show');
@@ -2434,7 +2465,7 @@
             if (!selectedStudent) return;
             
             document.getElementById('wrongStudentName').textContent = 
-                `${selectedStudent.ho} ${selectedStudent.ten}`;
+                selectedStudent.ho + ' ' + selectedStudent.ten;
             renderCorrectStudentSelect();
             document.getElementById('reportModal').classList.add('show');
         }
@@ -2445,8 +2476,8 @@
         }
 
         // Gửi báo cáo
-        async function submitReport() {
-            const correctSTT = document.getElementById('correctStudentSelect').value;
+        function submitReport() {
+            var correctSTT = document.getElementById('correctStudentSelect').value;
             
             if (!correctSTT) {
                 alert('Vui lòng chọn tên đúng của bạn!');
@@ -2454,40 +2485,45 @@
             }
             
             // Determine which STT is wrong (from login screen or exam screen)
-            const wrongSTT = studentInfo.stt || (selectedStudent ? selectedStudent.stt : null);
+            var wrongSTT = studentInfo.stt || (selectedStudent ? selectedStudent.stt : null);
             
             if (!wrongSTT) {
                 alert('Không xác định được thông tin!');
                 return;
             }
             
-            try {
-                const res = await fetch('/api/report-wrong-selection', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        wrongSTT: wrongSTT,
-                        correctSTT,
-                        reason: 'Chọn nhầm tên',
-                        socketId: mySocketId
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    closeReportModal();
-                    alert('Đã gửi yêu cầu cho giáo viên!\n\nBạn có thể tiếp tục làm bài.\nGiáo viên sẽ duyệt và chuyển điểm cho bạn sau.');
-                } else {
-                    alert('Lỗi: ' + data.error);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/report-wrong-selection', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data.success) {
+                                closeReportModal();
+                                alert('Đã gửi yêu cầu cho giáo viên!\n\nBạn có thể tiếp tục làm bài.\nGiáo viên sẽ duyệt và chuyển điểm cho bạn sau.');
+                            } else {
+                                alert('Lỗi: ' + data.error);
+                            }
+                        } catch(e) {
+                            alert('Lỗi dữ liệu!');
+                        }
+                    } else {
+                        alert('Không thể gửi báo cáo. Vui lòng thử lại!');
+                    }
                 }
-            } catch (err) {
-                alert('Không thể gửi báo cáo. Vui lòng thử lại!');
-            }
+            };
+            xhr.send(JSON.stringify({
+                wrongSTT: wrongSTT,
+                correctSTT: correctSTT,
+                reason: 'Chọn nhầm tên',
+                socketId: mySocketId
+            }));
         }
 
         // Login form
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             if (!selectedStudent || !nameConfirmed) {
@@ -2495,36 +2531,57 @@
                 return;
             }
             
-            // Kiểm tra xem học sinh đã nộp bài chưa
-            try {
-                const checkRes = await fetch(`/api/check-submitted/${selectedStudent.stt}`);
-                const checkData = await checkRes.json();
-                
-                if (checkData.submitted && !checkData.canRetry) {
-                    showError('Bạn đã nộp bài rồi! Không thể vào lại bài thi này.');
-                    return;
-                }
-            } catch (e) {
-                console.log('Không kiểm tra được trạng thái nộp bài');
-            }
-            
-            // Kiểm tra xem có yêu cầu mật khẩu không
-            try {
-                const pwRes = await fetch('/api/exam/password-required');
-                const pwData = await pwRes.json();
-                
-                if (pwData.required) {
-                    // Hiển thị modal nhập mật khẩu
-                    showPasswordModal();
-                    return;
-                }
-            } catch (e) {
-                console.log('Không kiểm tra được yêu cầu mật khẩu');
-            }
-            
-            // Không cần mật khẩu, tiến hành vào làm bài
-            await proceedToExam();
+            // Kiểm tra xác nhận nộp bài và mật khẩu theo thứ tự
+            checkSubmittedAndPassword();
         });
+        
+        // Kiểm tra học sinh đã nộp bài chưa
+        function checkSubmittedAndPassword() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/check-submitted/' + selectedStudent.stt, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var checkData = JSON.parse(xhr.responseText);
+                            if (checkData.submitted && !checkData.canRetry) {
+                                showError('Bạn đã nộp bài rồi! Không thể vào lại bài thi này.');
+                                return;
+                            }
+                            // Tiếp tục kiểm tra mật khẩu
+                            checkPasswordRequired();
+                        } catch(e) {
+                            checkPasswordRequired();
+                        }
+                    } else {
+                        checkPasswordRequired();
+                    }
+                }
+            };
+            xhr.send();
+        }
+        
+        // Kiểm tra có yêu cầu mật khẩu không
+        function checkPasswordRequired() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/exam/password-required', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var pwData = JSON.parse(xhr.responseText);
+                            if (pwData.required) {
+                                showPasswordModal();
+                                return;
+                            }
+                        } catch(e) {}
+                    }
+                    // Không cần mật khẩu, tiến hành vào làm bài
+                    proceedToExam();
+                }
+            };
+            xhr.send();
+        }
         
         // Hiển thị modal nhập mật khẩu
         function showPasswordModal() {
@@ -2539,85 +2596,117 @@
         }
         
         // Xác nhận mật khẩu
-        async function verifyExamPassword() {
-            const password = document.getElementById('examPasswordInput').value.trim();
+        function verifyExamPassword() {
+            var password = document.getElementById('examPasswordInput').value.trim();
             
             if (!password) {
                 showError('Vui lòng nhập mật khẩu!');
                 return;
             }
             
-            try {
-                const res = await fetch('/api/exam/verify-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    closePasswordModal();
-                    await proceedToExam();
-                } else {
-                    showError(data.error || 'Mật khẩu không đúng!');
-                    document.getElementById('examPasswordInput').value = '';
-                    document.getElementById('examPasswordInput').focus();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/exam/verify-password', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data.success) {
+                                closePasswordModal();
+                                proceedToExam();
+                            } else {
+                                showError(data.error || 'Mật khẩu không đúng!');
+                                document.getElementById('examPasswordInput').value = '';
+                                document.getElementById('examPasswordInput').focus();
+                            }
+                        } catch(e) {
+                            showError('Lỗi dữ liệu!');
+                        }
+                    } else {
+                        showError('Không thể xác nhận mật khẩu!');
+                    }
                 }
-            } catch (err) {
-                showError('Không thể xác nhận mật khẩu!');
-            }
+            };
+            xhr.send(JSON.stringify({ password: password }));
         }
         
         // Tien hanh vao lam bai (sau khi da kiem tra mat khau)
-        async function proceedToExam() {
-            try {
-                // Check if exam is open and get class name from session
-                var res = await fetch('/api/exam');
-                var data = await res.json();
-                
-                if (data.error) {
-                    showError(data.error);
-                    return;
+        function proceedToExam() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/exam', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            
+                            if (data.error) {
+                                showError(data.error);
+                                return;
+                            }
+                            
+                            // Kiem tra co cau hoi khong
+                            if (!data.questions || data.questions.length === 0) {
+                                showError('Bài thi chưa có câu hỏi nào!');
+                                return;
+                            }
+                            
+                            // Lay ten lop va examId tu session cua giao vien
+                            var studentClass = data.className || 'Chưa chọn lớp';
+                            document.getElementById('studentClass').value = studentClass;
+                            currentExamId = data.examId || 'default';
+                            practiceMode = data.practiceMode || false;
+                            
+                            studentInfo = { 
+                                name: selectedStudent.ho + ' ' + selectedStudent.ten, 
+                                class: studentClass, 
+                                stt: selectedStudent.stt 
+                            };
+                            
+                            // Luu cau hoi goc va tao thu tu dao theo STT
+                            originalQuestions = data.questions;
+                            questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
+                            optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
+                            
+                            // Dao cau hoi VA dap an theo thu tu
+                            questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                            timeLimit = data.timeLimit;
+                            
+                            document.getElementById('examTitle').textContent = data.title;
+                            
+                            // Lấy thời gian server trước khi bắt đầu
+                            getServerTimeThenStartExam();
+                            
+                        } catch(e) {
+                            console.error('Loi parse JSON:', e);
+                            showError('Lỗi dữ liệu bài thi!');
+                        }
+                    } else {
+                        showError('Không thể vào làm bài. Vui lòng thử lại!');
+                    }
                 }
-                
-                // Kiem tra co cau hoi khong
-                if (!data.questions || data.questions.length === 0) {
-                    showError('Bài thi chưa có câu hỏi nào!');
-                    return;
+            };
+            xhr.send();
+        }
+        
+        // Lấy thời gian server rồi bắt đầu thi
+        function getServerTimeThenStartExam() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/settings', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            cachedServerTime = new Date(data.serverTime);
+                            serverTimeOffset = cachedServerTime.getTime() - Date.now();
+                        } catch(e) {}
+                    }
+                    startExam();
                 }
-                
-                // Lay ten lop va examId tu session cua giao vien
-                var studentClass = data.className || 'Chưa chọn lớp';
-                document.getElementById('studentClass').value = studentClass;
-                currentExamId = data.examId || 'default'; // Luu examId hien tai
-                practiceMode = data.practiceMode || false; // Che do on tap
-                
-                studentInfo = { 
-                    name: selectedStudent.ho + ' ' + selectedStudent.ten, 
-                    class: studentClass, 
-                    stt: selectedStudent.stt 
-                };
-                
-                // Luu cau hoi goc va tao thu tu dao theo STT
-                originalQuestions = data.questions;
-                questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
-                optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
-                
-                // Dao cau hoi VA dap an theo thu tu
-                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
-                timeLimit = data.timeLimit;
-                
-                document.getElementById('examTitle').textContent = data.title;
-                
-                // Lấy thời gian server trước khi bắt đầu (để restoreExamProgress dùng)
-                await getServerTime();
-                
-                startExam();
-            } catch (err) {
-                console.error('Loi khi vao lam bai:', err);
-                showError('Không thể vào làm bài. Vui lòng thử lại! Lỗi: ' + err.message);
-            }
+            };
+            xhr.send();
         }
 
         // Start exam
@@ -2626,7 +2715,7 @@
             document.getElementById('examScreen').style.display = 'block';
             
             document.getElementById('displayName').textContent = studentInfo.name;
-            document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
+            document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
             
             // Hiển thị banner chế độ ôn tập nếu được bật
             if (practiceMode) {
@@ -2641,7 +2730,7 @@
             }
             
             // Check for saved progress
-            const hasProgress = restoreExamProgress();
+            var hasProgress = restoreExamProgress();
             
             renderQuestions();
             renderNavigation();
@@ -2651,25 +2740,25 @@
                 applyRestoredAnswers();
                 
                 // Nếu đã có startTime từ restore, giữ nguyên (đó là thời điểm thực sự bắt đầu làm bài)
-                // Chỉ cần đảm bảo timeRemaining đã được tính đúng trong restoreExamProgress()
                 if (!startTime) {
                     // Fallback nếu không có startTime - tính từ timeRemaining
                     if (timeRemaining <= 0) {
                         timeRemaining = timeLimit * 60;
                         startTime = new Date();
                     } else {
-                        const totalTimeSeconds = timeLimit * 60;
-                        const timeSpentSeconds = totalTimeSeconds - timeRemaining;
+                        var totalTimeSeconds = timeLimit * 60;
+                        var timeSpentSeconds = totalTimeSeconds - timeRemaining;
                         startTime = new Date(Date.now() - timeSpentSeconds * 1000);
                     }
                 }
                 
-                const minutesLeft = Math.floor(timeRemaining / 60);
-                const secondsLeft = timeRemaining % 60;
+                var minutesLeft = Math.floor(timeRemaining / 60);
+                var secondsLeft = timeRemaining % 60;
+                var answeredCount = Object.keys(answers).length;
                 if (practiceMode) {
-                    showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! (Chế độ ôn tập - không giới hạn thời gian)`);
+                    showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! (Chế độ ôn tập - không giới hạn thời gian)');
                 } else {
-                    showMessage('success', `Đã khôi phục ${Object.keys(answers).length} câu trả lời! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')} phút`);
+                    showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft + ' phút');
                 }
             } else {
                 startTime = new Date();
@@ -2685,32 +2774,37 @@
             initAntiCheat();
             
             // Show first question
-            setTimeout(() => showCurrentQuestion(), 100);
+            setTimeout(function() { showCurrentQuestion(); }, 100);
         }
 
         // Render questions
         function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
+            var container = document.getElementById('questionsContainer');
+            var html = '';
             
-            container.innerHTML = questions.map((q, i) => `
-                <div class="question-card${i === 0 ? ' active' : ''}" id="question${i}">
-                    <div class="question-header">
-                        <span class="question-number">Câu ${i + 1}</span>
-                    </div>
-                    <div class="question-text">${escapeHtml(q.question)}</div>
-                    ${q.image ? `<img src="${q.image}" class="question-image" alt="Hình">` : ''}
-                    <div class="options">
-                        ${q.options.map((opt, j) => `
-                            <label class="option" onclick="selectOption(${i}, ${j})">
-                                <input type="radio" name="q${i}" value="${j}">
-                                <span class="option-label">${String.fromCharCode(65 + j)}</span>
-                                <span class="option-text">${escapeHtml(opt)}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
+            for (var i = 0; i < questions.length; i++) {
+                var q = questions[i];
+                html += '<div class="question-card' + (i === 0 ? ' active' : '') + '" id="question' + i + '">';
+                html += '<div class="question-header">';
+                html += '<span class="question-number">Câu ' + (i + 1) + '</span>';
+                html += '</div>';
+                html += '<div class="question-text">' + escapeHtml(q.question) + '</div>';
+                if (q.image) {
+                    html += '<img src="' + q.image + '" class="question-image" alt="Hình">';
+                }
+                html += '<div class="options">';
+                for (var j = 0; j < q.options.length; j++) {
+                    html += '<label class="option" onclick="selectOption(' + i + ', ' + j + ')">';
+                    html += '<input type="radio" name="q' + i + '" value="' + j + '">';
+                    html += '<span class="option-label">' + String.fromCharCode(65 + j) + '</span>';
+                    html += '<span class="option-text">' + escapeHtml(q.options[j]) + '</span>';
+                    html += '</label>';
+                }
+                html += '</div>';
+                html += '</div>';
+            }
             
+            container.innerHTML = html;
             document.getElementById('totalCount').textContent = questions.length;
             document.getElementById('totalCount2').textContent = questions.length;
             updateQuestionNavigation();
@@ -2721,13 +2815,17 @@
             answers[questionIndex] = optionIndex;
             
             // Update question card UI
-            const card = document.getElementById(`question${questionIndex}`);
+            var card = document.getElementById('question' + questionIndex);
             card.classList.add('answered');
             
-            const options = card.querySelectorAll('.option');
-            options.forEach((opt, i) => {
-                opt.classList.toggle('selected', i === optionIndex);
-            });
+            var options = card.querySelectorAll('.option');
+            for (var i = 0; i < options.length; i++) {
+                if (i === optionIndex) {
+                    options[i].classList.add('selected');
+                } else {
+                    options[i].classList.remove('selected');
+                }
+            }
             
             updateProgress();
             
@@ -2741,72 +2839,73 @@
         }
         
         // Kiểm tra đáp án trong chế độ ôn tập
-        async function checkAnswerPractice(questionIndex, selectedOption) {
+        function checkAnswerPractice(questionIndex, selectedOption) {
             // Tìm originalIndex từ questionOrder
-            const originalIndex = questionOrder[questionIndex];
+            var originalIndex = questionOrder[questionIndex];
             
             // Tìm đáp án gốc từ optionOrders (vì đáp án đã bị đảo)
-            const optionOrder = optionOrders[questionIndex];
-            const originalAnswer = optionOrder[selectedOption]; // Đáp án gốc tương ứng
+            var optionOrder = optionOrders[questionIndex];
+            var originalAnswer = optionOrder[selectedOption]; // Đáp án gốc tương ứng
             
-            try {
-                const res = await fetch('/api/check-answer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        questionIndex: originalIndex,
-                        answer: originalAnswer
-                    })
-                });
-                
-                const result = await res.json();
-                
-                if (result.error) return;
-                
-                const card = document.getElementById(`question${questionIndex}`);
-                const options = card.querySelectorAll('.option');
-                
-                // Xóa các class cũ
-                options.forEach(opt => {
-                    opt.classList.remove('practice-correct', 'practice-wrong', 'practice-answer');
-                });
-                
-                // Tìm index của đáp án đúng trong thứ tự đã đảo
-                const correctOriginalIndex = result.correctAnswer;
-                const correctShuffledIndex = optionOrder.indexOf(correctOriginalIndex);
-                
-                if (result.isCorrect) {
-                    // Đúng - highlight xanh
-                    options[selectedOption].classList.add('practice-correct');
-                    showPracticeToast('Chính xác!', 'correct');
-                } else {
-                    // Sai - highlight đỏ cho đáp án đã chọn, xanh cho đáp án đúng
-                    options[selectedOption].classList.add('practice-wrong');
-                    if (correctShuffledIndex >= 0) {
-                        options[correctShuffledIndex].classList.add('practice-answer');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/check-answer', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    try {
+                        var result = JSON.parse(xhr.responseText);
+                        if (result.error) return;
+                        
+                        var card = document.getElementById('question' + questionIndex);
+                        var options = card.querySelectorAll('.option');
+                        
+                        // Xóa các class cũ
+                        for (var i = 0; i < options.length; i++) {
+                            options[i].classList.remove('practice-correct', 'practice-wrong', 'practice-answer');
+                        }
+                        
+                        // Tìm index của đáp án đúng trong thứ tự đã đảo
+                        var correctOriginalIndex = result.correctAnswer;
+                        var correctShuffledIndex = optionOrder.indexOf(correctOriginalIndex);
+                        
+                        if (result.isCorrect) {
+                            // Đúng - highlight xanh
+                            options[selectedOption].classList.add('practice-correct');
+                            showPracticeToast('Chính xác!', 'correct');
+                        } else {
+                            // Sai - highlight đỏ cho đáp án đã chọn, xanh cho đáp án đúng
+                            options[selectedOption].classList.add('practice-wrong');
+                            if (correctShuffledIndex >= 0) {
+                                options[correctShuffledIndex].classList.add('practice-answer');
+                            }
+                            showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
+                        }
+                    } catch(e) {
+                        console.error('Lỗi kiểm tra đáp án:', e);
                     }
-                    showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
                 }
-            } catch (err) {
-                console.error('Lỗi kiểm tra đáp án:', err);
-            }
+            };
+            xhr.send(JSON.stringify({
+                questionIndex: originalIndex,
+                answer: originalAnswer
+            }));
         }
         
         // Hiển thị toast thông báo cho chế độ ôn tập
         function showPracticeToast(message, type) {
             // Xóa toast cũ nếu có
-            const oldToast = document.querySelector('.practice-toast');
+            var oldToast = document.querySelector('.practice-toast');
             if (oldToast) oldToast.remove();
             
-            const toast = document.createElement('div');
-            toast.className = `practice-toast practice-toast-${type}`;
+            var toast = document.createElement('div');
+            toast.className = 'practice-toast practice-toast-' + type;
             toast.innerHTML = message;
             document.body.appendChild(toast);
             
             // Tự động ẩn sau 2 giây
-            setTimeout(() => {
+            setTimeout(function() {
                 toast.classList.add('fade-out');
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() { toast.remove(); }, 300);
             }, 2000);
         }
         
@@ -2823,8 +2922,8 @@
                 '</div>';
             
             // Thêm vào sau header
-            const examScreen = document.getElementById('examScreen');
-            const container = examScreen.querySelector('.container');
+            var examScreen = document.getElementById('examScreen');
+            var container = examScreen.querySelector('.container');
             container.insertBefore(notice, container.firstChild);
         }
         
@@ -2853,13 +2952,13 @@
         }
         
         // ==================== EXAM PROGRESS STORAGE ====================
-        const EXAM_PROGRESS_KEY = 'quiz_exam_progress';
-        let currentExamId = null; // ID bài thi hiện tại
+        var EXAM_PROGRESS_KEY = 'quiz_exam_progress';
+        var currentExamId = null; // ID bài thi hiện tại
         
         function saveExamProgress() {
             if (!studentInfo.stt || !currentExamId) return;
             
-            const progressKey = `${studentInfo.stt}_${currentExamId}`; // Key theo STT + examId
+            var progressKey = studentInfo.stt + '_' + currentExamId; // Key theo STT + examId
             
             // Dùng thời gian server nếu có, không dùng thời gian máy client
             var savedAtTime = cachedServerTime ? cachedServerTime.toISOString() : null;
@@ -2878,7 +2977,8 @@
                 } catch(e) {}
             }
             
-            const progress = {
+            var examTitleEl = document.getElementById('examTitle');
+            var progress = {
                 stt: studentInfo.stt,
                 name: studentInfo.name,
                 class: studentInfo.class,
@@ -2891,15 +2991,15 @@
                 originalQuestions: originalQuestions,
                 timeLimit: timeLimit,
                 practiceMode: practiceMode, // Lưu chế độ ôn tập
-                examTitle: document.getElementById('examTitle')?.textContent || 'Bài kiểm tra',
+                examTitle: examTitleEl ? examTitleEl.textContent : 'Bài kiểm tra',
                 inExam: true,
                 savedAt: savedAtTime // Dùng thời gian server
             };
             
             // Get all progress data
-            let allProgress = {};
+            var allProgress = {};
             try {
-                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (data) allProgress = JSON.parse(data);
             } catch (e) {}
             
@@ -2911,10 +3011,10 @@
         
         function getExamProgress(stt, examId) {
             try {
-                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (!data) return null;
-                const allProgress = JSON.parse(data);
-                const progressKey = `${stt}_${examId}`;
+                var allProgress = JSON.parse(data);
+                var progressKey = stt + '_' + examId;
                 return allProgress[progressKey] || null;
             } catch (e) {
                 return null;
@@ -2923,10 +3023,10 @@
         
         function clearExamProgress(stt, examId) {
             try {
-                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (!data) return;
-                const allProgress = JSON.parse(data);
-                const progressKey = `${stt}_${examId}`;
+                var allProgress = JSON.parse(data);
+                var progressKey = stt + '_' + examId;
                 delete allProgress[progressKey];
                 localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
             } catch (e) {}
@@ -2936,24 +3036,28 @@
         var cachedServerTime = null;
         var serverTimeOffset = 0; // Chênh lệch giữa server và client (ms)
         
-        // Lấy thời gian server (async) - KHÔNG BAO GIỜ dùng thời gian máy client
-        async function getServerTime() {
-            try {
-                const res = await fetch('/api/settings');
-                const data = await res.json();
-                cachedServerTime = new Date(data.serverTime);
-                // Tính offset để có thể ước lượng thời gian server sau này
-                serverTimeOffset = cachedServerTime.getTime() - Date.now();
-                return cachedServerTime;
-            } catch (e) {
-                // Nếu đã có offset, dùng nó để ước lượng thời gian server
-                if (serverTimeOffset !== 0) {
-                    return new Date(Date.now() + serverTimeOffset);
+        // Lấy thời gian server (dùng callback) - KHÔNG BAO GIỜ dùng thời gian máy client
+        function getServerTime(callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/settings', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            cachedServerTime = new Date(data.serverTime);
+                            // Tính offset để có thể ước lượng thời gian server sau này
+                            serverTimeOffset = cachedServerTime.getTime() - Date.now();
+                            if (callback) callback(cachedServerTime);
+                        } catch(e) {
+                            if (callback) callback(getServerTimeSync());
+                        }
+                    } else {
+                        if (callback) callback(getServerTimeSync());
+                    }
                 }
-                // Fallback cuối cùng - nhưng ghi log cảnh báo
-                console.warn('Không thể lấy thời gian server, đang dùng thời gian máy (có thể sai!)');
-                return new Date();
-            }
+            };
+            xhr.send();
         }
         
         // Lấy thời gian server đồng bộ (dùng offset đã cache)
@@ -2970,7 +3074,7 @@
         function restoreExamProgress() {
             if (!currentExamId) return false;
             
-            const progress = getExamProgress(studentInfo.stt, currentExamId);
+            var progress = getExamProgress(studentInfo.stt, currentExamId);
             if (!progress) return false;
             
             // Kiểm tra examId có khớp không (phòng trường hợp dữ liệu cũ)
@@ -2981,12 +3085,12 @@
             
             // Check if progress is recent (within last 2 hours)
             // LUÔN dùng thời gian server, không bao giờ dùng thời gian máy client
-            const savedTime = progress.savedAt ? new Date(progress.savedAt) : null;
-            const now = getServerTimeSync(); // Dùng server time
+            var savedTime = progress.savedAt ? new Date(progress.savedAt) : null;
+            var now = getServerTimeSync(); // Dùng server time
             
             // Nếu không có savedAt (lưu cũ), cho phép restore nhưng không tính thời gian
             if (savedTime) {
-                const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+                var hoursDiff = (now - savedTime) / (1000 * 60 * 60);
                 
                 // Nếu quá 2 giờ, xóa progress
                 if (hoursDiff > 2) {
@@ -3003,7 +3107,7 @@
             if (progress.timeRemaining && progress.timeRemaining > 0) {
                 if (savedTime) {
                     // Calculate how much time has passed since last save using server time
-                    const timePassed = Math.floor((now - savedTime) / 1000);
+                    var timePassed = Math.floor((now - savedTime) / 1000);
                     timeRemaining = Math.max(0, progress.timeRemaining - timePassed);
                 } else {
                     // Không có savedAt, giữ nguyên timeRemaining
@@ -3021,197 +3125,218 @@
         
         function applyRestoredAnswers() {
             // Apply restored answers to UI
-            Object.keys(answers).forEach(qIndex => {
-                const optionIndex = answers[qIndex];
-                const card = document.getElementById(`question${qIndex}`);
+            var keys = Object.keys(answers);
+            for (var k = 0; k < keys.length; k++) {
+                var qIndex = keys[k];
+                var optionIndex = answers[qIndex];
+                var card = document.getElementById('question' + qIndex);
                 if (card) {
                     card.classList.add('answered');
-                    const options = card.querySelectorAll('.option');
-                    options.forEach((opt, i) => {
-                        opt.classList.toggle('selected', i === optionIndex);
-                    });
+                    var options = card.querySelectorAll('.option');
+                    for (var i = 0; i < options.length; i++) {
+                        if (i === optionIndex) {
+                            options[i].classList.add('selected');
+                        } else {
+                            options[i].classList.remove('selected');
+                        }
+                    }
                 }
-            });
+            }
             updateProgress();
         }
         
-        // Kiểm tra và khôi phục session khi F5
-        async function checkAndRestoreSession() {
+        // Kiểm tra và khôi phục session khi F5 (không dùng async/await)
+        function checkAndRestoreSession() {
             try {
-                const data = localStorage.getItem(EXAM_PROGRESS_KEY);
+                var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (!data) return;
                 
-                const allProgress = JSON.parse(data);
+                var allProgress = JSON.parse(data);
                 // Tìm session đang làm bài
-                const activeSession = Object.values(allProgress).find(p => p.inExam);
+                var activeSession = null;
+                var keys = Object.keys(allProgress);
+                for (var k = 0; k < keys.length; k++) {
+                    if (allProgress[keys[k]].inExam) {
+                        activeSession = allProgress[keys[k]];
+                        break;
+                    }
+                }
                 
                 if (!activeSession) return;
                 
-                // QUAN TRỌNG: Luôn lấy thời gian từ server - không bao giờ dùng thời gian máy client
-                var serverTime = null;
-                var serverPracticeMode = activeSession.practiceMode || false;
+                // Lưu activeSession vào biến global để dùng trong callback
+                window._restoreSession = activeSession;
                 
-                try {
-                    const settingsRes = await fetch('/api/settings');
-                    const settingsData = await settingsRes.json();
-                    serverTime = new Date(settingsData.serverTime);
-                    cachedServerTime = serverTime; // Cache lại để các hàm khác dùng
-                    // Tính offset
-                    serverTimeOffset = serverTime.getTime() - Date.now();
-                    serverPracticeMode = settingsData.practiceMode || false;
-                } catch (e) {
-                    console.log('Không thể lấy thời gian server - thử dùng offset cũ');
-                    if (serverTimeOffset !== 0) {
-                        serverTime = new Date(Date.now() + serverTimeOffset);
+                // Gọi API lấy settings (thời gian server, practiceMode)
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/api/settings', true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        var serverTime = null;
+                        var serverPracticeMode = window._restoreSession.practiceMode || false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                var settingsData = JSON.parse(xhr.responseText);
+                                serverTime = new Date(settingsData.serverTime);
+                                cachedServerTime = serverTime;
+                                serverTimeOffset = serverTime.getTime() - Date.now();
+                                serverPracticeMode = settingsData.practiceMode || false;
+                            } catch(e) {}
+                        }
+                        
+                        // Tiếp tục khôi phục session
+                        continueRestoreSession(window._restoreSession, serverTime, serverPracticeMode);
                     }
-                }
-                
-                // Nếu không lấy được thời gian server, vẫn cho khôi phục nhưng không kiểm tra thời gian
-                var skipTimeCheck = !serverTime;
-                if (!serverTime) {
-                    console.warn('Không có thời gian server, bỏ qua kiểm tra thời gian');
-                    serverTime = new Date(); // Tạm dùng để không bị lỗi
-                }
-                
-                // Kiểm tra thời gian (2 giờ) - LUÔN dùng thời gian server
-                var savedTime = activeSession.savedAt ? new Date(activeSession.savedAt) : null;
-                
-                if (!skipTimeCheck && savedTime) {
-                    const hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
-                    
-                    if (hoursDiff > 2) { // Chỉ kiểm tra quá hạn, không kiểm tra âm
-                        console.log('Session quá cũ:', hoursDiff, 'giờ');
-                        clearExamProgress(activeSession.stt, activeSession.examId);
-                        return;
-                    }
-                }
-                
-                // Kiểm tra với server xem học sinh đã nộp bài chưa và examId có khớp không
-                try {
-                    const checkRes = await fetch(`/api/check-submitted/${activeSession.stt}`);
-                    const checkData = await checkRes.json();
-                    
-                    // Nếu đã nộp bài và không được làm lại -> xóa progress, không khôi phục
-                    if (checkData.submitted && !checkData.canRetry) {
-                        clearExamProgress(activeSession.stt, activeSession.examId);
-                        return;
-                    }
-                    
-                    // Nếu examId không khớp (giáo viên đã đổi bài) -> xóa progress cũ
-                    if (checkData.examId !== activeSession.examId) {
-                        clearExamProgress(activeSession.stt, activeSession.examId);
-                        return;
-                    }
-                } catch (e) {
-                    console.log('Không thể kiểm tra trạng thái nộp bài');
-                }
-                
-                // Tính thời gian còn lại - LUÔN dùng thời gian server
-                var remainingTime = activeSession.timeRemaining || 0;
-                if (!skipTimeCheck && savedTime) {
-                    const timePassed = Math.floor((serverTime - savedTime) / 1000);
-                    remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
-                }
-                
-                // Chỉ kiểm tra hết giờ khi không phải chế độ ôn tập
-                if (!serverPracticeMode && remainingTime <= 0) {
-                    clearExamProgress(activeSession.stt, activeSession.examId);
-                    return;
-                }
-                
-                // Lưu currentExamId trước khi khôi phục
-                currentExamId = activeSession.examId;
-                
-                // Khôi phục session
-                studentInfo = {
-                    stt: activeSession.stt,
-                    name: activeSession.name,
-                    class: activeSession.class
                 };
-                
-                originalQuestions = activeSession.originalQuestions || [];
-                questionOrder = activeSession.questionOrder || [];
-                optionOrders = activeSession.optionOrders || [];
-                
-                // Khoi phuc cau hoi da dao (ca cau hoi va dap an)
-                if (optionOrders.length > 0) {
-                    questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
-                } else {
-                    // Dao cau hoi theo thu tu da luu
-                    questions = [];
-                    for (var qi = 0; qi < questionOrder.length; qi++) {
-                        questions.push(originalQuestions[questionOrder[qi]]);
-                    }
-                }
-                
-                answers = activeSession.answers || {};
-                timeLimit = activeSession.timeLimit || 30;
-                timeRemaining = remainingTime;
-                
-                // Khôi phục chế độ ôn tập (ưu tiên dùng giá trị từ server)
-                practiceMode = serverPracticeMode;
-                
-                // Hiển thị màn hình làm bài
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('examScreen').style.display = 'block';
-                document.getElementById('displayName').textContent = studentInfo.name;
-                document.getElementById('displayClass').textContent = `${studentInfo.class} • STT ${studentInfo.stt}`;
-                document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
-                
-                // Hiển thị banner ôn tập nếu đang ở chế độ ôn tập
-                if (practiceMode) {
-                    showPracticeModeNotice();
-                    // Ẩn timer và hiển thị badge ôn tập
-                    document.getElementById('timer').style.display = 'none';
-                    showPracticeModeBadge();
-                } else {
-                    // Chế độ thi - hiện timer bình thường
-                    document.getElementById('timer').style.display = '';
-                    hidePracticeModeBadge();
-                }
-                
-                // Khôi phục startTime gốc nếu có, nếu không thì tính lại từ timeRemaining
-                if (activeSession.startTime) {
-                    startTime = new Date(activeSession.startTime);
-                } else {
-                    // Fallback: tính startTime từ timeRemaining
-                    const totalTimeSeconds = timeLimit * 60;
-                    const timeSpentSeconds = totalTimeSeconds - timeRemaining;
-                    startTime = new Date(Date.now() - timeSpentSeconds * 1000);
-                }
-                
-                renderQuestions();
-                renderNavigation();
-                applyRestoredAnswers();
-                
-                // Chỉ start timer khi không phải chế độ ôn tập
-                if (!practiceMode) {
-                    startTimer();
-                }
-                
-                // Initialize anti-cheat measures khi khôi phục
-                initAntiCheat();
-                
-                const minutesLeft = Math.floor(timeRemaining / 60);
-                const secondsLeft = timeRemaining % 60;
-                if (practiceMode) {
-                    showMessage('success', `Đã khôi phục bài làm! (Chế độ ôn tập - không giới hạn thời gian)`);
-                } else {
-                    showMessage('success', `Đã khôi phục bài làm! Còn ${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`);
-                }
+                xhr.send();
                 
             } catch (e) {
                 console.error('Lỗi khôi phục session:', e);
             }
         }
+        
+        // Tiếp tục khôi phục session sau khi có server time
+        function continueRestoreSession(activeSession, serverTime, serverPracticeMode) {
+            var skipTimeCheck = !serverTime;
+            if (!serverTime) {
+                serverTime = new Date();
+            }
+            
+            // Kiểm tra thời gian (2 giờ)
+            var savedTime = activeSession.savedAt ? new Date(activeSession.savedAt) : null;
+            
+            if (!skipTimeCheck && savedTime) {
+                var hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
+                if (hoursDiff > 2) {
+                    clearExamProgress(activeSession.stt, activeSession.examId);
+                    return;
+                }
+            }
+            
+            // Kiểm tra với server xem học sinh đã nộp bài chưa
+            var xhr2 = new XMLHttpRequest();
+            xhr2.open('GET', '/api/check-submitted/' + activeSession.stt, true);
+            xhr2.onreadystatechange = function() {
+                if (xhr2.readyState === 4) {
+                    if (xhr2.status === 200) {
+                        try {
+                            var checkData = JSON.parse(xhr2.responseText);
+                            if (checkData.submitted && !checkData.canRetry) {
+                                clearExamProgress(activeSession.stt, activeSession.examId);
+                                return;
+                            }
+                            if (checkData.examId !== activeSession.examId) {
+                                clearExamProgress(activeSession.stt, activeSession.examId);
+                                return;
+                            }
+                        } catch(e) {}
+                    }
+                    // Tiếp tục khôi phục
+                    finalizeRestoreSession(activeSession, serverTime, serverPracticeMode, savedTime, skipTimeCheck);
+                }
+            };
+            xhr2.send();
+        }
+        
+        // Hoàn tất khôi phục session
+        function finalizeRestoreSession(activeSession, serverTime, serverPracticeMode, savedTime, skipTimeCheck) {
+            // Tính thời gian còn lại
+            var remainingTime = activeSession.timeRemaining || 0;
+            if (!skipTimeCheck && savedTime) {
+                var timePassed = Math.floor((serverTime - savedTime) / 1000);
+                remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
+            }
+            
+            // Kiểm tra hết giờ
+            if (!serverPracticeMode && remainingTime <= 0) {
+                clearExamProgress(activeSession.stt, activeSession.examId);
+                return;
+            }
+            
+            // Lưu currentExamId
+            currentExamId = activeSession.examId;
+            
+            // Khôi phục session
+            studentInfo = {
+                stt: activeSession.stt,
+                name: activeSession.name,
+                class: activeSession.class
+            };
+            
+            originalQuestions = activeSession.originalQuestions || [];
+            questionOrder = activeSession.questionOrder || [];
+            optionOrders = activeSession.optionOrders || [];
+            
+            // Khôi phục câu hỏi đã đảo
+            if (optionOrders.length > 0) {
+                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+            } else {
+                questions = [];
+                for (var qi = 0; qi < questionOrder.length; qi++) {
+                    questions.push(originalQuestions[questionOrder[qi]]);
+                }
+            }
+            
+            answers = activeSession.answers || {};
+            timeLimit = activeSession.timeLimit || 30;
+            timeRemaining = remainingTime;
+            practiceMode = serverPracticeMode;
+            
+            // Hiển thị màn hình làm bài
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('examScreen').style.display = 'block';
+            document.getElementById('displayName').textContent = studentInfo.name;
+            document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
+            document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
+            
+            // Hiển thị banner ôn tập nếu đang ở chế độ ôn tập
+            if (practiceMode) {
+                showPracticeModeNotice();
+                document.getElementById('timer').style.display = 'none';
+                showPracticeModeBadge();
+            } else {
+                document.getElementById('timer').style.display = '';
+                hidePracticeModeBadge();
+            }
+            
+            // Khôi phục startTime
+            if (activeSession.startTime) {
+                startTime = new Date(activeSession.startTime);
+            } else {
+                var totalTimeSeconds = timeLimit * 60;
+                var timeSpentSeconds = totalTimeSeconds - timeRemaining;
+                startTime = new Date(Date.now() - timeSpentSeconds * 1000);
+            }
+            
+            renderQuestions();
+            renderNavigation();
+            applyRestoredAnswers();
+            
+            // Start timer khi không phải chế độ ôn tập
+            if (!practiceMode) {
+                startTimer();
+            }
+            
+            initAntiCheat();
+            
+            var minutesLeft = Math.floor(timeRemaining / 60);
+            var secondsLeft = timeRemaining % 60;
+            if (practiceMode) {
+                showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập - không giới hạn thời gian)');
+            } else {
+                showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
+            }
+        }
 
         // Render navigation
         function renderNavigation() {
-            const container = document.getElementById('navButtons');
-            
-            container.innerHTML = questions.map((_, i) => `
-                <button class="nav-btn${i === currentQuestionIndex ? ' current' : ''}" id="nav${i}" onclick="goToQuestion(${i})">${i + 1}</button>
-            `).join('');
+            var container = document.getElementById('navButtons');
+            var html = '';
+            for (var i = 0; i < questions.length; i++) {
+                html += '<button class="nav-btn' + (i === currentQuestionIndex ? ' current' : '') + '" id="nav' + i + '" onclick="goToQuestion(' + i + ')">' + (i + 1) + '</button>';
+            }
+            container.innerHTML = html;
         }
 
         // Update progress
@@ -3242,7 +3367,7 @@
         
         // Legacy scroll behavior
         function scrollToQuestionLegacy(index) {
-            document.getElementById(`question${index}`).scrollIntoView({ 
+            document.getElementById('question' + index).scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'center' 
             });
@@ -3265,11 +3390,11 @@
             updateTimerDisplay();
             
             // Sử dụng timestamp để đảm bảo timing chính xác
-            let lastTick = Date.now();
+            var lastTick = Date.now();
             
-            timerInterval = setInterval(() => {
-                const now = Date.now();
-                const elapsed = Math.floor((now - lastTick) / 1000);
+            timerInterval = setInterval(function() {
+                var now = Date.now();
+                var elapsed = Math.floor((now - lastTick) / 1000);
                 
                 // Chỉ giảm 1 giây mỗi lần, bỏ qua nếu elapsed > 1 (do browser throttling)
                 if (elapsed >= 1) {
@@ -3285,20 +3410,20 @@
                     if (timeRemaining <= 0) {
                         clearInterval(timerInterval);
                         timerInterval = null;
-                        showMessage('error', '⏰ Hết giờ! Bài đang được nộp tự động...');
-                        setTimeout(() => submitExam(true), 1000);
+                        showMessage('error', 'Hết giờ! Bài đang được nộp tự động...');
+                        setTimeout(function() { submitExam(true); }, 1000);
                     }
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            var minutes = Math.floor(timeRemaining / 60);
+            var seconds = timeRemaining % 60;
+            var display = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
             
-            const timer = document.getElementById('timer');
-            timer.textContent = `${display}`;
+            var timer = document.getElementById('timer');
+            timer.textContent = display;
             
             // Warning colors
             timer.classList.remove('warning', 'danger');
@@ -3311,17 +3436,17 @@
 
         // Confirm submit
         function confirmSubmit() {
-            const answered = Object.keys(answers).length;
-            const unanswered = questions.length - answered;
+            var answered = Object.keys(answers).length;
+            var unanswered = questions.length - answered;
             
             document.getElementById('modalAnswered').textContent = answered;
             document.getElementById('modalUnanswered').textContent = unanswered;
             document.getElementById('unansweredWarning').style.display = unanswered > 0 ? 'flex' : 'none';
             
             // Hiển thị thời gian còn lại
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            document.getElementById('modalTimeLeft').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            var minutes = Math.floor(timeRemaining / 60);
+            var seconds = timeRemaining % 60;
+            document.getElementById('modalTimeLeft').textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
             
             // Hiển thị cảnh báo nếu còn nhiều thời gian (còn hơn 1 phút)
             document.getElementById('earlySubmitWarning').style.display = timeRemaining > 60 ? 'flex' : 'none';
@@ -3334,70 +3459,69 @@
         }
 
         // Submit exam
-        async function submitExam(autoSubmit = false) {
+        function submitExam(autoSubmit) {
+            if (autoSubmit === undefined) autoSubmit = false;
+            
             closeConfirmModal();
             clearInterval(timerInterval);
-            timerInterval = null; // Reset để tránh trùng lặp
+            timerInterval = null;
             
-            const endTime = new Date();
-            const timeSpentMs = endTime - startTime;
-            const timeSpentMinutes = Math.floor(timeSpentMs / 60000);
-            const timeSpentSeconds = Math.floor((timeSpentMs % 60000) / 1000);
-            const timeSpent = `${timeSpentMinutes} phút ${timeSpentSeconds} giây`;
+            var endTime = new Date();
+            var timeSpentMs = endTime - startTime;
+            var timeSpentMinutes = Math.floor(timeSpentMs / 60000);
+            var timeSpentSeconds = Math.floor((timeSpentMs % 60000) / 1000);
+            var timeSpent = timeSpentMinutes + ' phút ' + timeSpentSeconds + ' giây';
             
             // Chuyển đổi answers từ thứ tự đảo về thứ tự gốc
-            const answersArray = [];
-            for (let i = 0; i < originalQuestions.length; i++) {
-                answersArray.push(-1); // Mặc định chưa trả lời
+            var answersArray = [];
+            for (var i = 0; i < originalQuestions.length; i++) {
+                answersArray.push(-1);
             }
             
-            // Map answers về vị trí gốc (cả câu hỏi và đáp án)
-            for (let shuffledIndex = 0; shuffledIndex < questions.length; shuffledIndex++) {
+            // Map answers về vị trí gốc
+            for (var shuffledIndex = 0; shuffledIndex < questions.length; shuffledIndex++) {
                 if (answers[shuffledIndex] !== undefined) {
-                    const originalQIndex = questionOrder[shuffledIndex];
-                    const shuffledOptionIndex = answers[shuffledIndex];
-                    
-                    // Chuyển đáp án đã chọn về vị trí gốc
-                    // optionOrders[originalQIndex] chứa thứ tự đảo của đáp án
-                    // Ví dụ: optionOrders[0] = [2, 0, 3, 1] nghĩa là:
-                    // - Đáp án A (vị trí 0) hiển thị = đáp án gốc vị trí 2 (C)
-                    // - Đáp án B (vị trí 1) hiển thị = đáp án gốc vị trí 0 (A)
-                    // Nên nếu chọn B (vị trí 1), đáp án gốc là vị trí 0
-                    const originalOptionIndex = optionOrders[originalQIndex] 
+                    var originalQIndex = questionOrder[shuffledIndex];
+                    var shuffledOptionIndex = answers[shuffledIndex];
+                    var originalOptionIndex = optionOrders[originalQIndex] 
                         ? optionOrders[originalQIndex][shuffledOptionIndex] 
                         : shuffledOptionIndex;
-                    
                     answersArray[originalQIndex] = originalOptionIndex;
                 }
             }
             
-            try {
-                const res = await fetch('/api/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        studentSTT: studentInfo.stt,
-                        studentName: studentInfo.name,
-                        studentClass: studentInfo.class,
-                        answers: answersArray,
-                        timeSpent
-                    })
-                });
-                
-                const result = await res.json();
-                
-                if (result.success) {
-                    // Clear saved progress after successful submission
-                    clearExamProgress(studentInfo.stt, currentExamId);
-                    showResult(result, timeSpent);
-                } else {
-                    // Lỗi từ server - hiện modal retry
-                    showSubmitErrorModal(result.error || 'Có lỗi khi nộp bài.');
+            // Lưu timeSpent vào biến global để dùng trong callback
+            window._submitTimeSpent = timeSpent;
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var result = JSON.parse(xhr.responseText);
+                            if (result.success) {
+                                clearExamProgress(studentInfo.stt, currentExamId);
+                                showResult(result, window._submitTimeSpent);
+                            } else {
+                                showSubmitErrorModal(result.error || 'Có lỗi khi nộp bài.');
+                            }
+                        } catch(e) {
+                            showSubmitErrorModal('Lỗi dữ liệu phản hồi.');
+                        }
+                    } else {
+                        showSubmitErrorModal('Không thể kết nối đến máy chủ. Hãy kiểm tra mạng và thử lại.');
+                    }
                 }
-            } catch (err) {
-                // Lỗi kết nối - hiện modal retry
-                showSubmitErrorModal('Không thể kết nối đến máy chủ. Hãy kiểm tra mạng và thử lại.');
-            }
+            };
+            xhr.send(JSON.stringify({
+                studentSTT: studentInfo.stt,
+                studentName: studentInfo.name,
+                studentClass: studentInfo.class,
+                answers: answersArray,
+                timeSpent: timeSpent
+            }));
         }
         
         // Hiển thị modal lỗi khi nộp bài thất bại
@@ -3824,17 +3948,14 @@
         }
         
         // Override renderNavigation to add click handler
-        const originalRenderNavigation = typeof renderNavigation !== 'undefined' ? renderNavigation : null;
+        var originalRenderNavigation = typeof renderNavigation !== 'undefined' ? renderNavigation : null;
 
         // QUAN TRỌNG: Lấy thời gian server ngay khi load trang
         // Điều này đảm bảo serverTimeOffset được thiết lập cho các máy có đồng hồ sai
-        (async function initServerTime() {
-            try {
-                await getServerTime();
+        (function initServerTime() {
+            getServerTime(function() {
                 console.log('Đã đồng bộ thời gian server. Offset:', serverTimeOffset, 'ms');
-            } catch (e) {
-                console.warn('Không thể đồng bộ thời gian server:', e);
-            }
+            });
         })();
 
         // Initialize - load ngay khi trang ready, không chờ socket
@@ -3853,7 +3974,7 @@
         
         // Đồng bộ lại thời gian server mỗi 5 phút để đảm bảo chính xác
         setInterval(function() {
-            getServerTime().then(function() {
+            getServerTime(function() {
                 console.log('Đã cập nhật thời gian server. Offset:', serverTimeOffset, 'ms');
             });
         }, 5 * 60 * 1000);

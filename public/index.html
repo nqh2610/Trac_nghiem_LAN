@@ -2038,28 +2038,49 @@
         var loadStudentsRetryCount = 0;
         var maxRetries = 5;
         
+        // Hàm hiện debug lên giao diện
+        function showDebugStatus(msg) {
+            var debugDiv = document.getElementById('debugStatus');
+            if (!debugDiv) {
+                debugDiv = document.createElement('div');
+                debugDiv.id = 'debugStatus';
+                debugDiv.style.cssText = 'background:#e3f2fd;border:2px solid #2196F3;padding:10px;margin:10px;border-radius:8px;font-size:12px;font-family:monospace;';
+                var step1 = document.getElementById('step1Content');
+                if (step1) step1.insertBefore(debugDiv, step1.firstChild);
+            }
+            debugDiv.innerHTML += msg + '<br>';
+        }
+        
         async function loadStudents() {
+            showDebugStatus('[' + new Date().toLocaleTimeString() + '] loadStudents() được gọi...');
             try {
                 console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
+                showDebugStatus('Đang gọi /api/students...');
                 
                 // Thử ping server trước
                 try {
                     var pingRes = await fetch('/api/ping');
                     var pingData = await pingRes.json();
                     console.log('Server OK:', pingData.message);
+                    showDebugStatus('Ping OK: ' + pingData.message);
                 } catch (pingErr) {
                     console.error('Không thể ping server:', pingErr);
+                    showDebugStatus('Ping FAILED: ' + pingErr.message);
                 }
                 
                 const res = await fetch('/api/students');
+                showDebugStatus('Fetch students status: ' + res.status);
                 if (!res.ok) {
                     throw new Error('Server trả về lỗi: ' + res.status);
                 }
                 students = await res.json();
                 filteredStudents = copyArray(students);
                 console.log('Đã tải ' + students.length + ' học sinh');
+                showDebugStatus('Đã tải ' + students.length + ' học sinh');
                 loadStudentsRetryCount = 0; // Reset counter khi thành công
+                showDebugStatus('Gọi renderStudentList()...');
                 renderStudentList();
+                showDebugStatus('renderStudentList() hoàn tất!');
             } catch (err) {
                 console.error('Lỗi tải danh sách:', err);
                 loadStudentsRetryCount++;

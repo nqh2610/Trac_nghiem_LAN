@@ -1162,7 +1162,8 @@ app.delete('/api/questions/:id', (req, res) => {
 app.get('/api/settings', (req, res) => {
     res.json(mergeObjects(examSettings, { 
         currentSession: currentSession,
-        currentExamId: currentSession.examId // backward compatible
+        currentExamId: currentSession.examId, // backward compatible
+        serverTime: new Date().toISOString() // Thời gian server để client đồng bộ
     }));
 });
 

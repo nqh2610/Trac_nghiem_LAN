@@ -1559,6 +1559,11 @@
                         <option value="" disabled>-- Đang tải danh sách... --</option>
                     </select>
                 </div>
+                
+                <!-- Link xóa dữ liệu cũ nếu gặp lỗi -->
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="javascript:void(0)" onclick="clearAllLocalData()" style="font-size: 0.8em; color: #999; text-decoration: underline;">Gặp lỗi? Nhấn để xóa dữ liệu cũ</a>
+                </div>
             </div>
             
             <!-- Step 2: Confirm name -->
@@ -2215,6 +2220,22 @@
         // Legacy functions
         function showError(msg) { showMessage('error', msg); }
         function showSuccess(msg) { showMessage('success', msg); }
+        
+        // Xóa tất cả dữ liệu localStorage nếu gặp lỗi
+        function clearAllLocalData() {
+            if (confirm('Xóa tất cả dữ liệu tạm trên máy này?\n\n(Điều này sẽ xóa bài làm dở nếu có)')) {
+                try {
+                    localStorage.removeItem(EXAM_PROGRESS_KEY);
+                    localStorage.removeItem('quiz_results');
+                    showMessage('success', 'Đã xóa dữ liệu cũ. Đang tải lại trang...');
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                } catch (e) {
+                    showError('Không thể xóa dữ liệu: ' + e.message);
+                }
+            }
+        }
 
         // Render dropdown cho báo cáo
         function renderCorrectStudentSelect() {
@@ -2755,18 +2776,29 @@
                 
                 if (!activeSession) return;
                 
-                // Kiểm tra thời gian (2 giờ)
-                const savedTime = new Date(activeSession.savedAt);
-                const now = new Date();
-                const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+                // Lấy thời gian từ server để tránh lỗi đồng hồ máy client sai
+                var serverTime = new Date();
+                var serverPracticeMode = activeSession.practiceMode || false;
                 
-                if (hoursDiff > 2) {
+                try {
+                    const settingsRes = await fetch('/api/settings');
+                    const settingsData = await settingsRes.json();
+                    serverTime = new Date(settingsData.serverTime);
+                    serverPracticeMode = settingsData.practiceMode || false;
+                } catch (e) {
+                    console.log('Không thể lấy thời gian server, dùng thời gian local');
+                }
+                
+                // Kiểm tra thời gian (2 giờ) - dùng thời gian server
+                const savedTime = new Date(activeSession.savedAt);
+                const hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
+                
+                if (hoursDiff > 2 || hoursDiff < -1) { // Cho phép sai lệch 1 giờ âm (phòng timezone)
                     clearExamProgress(activeSession.stt, activeSession.examId);
                     return;
                 }
                 
                 // Kiểm tra với server xem học sinh đã nộp bài chưa và examId có khớp không
-                var serverPracticeMode = activeSession.practiceMode || false;
                 try {
                     const checkRes = await fetch(`/api/check-submitted/${activeSession.stt}`);
                     const checkData = await checkRes.json();
@@ -2782,17 +2814,12 @@
                         clearExamProgress(activeSession.stt, activeSession.examId);
                         return;
                     }
-                    
-                    // Lấy practiceMode mới nhất từ server
-                    const settingsRes = await fetch('/api/settings');
-                    const settingsData = await settingsRes.json();
-                    serverPracticeMode = settingsData.practiceMode || false;
                 } catch (e) {
-                    console.log('Không thể kiểm tra trạng thái, tiếp tục khôi phục với practiceMode đã lưu');
+                    console.log('Không thể kiểm tra trạng thái nộp bài');
                 }
                 
-                // Tính thời gian còn lại
-                const timePassed = Math.floor((now - savedTime) / 1000);
+                // Tính thời gian còn lại - dùng thời gian server
+                const timePassed = Math.floor((serverTime - savedTime) / 1000);
                 const remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
                 
                 if (remainingTime <= 0) {

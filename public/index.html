@@ -2444,6 +2444,9 @@
                 
                 document.getElementById('examTitle').textContent = data.title;
                 
+                // Lấy thời gian server trước khi bắt đầu (để restoreExamProgress dùng)
+                await getServerTime();
+                
                 startExam();
             } catch (err) {
                 console.error('Loi khi vao lam bai:', err);
@@ -2708,6 +2711,21 @@
             } catch (e) {}
         }
         
+        // Biến lưu thời gian server (được cập nhật khi gọi API)
+        var cachedServerTime = null;
+        
+        // Lấy thời gian server (async)
+        async function getServerTime() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = await res.json();
+                cachedServerTime = new Date(data.serverTime);
+                return cachedServerTime;
+            } catch (e) {
+                return new Date(); // Fallback to local time
+            }
+        }
+        
         function restoreExamProgress() {
             if (!currentExamId) return false;
             
@@ -2721,11 +2739,12 @@
             }
             
             // Check if progress is recent (within last 2 hours)
+            // Dùng cachedServerTime nếu có, nếu không dùng local time
             const savedTime = new Date(progress.savedAt);
-            const now = new Date();
+            const now = cachedServerTime || new Date();
             const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
             
-            if (hoursDiff > 2) {
+            if (hoursDiff > 2 || hoursDiff < -1) { // Cho phép sai lệch 1 giờ âm
                 clearExamProgress(studentInfo.stt, currentExamId);
                 return false;
             }
@@ -2784,6 +2803,7 @@
                     const settingsRes = await fetch('/api/settings');
                     const settingsData = await settingsRes.json();
                     serverTime = new Date(settingsData.serverTime);
+                    cachedServerTime = serverTime; // Cache lại để các hàm khác dùng
                     serverPracticeMode = settingsData.practiceMode || false;
                 } catch (e) {
                     console.log('Không thể lấy thời gian server, dùng thời gian local');

@@ -2022,12 +2022,20 @@
         // ==================== LOAD & RENDER ====================
         async function loadStudents() {
             try {
+                console.log('Đang tải danh sách học sinh...');
                 const res = await fetch('/api/students');
+                if (!res.ok) {
+                    throw new Error('Server trả về lỗi: ' + res.status);
+                }
                 students = await res.json();
                 filteredStudents = [...students];
+                console.log('Đã tải ' + students.length + ' học sinh');
                 renderStudentList();
             } catch (err) {
-                showMessage('error', 'Không thể tải danh sách học sinh');
+                console.error('Lỗi tải danh sách:', err);
+                showMessage('error', 'Không thể tải danh sách học sinh. Đang thử lại...');
+                // Thử lại sau 2 giây
+                setTimeout(loadStudents, 2000);
             }
         }
 
@@ -3593,9 +3601,19 @@
         // Override renderNavigation to add click handler
         const originalRenderNavigation = typeof renderNavigation !== 'undefined' ? renderNavigation : null;
 
-        // Initialize
+        // Initialize - load ngay khi trang ready, không chờ socket
+        loadStudents();
         checkExam();
         renderSavedResults();
+        
+        // Nếu socket không kết nối được sau 3 giây, thử load lại
+        setTimeout(function() {
+            if (!mySocketId) {
+                console.log('Socket chưa kết nối, thử load lại danh sách...');
+                loadStudents();
+                checkExam();
+            }
+        }, 3000);
     </script>
 </body>
 </html>

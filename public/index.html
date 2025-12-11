@@ -2088,48 +2088,71 @@
             debugDiv.innerHTML += msg + '<br>';
         }
         
-        async function loadStudents() {
-            showDebugStatus('[' + new Date().toLocaleTimeString() + '] loadStudents() được gọi...');
+        // Dùng XMLHttpRequest thay vì fetch để tương thích trình duyệt cũ
+        function loadStudents() {
+            showDebugStatus('[' + new Date().toLocaleTimeString() + '] loadStudents() bat dau...');
+            console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/students', true);
+            xhr.timeout = 15000;
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    showDebugStatus('Response status: ' + xhr.status);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            students = JSON.parse(xhr.responseText);
+                            filteredStudents = copyArray(students);
+                            showDebugStatus('Da tai ' + students.length + ' hoc sinh');
+                            console.log('Đã tải ' + students.length + ' học sinh');
+                            loadStudentsRetryCount = 0;
+                            renderStudentList();
+                            showDebugStatus('renderStudentList() hoan tat!');
+                        } catch(e) {
+                            showDebugStatus('Loi parse JSON: ' + e.message);
+                            console.error('Lỗi parse JSON:', e);
+                            retryLoadStudents();
+                        }
+                    } else {
+                        showDebugStatus('Loi HTTP: ' + xhr.status);
+                        console.error('Lỗi HTTP:', xhr.status);
+                        retryLoadStudents();
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                showDebugStatus('Loi ket noi mang!');
+                console.error('Lỗi kết nối mạng');
+                retryLoadStudents();
+            };
+            
+            xhr.ontimeout = function() {
+                showDebugStatus('Timeout!');
+                console.error('Timeout');
+                retryLoadStudents();
+            };
+            
             try {
-                console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
-                showDebugStatus('Đang gọi /api/students...');
-                
-                // Thử ping server trước
-                try {
-                    var pingRes = await fetch('/api/ping');
-                    var pingData = await pingRes.json();
-                    console.log('Server OK:', pingData.message);
-                    showDebugStatus('Ping OK: ' + pingData.message);
-                } catch (pingErr) {
-                    console.error('Không thể ping server:', pingErr);
-                    showDebugStatus('Ping FAILED: ' + pingErr.message);
-                }
-                
-                const res = await fetch('/api/students');
-                showDebugStatus('Fetch students status: ' + res.status);
-                if (!res.ok) {
-                    throw new Error('Server trả về lỗi: ' + res.status);
-                }
-                students = await res.json();
-                filteredStudents = copyArray(students);
-                console.log('Đã tải ' + students.length + ' học sinh');
-                showDebugStatus('Đã tải ' + students.length + ' học sinh');
-                loadStudentsRetryCount = 0; // Reset counter khi thành công
-                showDebugStatus('Gọi renderStudentList()...');
-                renderStudentList();
-                showDebugStatus('renderStudentList() hoàn tất!');
-            } catch (err) {
-                console.error('Lỗi tải danh sách:', err);
-                loadStudentsRetryCount++;
-                
-                if (loadStudentsRetryCount < maxRetries) {
-                    showMessage('error', 'Không thể tải danh sách (lần ' + loadStudentsRetryCount + '). Đang thử lại...');
-                    // Thử lại sau 2 giây
-                    setTimeout(loadStudents, 2000);
-                } else {
-                    showMessage('error', 'Không thể kết nối server sau ' + maxRetries + ' lần thử. Vui lòng kiểm tra kết nối mạng và thử F5.');
-                    showConnectionHelp();
-                }
+                xhr.send();
+                showDebugStatus('Da gui request /api/students...');
+            } catch(e) {
+                showDebugStatus('Exception: ' + e.message);
+                console.error('Exception:', e);
+                retryLoadStudents();
+            }
+        }
+        
+        function retryLoadStudents() {
+            loadStudentsRetryCount++;
+            if (loadStudentsRetryCount < maxRetries) {
+                showMessage('error', 'Không thể tải danh sách (lần ' + loadStudentsRetryCount + '). Đang thử lại...');
+                setTimeout(loadStudents, 2000);
+            } else {
+                showMessage('error', 'Không thể kết nối server sau ' + maxRetries + ' lần thử. Vui lòng kiểm tra kết nối mạng và thử F5.');
+                showConnectionHelp();
             }
         }
         

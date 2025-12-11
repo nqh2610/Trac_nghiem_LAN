@@ -2765,6 +2765,23 @@
             
             const progressKey = `${studentInfo.stt}_${currentExamId}`; // Key theo STT + examId
             
+            // Dùng thời gian server nếu có, không dùng thời gian máy client
+            var savedAtTime = cachedServerTime ? cachedServerTime.toISOString() : null;
+            // Nếu chưa có server time, lưu null và sẽ cập nhật sau
+            if (!savedAtTime) {
+                // Thử lấy từ localStorage progress cũ
+                try {
+                    var oldData = localStorage.getItem(EXAM_PROGRESS_KEY);
+                    if (oldData) {
+                        var oldProgress = JSON.parse(oldData);
+                        var oldKey = progressKey;
+                        if (oldProgress[oldKey] && oldProgress[oldKey].savedAt) {
+                            savedAtTime = oldProgress[oldKey].savedAt;
+                        }
+                    }
+                } catch(e) {}
+            }
+            
             const progress = {
                 stt: studentInfo.stt,
                 name: studentInfo.name,
@@ -2780,7 +2797,7 @@
                 practiceMode: practiceMode, // Lưu chế độ ôn tập
                 examTitle: document.getElementById('examTitle')?.textContent || 'Bài kiểm tra',
                 inExam: true,
-                savedAt: new Date().toISOString()
+                savedAt: savedAtTime // Dùng thời gian server
             };
             
             // Get all progress data
@@ -2821,17 +2838,37 @@
         
         // Biến lưu thời gian server (được cập nhật khi gọi API)
         var cachedServerTime = null;
+        var serverTimeOffset = 0; // Chênh lệch giữa server và client (ms)
         
-        // Lấy thời gian server (async)
+        // Lấy thời gian server (async) - KHÔNG BAO GIỜ dùng thời gian máy client
         async function getServerTime() {
             try {
                 const res = await fetch('/api/settings');
                 const data = await res.json();
                 cachedServerTime = new Date(data.serverTime);
+                // Tính offset để có thể ước lượng thời gian server sau này
+                serverTimeOffset = cachedServerTime.getTime() - Date.now();
                 return cachedServerTime;
             } catch (e) {
-                return new Date(); // Fallback to local time
+                // Nếu đã có offset, dùng nó để ước lượng thời gian server
+                if (serverTimeOffset !== 0) {
+                    return new Date(Date.now() + serverTimeOffset);
+                }
+                // Fallback cuối cùng - nhưng ghi log cảnh báo
+                console.warn('Không thể lấy thời gian server, đang dùng thời gian máy (có thể sai!)');
+                return new Date();
             }
+        }
+        
+        // Lấy thời gian server đồng bộ (dùng offset đã cache)
+        function getServerTimeSync() {
+            if (serverTimeOffset !== 0) {
+                return new Date(Date.now() + serverTimeOffset);
+            }
+            if (cachedServerTime) {
+                return cachedServerTime;
+            }
+            return new Date(); // Fallback
         }
         
         function restoreExamProgress() {
@@ -2847,14 +2884,20 @@
             }
             
             // Check if progress is recent (within last 2 hours)
-            // Dùng cachedServerTime nếu có, nếu không dùng local time
-            const savedTime = new Date(progress.savedAt);
-            const now = cachedServerTime || new Date();
-            const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+            // LUÔN dùng thời gian server, không bao giờ dùng thời gian máy client
+            const savedTime = progress.savedAt ? new Date(progress.savedAt) : null;
+            const now = getServerTimeSync(); // Dùng server time
             
-            if (hoursDiff > 2 || hoursDiff < -1) { // Cho phép sai lệch 1 giờ âm
-                clearExamProgress(studentInfo.stt, currentExamId);
-                return false;
+            // Nếu không có savedAt (lưu cũ), cho phép restore nhưng không tính thời gian
+            if (savedTime) {
+                const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+                
+                // Nếu quá 2 giờ, xóa progress
+                if (hoursDiff > 2) {
+                    console.log('Progress quá cũ (', hoursDiff, 'giờ), xóa');
+                    clearExamProgress(studentInfo.stt, currentExamId);
+                    return false;
+                }
             }
             
             // Restore answers
@@ -2862,9 +2905,14 @@
             
             // Restore time remaining
             if (progress.timeRemaining && progress.timeRemaining > 0) {
-                // Calculate how much time has passed since last save
-                const timePassed = Math.floor((now - savedTime) / 1000);
-                timeRemaining = Math.max(0, progress.timeRemaining - timePassed);
+                if (savedTime) {
+                    // Calculate how much time has passed since last save using server time
+                    const timePassed = Math.floor((now - savedTime) / 1000);
+                    timeRemaining = Math.max(0, progress.timeRemaining - timePassed);
+                } else {
+                    // Không có savedAt, giữ nguyên timeRemaining
+                    timeRemaining = progress.timeRemaining;
+                }
             }
             
             // Restore start time
@@ -2903,8 +2951,8 @@
                 
                 if (!activeSession) return;
                 
-                // Lấy thời gian từ server để tránh lỗi đồng hồ máy client sai
-                var serverTime = new Date();
+                // QUAN TRỌNG: Luôn lấy thời gian từ server - không bao giờ dùng thời gian máy client
+                var serverTime = null;
                 var serverPracticeMode = activeSession.practiceMode || false;
                 
                 try {
@@ -2912,18 +2960,34 @@
                     const settingsData = await settingsRes.json();
                     serverTime = new Date(settingsData.serverTime);
                     cachedServerTime = serverTime; // Cache lại để các hàm khác dùng
+                    // Tính offset
+                    serverTimeOffset = serverTime.getTime() - Date.now();
                     serverPracticeMode = settingsData.practiceMode || false;
                 } catch (e) {
-                    console.log('Không thể lấy thời gian server, dùng thời gian local');
+                    console.log('Không thể lấy thời gian server - thử dùng offset cũ');
+                    if (serverTimeOffset !== 0) {
+                        serverTime = new Date(Date.now() + serverTimeOffset);
+                    }
                 }
                 
-                // Kiểm tra thời gian (2 giờ) - dùng thời gian server
-                const savedTime = new Date(activeSession.savedAt);
-                const hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
+                // Nếu không lấy được thời gian server, vẫn cho khôi phục nhưng không kiểm tra thời gian
+                var skipTimeCheck = !serverTime;
+                if (!serverTime) {
+                    console.warn('Không có thời gian server, bỏ qua kiểm tra thời gian');
+                    serverTime = new Date(); // Tạm dùng để không bị lỗi
+                }
                 
-                if (hoursDiff > 2 || hoursDiff < -1) { // Cho phép sai lệch 1 giờ âm (phòng timezone)
-                    clearExamProgress(activeSession.stt, activeSession.examId);
-                    return;
+                // Kiểm tra thời gian (2 giờ) - LUÔN dùng thời gian server
+                var savedTime = activeSession.savedAt ? new Date(activeSession.savedAt) : null;
+                
+                if (!skipTimeCheck && savedTime) {
+                    const hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
+                    
+                    if (hoursDiff > 2) { // Chỉ kiểm tra quá hạn, không kiểm tra âm
+                        console.log('Session quá cũ:', hoursDiff, 'giờ');
+                        clearExamProgress(activeSession.stt, activeSession.examId);
+                        return;
+                    }
                 }
                 
                 // Kiểm tra với server xem học sinh đã nộp bài chưa và examId có khớp không
@@ -2946,9 +3010,12 @@
                     console.log('Không thể kiểm tra trạng thái nộp bài');
                 }
                 
-                // Tính thời gian còn lại - dùng thời gian server
-                const timePassed = Math.floor((serverTime - savedTime) / 1000);
-                const remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
+                // Tính thời gian còn lại - LUÔN dùng thời gian server
+                var remainingTime = activeSession.timeRemaining || 0;
+                if (!skipTimeCheck && savedTime) {
+                    const timePassed = Math.floor((serverTime - savedTime) / 1000);
+                    remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
+                }
                 
                 // Chỉ kiểm tra hết giờ khi không phải chế độ ôn tập
                 if (!serverPracticeMode && remainingTime <= 0) {
@@ -3629,12 +3696,12 @@
                     document.getElementById('tabLeaveCount').textContent = tabLeaveCount;
                     document.getElementById('tabWarning').style.display = 'block';
                     
-                    // Report to server
+                    // Report to server - dùng server time
                     socket.emit('tabLeave', {
                         stt: studentInfo.stt,
                         name: studentInfo.name,
                         count: tabLeaveCount,
-                        time: new Date().toISOString()
+                        time: getServerTimeSync().toISOString() // Dùng server time
                     });
                 }
             });
@@ -3663,6 +3730,17 @@
         // Override renderNavigation to add click handler
         const originalRenderNavigation = typeof renderNavigation !== 'undefined' ? renderNavigation : null;
 
+        // QUAN TRỌNG: Lấy thời gian server ngay khi load trang
+        // Điều này đảm bảo serverTimeOffset được thiết lập cho các máy có đồng hồ sai
+        (async function initServerTime() {
+            try {
+                await getServerTime();
+                console.log('Đã đồng bộ thời gian server. Offset:', serverTimeOffset, 'ms');
+            } catch (e) {
+                console.warn('Không thể đồng bộ thời gian server:', e);
+            }
+        })();
+
         // Initialize - load ngay khi trang ready, không chờ socket
         loadStudents();
         checkExam();
@@ -3676,6 +3754,13 @@
                 checkExam();
             }
         }, 3000);
+        
+        // Đồng bộ lại thời gian server mỗi 5 phút để đảm bảo chính xác
+        setInterval(function() {
+            getServerTime().then(function() {
+                console.log('Đã cập nhật thời gian server. Offset:', serverTimeOffset, 'ms');
+            });
+        }, 5 * 60 * 1000);
     </script>
 </body>
 </html>

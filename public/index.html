@@ -1825,12 +1825,27 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        // Bắt lỗi JavaScript toàn cục để hiển thị cho người dùng
+        window.onerror = function(msg, url, line, col, error) {
+            var errorDiv = document.getElementById('jsErrorDisplay');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'jsErrorDisplay';
+                errorDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#f44336;color:white;padding:15px;z-index:99999;font-family:monospace;';
+                document.body.insertBefore(errorDiv, document.body.firstChild);
+            }
+            errorDiv.innerHTML = '<strong>LOI JAVASCRIPT:</strong> ' + msg + '<br>Dong ' + line + ' - ' + url + 
+                '<br><br><em>Trinh duyet co the qua cu. Thu dung Chrome hoac Firefox moi nhat.</em>' +
+                '<br><button onclick="this.parentNode.style.display=\'none\'" style="margin-top:10px;padding:5px 15px;">Dong</button>';
+            return false;
+        };
+        
+        var socket = io();
         
         // Hàm escape HTML để hiển thị các thẻ HTML như text
         function escapeHtml(text) {
             if (!text) return '';
-            const div = document.createElement('div');
+            var div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }

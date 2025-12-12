@@ -2070,15 +2070,8 @@
         var loadStudentsRetryCount = 0;
         var maxRetries = 5;
         
-        // Hàm hiện debug lên giao diện (đã tắt - chỉ log ra console)
-        function showDebugStatus(msg) {
-            // Chỉ log ra console, không hiển thị trên giao diện
-            console.log('[DEBUG] ' + msg);
-        }
-        
         // Dùng XMLHttpRequest thay vì fetch để tương thích trình duyệt cũ
         function loadStudents() {
-            showDebugStatus('[' + new Date().toLocaleTimeString() + '] loadStudents() bat dau...');
             console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
             
             var xhr = new XMLHttpRequest();
@@ -2087,24 +2080,18 @@
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
-                    showDebugStatus('Response status: ' + xhr.status);
-                    
                     if (xhr.status === 200) {
                         try {
                             students = JSON.parse(xhr.responseText);
                             filteredStudents = copyArray(students);
-                            showDebugStatus('Da tai ' + students.length + ' hoc sinh');
                             console.log('Đã tải ' + students.length + ' học sinh');
                             loadStudentsRetryCount = 0;
                             renderStudentList();
-                            showDebugStatus('renderStudentList() hoan tat!');
                         } catch(e) {
-                            showDebugStatus('Loi parse JSON: ' + e.message);
                             console.error('Lỗi parse JSON:', e);
                             retryLoadStudents();
                         }
                     } else {
-                        showDebugStatus('Loi HTTP: ' + xhr.status);
                         console.error('Lỗi HTTP:', xhr.status);
                         retryLoadStudents();
                     }
@@ -2112,22 +2099,18 @@
             };
             
             xhr.onerror = function() {
-                showDebugStatus('Loi ket noi mang!');
                 console.error('Lỗi kết nối mạng');
                 retryLoadStudents();
             };
             
             xhr.ontimeout = function() {
-                showDebugStatus('Timeout!');
                 console.error('Timeout');
                 retryLoadStudents();
             };
             
             try {
                 xhr.send();
-                showDebugStatus('Da gui request /api/students...');
             } catch(e) {
-                showDebugStatus('Exception: ' + e.message);
                 console.error('Exception:', e);
                 retryLoadStudents();
             }

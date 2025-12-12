@@ -2041,6 +2041,25 @@
 
         // ========== QUẢN LÝ SESSION (LỚP + BÀI) ==========
         let currentSession = { classId: null, className: null, examId: null, examName: null };
+        let currentResultCount = 0; // Theo dõi số kết quả hiện tại
+        
+        // Kiểm tra và nhắc nhở xuất điểm trước khi chuyển
+        function checkAndConfirmSwitch(type, newName) {
+            if (currentResultCount > 0) {
+                const currentInfo = type === 'class' 
+                    ? `lớp "${currentSession.className || 'hiện tại'}"` 
+                    : `bài "${currentSession.examName || 'hiện tại'}"`;
+                
+                const message = `⚠️ CẢNH BÁO!\n\n` +
+                    `Bạn có ${currentResultCount} kết quả chưa xuất file cho ${currentInfo}.\n\n` +
+                    `Bạn có muốn:\n` +
+                    `• Nhấn "OK" để tiếp tục chuyển (dữ liệu vẫn được lưu, có thể xem lại trong "Kết quả đã lưu")\n` +
+                    `• Nhấn "Cancel" để quay lại xuất điểm trước`;
+                
+                return confirm(message);
+            }
+            return true;
+        }
         
         // Cập nhật hiển thị session
         async function updateSessionDisplay() {
@@ -2063,6 +2082,7 @@
                 
                 // Cập nhật thống kê
                 document.getElementById('sessionResultCount').textContent = data.resultCount;
+                currentResultCount = data.resultCount; // Lưu để kiểm tra khi chuyển
                 
                 // Cập nhật các banner trong các tab
                 const classNameInStudents = document.getElementById('currentClassNameInStudents');
@@ -2212,6 +2232,11 @@
         }
         
         async function switchToClass(classId) {
+            // Kiểm tra nhắc nhở xuất điểm
+            if (!checkAndConfirmSwitch('class')) {
+                return;
+            }
+            
             try {
                 const res = await fetch('/api/session', {
                     method: 'POST',
@@ -2376,7 +2401,11 @@
         }
         
         async function switchToExam(examId) {
-            // Không cần reset vì mỗi lớp+bài có kết quả riêng
+            // Kiểm tra nhắc nhở xuất điểm
+            if (!checkAndConfirmSwitch('exam')) {
+                return;
+            }
+            
             try {
                 const res = await fetch('/api/exams/switch', {
                     method: 'POST',

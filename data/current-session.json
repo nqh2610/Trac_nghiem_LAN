@@ -2,17 +2,17 @@
   "currentSession": {
     "classId": "class_1764766952564",
     "className": "11A4",
-    "examId": "exam_1764776088669",
-    "examName": "Kiểm tra TX 33 K11"
+    "examId": "exam_1765906381946",
+    "examName": "Đề kiểm tra HK 1 K11"
   },
   "examSettings": {
     "title": "Kiểm tra TX 33 K11",
     "timeLimit": 30,
-    "isOpen": true,
+    "isOpen": false,
     "showScore": true,
     "practiceMode": true,
-    "examPassword": "",
-    "requirePassword": false,
+    "examPassword": "F5K7VZ",
+    "requirePassword": true,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",

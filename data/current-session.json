@@ -6,13 +6,13 @@
     "examName": "Đề kiểm tra HK 1 K11"
   },
   "examSettings": {
-    "title": "Kiểm tra TX 33 K11",
+    "title": "Đề kiểm tra HK 1 K11",
     "timeLimit": 30,
-    "isOpen": false,
+    "isOpen": true,
     "showScore": true,
-    "practiceMode": true,
-    "examPassword": "F5K7VZ",
-    "requirePassword": true,
+    "practiceMode": false,
+    "examPassword": "",
+    "requirePassword": false,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",

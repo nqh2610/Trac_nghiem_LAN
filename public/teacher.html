@@ -2134,7 +2134,6 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.3em;">${cls.id === currentSession.classId ?'(Nu)' : ''}</span>
                                     <div>
                                         <strong style="font-size: 1.05em; color: #333;">${escapeHtml(cls.name)}</strong>
                                         ${cls.id === currentSession.classId ? '<span style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
@@ -2151,12 +2150,16 @@
                                     DS
                                     <input type="file" accept=".xlsx,.xls" style="display: none;" onchange="uploadClassStudents('${cls.id}', this)">
                                 </label>
+                                <button onclick="editClass('${cls.id}', '${escapeHtml(cls.name).replace(/'/g, "\\'")}')"
+                                    style="background: #fff3e0; color: #e65100; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em;" title="Sửa tên lớp">
+                                    Sửa
+                                </button>
                                 ${cls.id !== currentSession.classId ? `
                                     <button onclick="switchToClass('${cls.id}')" style="background: #1976D2; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">
                                         Chọn
                                     </button>
-                                    <button onclick="deleteClass('${cls.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer;" title="Xóa lớp">
-                                        ️
+                                    <button onclick="deleteClass('${cls.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em;" title="Xóa lớp">
+                                        Xóa
                                     </button>
                                 ` : `
                                     <span style="color: #1976D2; font-weight: bold; padding: 10px;">Đang chọn</span>
@@ -2259,6 +2262,29 @@
             }
         }
         
+        async function editClass(classId, currentName) {
+            const newName = prompt('Đổi tên lớp:', currentName);
+            if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+            
+            try {
+                const res = await fetch(`/api/classes/${classId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName.trim() })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showNotification(result.message);
+                    loadClasses();
+                    updateSessionDisplay();
+                } else {
+                    alert(result.error);
+                }
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+        
         async function deleteClass(classId) {
             if (!confirm('️ Xóa lớp này?\n\nHành động này không thể hoàn tác!')) return;
             
@@ -2311,7 +2337,6 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 18px; background: ${exam.id === currentSession.examId ? 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)' : 'white'}; border-bottom: 1px solid #eee; ${exam.id === currentSession.examId ? 'border-left: 4px solid #667eea;' : ''}">
                         <div style="flex: 1;">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 1.3em;">${exam.id === currentSession.examId ?'(Nu)' : ''}</span>
                                 <div>
                                     <strong style="font-size: 1.05em; color: #333;">${escapeHtml(exam.name)}</strong>
                                     ${exam.id === currentSession.examId ? '<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; margin-left: 10px; font-weight: bold;">ĐANG DÙNG</span>' : ''}
@@ -2320,12 +2345,16 @@
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px;">
+                            <button onclick="editExam('${exam.id}', '${escapeHtml(exam.name).replace(/'/g, "\\\\'")}')"
+                                style="background: #fff3e0; color: #e65100; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;" onmouseover="this.style.background='#ffe0b2'" onmouseout="this.style.background='#fff3e0'" title="Sửa tên bài">
+                                Sửa
+                            </button>
                             ${exam.id !== currentSession.examId ? `
                                 <button onclick="switchToExam('${exam.id}')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5a6fd6'" onmouseout="this.style.background='#667eea'">
                                     Sử dụng
                                 </button>
-                                <button onclick="deleteExam('${exam.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#ffcdd2'" onmouseout="this.style.background='#ffebee'" title="Xóa bài này">
-                                    ️
+                                <button onclick="deleteExam('${exam.id}')" style="background: #ffebee; color: #c62828; border: none; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;" onmouseover="this.style.background='#ffcdd2'" onmouseout="this.style.background='#ffebee'" title="Xóa bài này">
+                                    Xóa
                                 </button>
                             ` : `
                                 <span style="color: #667eea; font-weight: bold; padding: 10px;">Đang sử dụng</span>
@@ -2424,6 +2453,29 @@
                     updateSessionDisplay();
                 } else {
                     alert('' + result.error);
+                }
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+        
+        async function editExam(examId, currentName) {
+            const newName = prompt('Đổi tên bài kiểm tra:', currentName);
+            if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+            
+            try {
+                const res = await fetch(`/api/exams/${examId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName.trim() })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showNotification(result.message);
+                    loadSavedExams();
+                    updateSessionDisplay();
+                } else {
+                    alert(result.error);
                 }
             } catch (err) {
                 alert('Lỗi: ' + err.message);

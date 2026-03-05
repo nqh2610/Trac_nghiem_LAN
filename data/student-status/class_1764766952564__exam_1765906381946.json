@@ -1,0 +1,44 @@
+{
+  "1": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2026-02-25T07:34:37.535Z"
+  },
+  "2": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "tabLeaveCount": 9,
+    "lastTabLeave": "2026-02-25T08:12:23.983Z"
+  },
+  "4": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "tabLeaveCount": 1,
+    "lastTabLeave": "2026-02-25T07:37:08.285Z"
+  },
+  "9": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  },
+  "11": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  },
+  "23": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  }
+}

@@ -1850,18 +1850,13 @@
                 
                 socket.on('connect', function() {
                     socketConnected = true;
-                    console.log('Socket connected!');
                 });
                 
                 socket.on('connect_error', function(err) {
-                    console.error('Socket connect error:', err);
                     socketConnected = false;
                 });
-            } else {
-                console.warn('Socket.IO not loaded, running in fallback mode');
             }
         } catch(e) {
-            console.error('Socket.IO init error:', e);
             socket = null;
         }
         
@@ -2001,7 +1996,6 @@
         
         // Lắng nghe khi giáo viên đổi bài thi
         socket.on('examSwitched', function(data) {
-            console.log('Exam switched:', data);
             
             // Nếu đang ở màn hình kết quả hoặc màn hình chọn tên
             if (document.getElementById('resultScreen').style.display !== 'none' ||
@@ -2072,7 +2066,6 @@
         
         // Dùng XMLHttpRequest thay vì fetch để tương thích trình duyệt cũ
         function loadStudents() {
-            console.log('Đang tải danh sách học sinh... (lần ' + (loadStudentsRetryCount + 1) + ')');
             
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/api/students', true);
@@ -2084,34 +2077,28 @@
                         try {
                             students = JSON.parse(xhr.responseText);
                             filteredStudents = copyArray(students);
-                            console.log('Đã tải ' + students.length + ' học sinh');
                             loadStudentsRetryCount = 0;
                             renderStudentList();
                         } catch(e) {
-                            console.error('Lỗi parse JSON:', e);
                             retryLoadStudents();
                         }
                     } else {
-                        console.error('Lỗi HTTP:', xhr.status);
                         retryLoadStudents();
                     }
                 }
             };
             
             xhr.onerror = function() {
-                console.error('Lỗi kết nối mạng');
                 retryLoadStudents();
             };
             
             xhr.ontimeout = function() {
-                console.error('Timeout');
                 retryLoadStudents();
             };
             
             try {
                 xhr.send();
             } catch(e) {
-                console.error('Exception:', e);
                 retryLoadStudents();
             }
         }
@@ -2146,11 +2133,7 @@
                 '<li><strong>Kiểm tra IP:</strong> Địa chỉ đang truy cập có đúng IP của máy giáo viên không?</li>' +
                 '<li><strong>Thử lại:</strong> <button onclick="location.reload()" style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">Tải lại trang (F5)</button></li>' +
                 '</ol>' +
-                '<div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px;">' +
-                '<strong>Thông tin debug:</strong><br>' +
-                '<small>Thời gian máy: ' + new Date().toString() + '</small><br>' +
-                '<small>URL: ' + window.location.href + '</small>' +
-                '</div>';
+                '';
             
             // Tìm vị trí để chèn
             var step1Content = document.getElementById('step1Content');
@@ -2650,7 +2633,6 @@
                             getServerTimeThenStartExam();
                             
                         } catch(e) {
-                            console.error('Loi parse JSON:', e);
                             showError('Lỗi dữ liệu bài thi!');
                         }
                     } else {
@@ -2852,7 +2834,6 @@
                             showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
                         }
                     } catch(e) {
-                        console.error('Lỗi kiểm tra đáp án:', e);
                     }
                 }
             };
@@ -3050,7 +3031,6 @@
             
             // Kiểm tra examId có khớp không (phòng trường hợp dữ liệu cũ)
             if (progress.examId && progress.examId !== currentExamId) {
-                console.log('ExamId không khớp, không restore');
                 return false;
             }
             
@@ -3065,7 +3045,6 @@
                 
                 // Nếu quá 2 giờ, xóa progress
                 if (hoursDiff > 2) {
-                    console.log('Progress quá cũ (', hoursDiff, 'giờ), xóa');
                     clearExamProgress(studentInfo.stt, currentExamId);
                     return false;
                 }
@@ -3163,7 +3142,6 @@
                 xhr.send();
                 
             } catch (e) {
-                console.error('Lỗi khôi phục session:', e);
             }
         }
         
@@ -3354,7 +3332,6 @@
             
             // Kiểm tra nếu đã hết giờ thì không khởi động timer
             if (timeRemaining <= 0) {
-                console.log('Không khởi động timer vì đã hết giờ');
                 return;
             }
             
@@ -3735,7 +3712,11 @@
                 html += '<div class="saved-result-name">' + r.stt + '. ' + escapeHtml(r.name) + '</div>';
                 html += '<div class="saved-result-meta">Lớp ' + escapeHtml(r.class) + ' • ' + timeStr + '</div>';
                 html += '</div>';
-                html += '<div class="saved-result-score">' + r.score + '</div>';
+                if (r.showScore !== false) {
+                    html += '<div class="saved-result-score">' + r.score + '</div>';
+                } else {
+                    html += '<div class="saved-result-score" style="font-size: 0.75em; color: #999;">Đã nộp</div>';
+                }
                 html += '<span class="saved-result-delete" onclick="event.stopPropagation(); deleteSavedResult(' + r.stt + ')" title="Xóa">×</span>';
                 html += '</div>';
             }
@@ -3940,9 +3921,7 @@
         // QUAN TRỌNG: Lấy thời gian server ngay khi load trang
         // Điều này đảm bảo serverTimeOffset được thiết lập cho các máy có đồng hồ sai
         (function initServerTime() {
-            getServerTime(function() {
-                console.log('Đã đồng bộ thời gian server. Offset:', serverTimeOffset, 'ms');
-            });
+            getServerTime(function() {});
         })();
 
         // Initialize - load ngay khi trang ready, không chờ socket
@@ -3953,7 +3932,6 @@
         // Nếu socket không kết nối được sau 3 giây, thử load lại
         setTimeout(function() {
             if (!mySocketId) {
-                console.log('Socket chưa kết nối, thử load lại danh sách...');
                 loadStudents();
                 checkExam();
             }
@@ -3961,9 +3939,7 @@
         
         // Đồng bộ lại thời gian server mỗi 5 phút để đảm bảo chính xác
         setInterval(function() {
-            getServerTime(function() {
-                console.log('Đã cập nhật thời gian server. Offset:', serverTimeOffset, 'ms');
-            });
+            getServerTime(function() {});
         }, 5 * 60 * 1000);
     </script>
 </body>

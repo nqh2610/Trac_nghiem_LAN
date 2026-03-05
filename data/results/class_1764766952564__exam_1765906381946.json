@@ -1,0 +1,1662 @@
+[
+  {
+    "studentSTT": "4",
+    "studentName": "Nguyễn Thị Ngọc Châm",
+    "studentClass": "11A4",
+    "score": 1,
+    "correctCount": 4,
+    "totalQuestions": 40,
+    "timeSpent": "4 phút 10 giây",
+    "submittedAt": "14:41:14 25/2/2026",
+    "details": [
+      {
+        "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Không cần bộ nhớ đệm để hoạt động",
+        "correctAnswer": 0,
+        "correctAnswerText": "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "isCorrect": false
+      },
+      {
+        "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+        "studentAnswer": 0,
+        "studentAnswerText": "19",
+        "correctAnswer": 0,
+        "correctAnswerText": "19",
+        "isCorrect": true
+      },
+      {
+        "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Lưu trữ dữ liệu tạm thời",
+        "correctAnswer": 0,
+        "correctAnswerText": "Thực hiện các phép tính số học và logic",
+        "isCorrect": false
+      },
+      {
+        "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Không xác định",
+        "correctAnswer": 0,
+        "correctAnswerText": "1",
+        "isCorrect": false
+      },
+      {
+        "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Chỉ có thể đọc dữ liệu, không ghi được",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu bị mất khi tắt nguồn điện",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+        "studentAnswer": 2,
+        "studentAnswerText": "NEW TABLE HocSinh (MaHS INT PRIMARY, HoTen TEXT, MaLop LINK Lop)",
+        "correctAnswer": 0,
+        "correctAnswerText": "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Dấu nháy đơn '",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dấu thăng #",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+        "studentAnswer": 3,
+        "studentAnswerText": "MODIFY TABLE GiaoVien NEW COLUMN DiaChi",
+        "correctAnswer": 0,
+        "correctAnswerText": "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Sắp xếp dữ liệu theo thứ tự tăng dần",
+        "correctAnswer": 0,
+        "correctAnswerText": "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Xóa cột MaLop khỏi bảng HocSinh",
+        "correctAnswer": 0,
+        "correctAnswerText": "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+        "studentAnswer": 1,
+        "studentAnswerText": "iOS",
+        "correctAnswer": 0,
+        "correctAnswerText": "Android",
+        "isCorrect": false
+      },
+      {
+        "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Bảo vệ máy tính khỏi virus",
+        "correctAnswer": 0,
+        "correctAnswerText": "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "isCorrect": false
+      },
+      {
+        "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Chỉ hỗ trợ kiến trúc 128 bit",
+        "correctAnswer": 0,
+        "correctAnswerText": "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Màn hình và bàn phím",
+        "correctAnswer": 0,
+        "correctAnswerText": "Phần mềm ứng dụng và phần cứng",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Không cho phép cộng đồng đóng góp phát triển",
+        "correctAnswer": 0,
+        "correctAnswerText": "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Không được phép chỉnh sửa phần mềm gốc",
+        "correctAnswer": 0,
+        "correctAnswerText": "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép Apache License có đặc điểm gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Cấm sử dụng cho mục đích thương mại",
+        "correctAnswer": 0,
+        "correctAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Yêu cầu cấu hình phần cứng rất cao",
+        "correctAnswer": 0,
+        "correctAnswerText": "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Loa (Speaker)",
+        "correctAnswer": 0,
+        "correctAnswerText": "Máy quét (Scanner)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Serial Port",
+        "correctAnswer": 0,
+        "correctAnswerText": "HDMI",
+        "isCorrect": false
+      },
+      {
+        "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Thiết bị mạng",
+        "correctAnswer": 0,
+        "correctAnswerText": "Thiết bị vào",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Chỉ có thể xem và thêm nhận xét",
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem, nhận xét và chỉnh sửa tệp",
+        "isCorrect": false
+      },
+      {
+        "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Yêu cầu cài đặt phần mềm nặng trên máy",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Chủ sở hữu (Owner)",
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem (Viewer)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Xóa các tệp PDF trong kết quả tìm kiếm",
+        "correctAnswer": 0,
+        "correctAnswerText": "Chỉ hiển thị kết quả là các tệp PDF",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+        "studentAnswer": 0,
+        "studentAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "correctAnswer": 0,
+        "correctAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "isCorrect": true
+      },
+      {
+        "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Gõ từ khóa bằng bàn phím ảo",
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "isCorrect": false
+      },
+      {
+        "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Chuyển tiền nhanh chóng để giải quyết vấn đề",
+        "correctAnswer": 0,
+        "correctAnswerText": "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Chuyển tiền ngay để giúp đỡ bạn bè",
+        "correctAnswer": 0,
+        "correctAnswerText": "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "isCorrect": false
+      },
+      {
+        "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Chia sẻ mật khẩu với bạn bè thân thiết",
+        "correctAnswer": 0,
+        "correctAnswerText": "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "isCorrect": false
+      },
+      {
+        "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Xóa toàn bộ dữ liệu trong cơ sở dữ liệu",
+        "correctAnswer": 0,
+        "correctAnswerText": "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "isCorrect": false
+      },
+      {
+        "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Tốn nhiều thời gian hơn nhập liệu bằng tay",
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "isCorrect": false
+      },
+      {
+        "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+        "studentAnswer": 0,
+        "studentAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "correctAnswer": 0,
+        "correctAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "isCorrect": true
+      },
+      {
+        "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Xóa tất cả dữ liệu không sử dụng trong 30 ngày",
+        "correctAnswer": 0,
+        "correctAnswerText": "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Tất cả người dùng đều có quyền truy cập như nhau",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+        "studentAnswer": 0,
+        "studentAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "correctAnswer": 0,
+        "correctAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "isCorrect": true
+      },
+      {
+        "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Sao lưu và khôi phục dữ liệu",
+        "correctAnswer": 0,
+        "correctAnswerText": "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Chỉ có phần cứng máy chủ",
+        "correctAnswer": 0,
+        "correctAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Không hỗ trợ truy cập từ xa",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "isCorrect": false
+      },
+      {
+        "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Hệ CSDL phân tán",
+        "correctAnswer": 0,
+        "correctAnswerText": "Hệ CSDL tập trung",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "2",
+    "studentName": "Nguyễn Trần Trâm Anh",
+    "studentClass": "11A4",
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 40,
+    "timeSpent": "7 phút 48 giây",
+    "submittedAt": "14:42:29 25/2/2026",
+    "details": [
+      {
+        "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "isCorrect": false
+      },
+      {
+        "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "19",
+        "isCorrect": false
+      },
+      {
+        "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thực hiện các phép tính số học và logic",
+        "isCorrect": false
+      },
+      {
+        "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "1",
+        "isCorrect": false
+      },
+      {
+        "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu bị mất khi tắt nguồn điện",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dấu thăng #",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Android",
+        "isCorrect": false
+      },
+      {
+        "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "isCorrect": false
+      },
+      {
+        "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phần mềm ứng dụng và phần cứng",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép Apache License có đặc điểm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Máy quét (Scanner)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "HDMI",
+        "isCorrect": false
+      },
+      {
+        "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thiết bị vào",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem, nhận xét và chỉnh sửa tệp",
+        "isCorrect": false
+      },
+      {
+        "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem (Viewer)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Chỉ hiển thị kết quả là các tệp PDF",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "isCorrect": false
+      },
+      {
+        "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Chuyển tiền nhanh chóng để giải quyết vấn đề",
+        "correctAnswer": 0,
+        "correctAnswerText": "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "isCorrect": false
+      },
+      {
+        "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "isCorrect": false
+      },
+      {
+        "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "isCorrect": false
+      },
+      {
+        "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "isCorrect": false
+      },
+      {
+        "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "isCorrect": false
+      },
+      {
+        "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "isCorrect": false
+      },
+      {
+        "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Hệ CSDL tập trung",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "9",
+    "studentName": "Nguyễn Phúc Minh Hải",
+    "studentClass": "11A4",
+    "score": 0.5,
+    "correctCount": 2,
+    "totalQuestions": 40,
+    "timeSpent": "0 phút 13 giây",
+    "submittedAt": "14:42:55 25/2/2026",
+    "details": [
+      {
+        "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "isCorrect": false
+      },
+      {
+        "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+        "studentAnswer": 1,
+        "studentAnswerText": "17",
+        "correctAnswer": 0,
+        "correctAnswerText": "19",
+        "isCorrect": false
+      },
+      {
+        "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thực hiện các phép tính số học và logic",
+        "isCorrect": false
+      },
+      {
+        "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "1",
+        "isCorrect": false
+      },
+      {
+        "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu bị mất khi tắt nguồn điện",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dấu thăng #",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Android",
+        "isCorrect": false
+      },
+      {
+        "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "isCorrect": false
+      },
+      {
+        "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phần mềm ứng dụng và phần cứng",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép Apache License có đặc điểm gì?",
+        "studentAnswer": 0,
+        "studentAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "correctAnswer": 0,
+        "correctAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "isCorrect": true
+      },
+      {
+        "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Máy quét (Scanner)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "HDMI",
+        "isCorrect": false
+      },
+      {
+        "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thiết bị vào",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem, nhận xét và chỉnh sửa tệp",
+        "isCorrect": false
+      },
+      {
+        "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem (Viewer)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Chỉ hiển thị kết quả là các tệp PDF",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "isCorrect": false
+      },
+      {
+        "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+        "studentAnswer": 1,
+        "studentAnswerText": "Tắt máy tính ngay lập tức khi nhận được tin nhắn lạ",
+        "correctAnswer": 0,
+        "correctAnswerText": "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "isCorrect": false
+      },
+      {
+        "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "isCorrect": false
+      },
+      {
+        "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+        "studentAnswer": 2,
+        "studentAnswerText": "Xóa toàn bộ dữ liệu trong cơ sở dữ liệu",
+        "correctAnswer": 0,
+        "correctAnswerText": "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "isCorrect": false
+      },
+      {
+        "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Chỉ hoạt động khi không có kết nối mạng",
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "isCorrect": false
+      },
+      {
+        "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Giới hạn dung lượng lưu trữ tối đa",
+        "correctAnswer": 0,
+        "correctAnswerText": "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "isCorrect": false
+      },
+      {
+        "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+        "studentAnswer": 0,
+        "studentAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "correctAnswer": 0,
+        "correctAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "isCorrect": true
+      },
+      {
+        "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Không cần kết nối mạng để hoạt động",
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "isCorrect": false
+      },
+      {
+        "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Hệ CSDL tập trung",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "11",
+    "studentName": "Trần Quốc Huy",
+    "studentClass": "11A4",
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 40,
+    "timeSpent": "0 phút 2 giây",
+    "submittedAt": "14:43:03 25/2/2026",
+    "details": [
+      {
+        "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "isCorrect": false
+      },
+      {
+        "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "19",
+        "isCorrect": false
+      },
+      {
+        "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thực hiện các phép tính số học và logic",
+        "isCorrect": false
+      },
+      {
+        "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "1",
+        "isCorrect": false
+      },
+      {
+        "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu bị mất khi tắt nguồn điện",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dấu thăng #",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Android",
+        "isCorrect": false
+      },
+      {
+        "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "isCorrect": false
+      },
+      {
+        "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phần mềm ứng dụng và phần cứng",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép Apache License có đặc điểm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Máy quét (Scanner)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "HDMI",
+        "isCorrect": false
+      },
+      {
+        "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thiết bị vào",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem, nhận xét và chỉnh sửa tệp",
+        "isCorrect": false
+      },
+      {
+        "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+        "studentAnswer": 3,
+        "studentAnswerText": "Chủ sở hữu (Owner)",
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem (Viewer)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Chỉ hiển thị kết quả là các tệp PDF",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "isCorrect": false
+      },
+      {
+        "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "isCorrect": false
+      },
+      {
+        "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "isCorrect": false
+      },
+      {
+        "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "isCorrect": false
+      },
+      {
+        "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "isCorrect": false
+      },
+      {
+        "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "isCorrect": false
+      },
+      {
+        "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "isCorrect": false
+      },
+      {
+        "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Hệ CSDL tập trung",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "23",
+    "studentName": "Nguyễn Hồng Nghĩa",
+    "studentClass": "11A4",
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 40,
+    "timeSpent": "0 phút 3 giây",
+    "submittedAt": "14:43:12 25/2/2026",
+    "details": [
+      {
+        "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "isCorrect": false
+      },
+      {
+        "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "19",
+        "isCorrect": false
+      },
+      {
+        "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thực hiện các phép tính số học và logic",
+        "isCorrect": false
+      },
+      {
+        "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "1",
+        "isCorrect": false
+      },
+      {
+        "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu bị mất khi tắt nguồn điện",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "isCorrect": false
+      },
+      {
+        "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dấu thăng #",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "isCorrect": false
+      },
+      {
+        "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Android",
+        "isCorrect": false
+      },
+      {
+        "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "isCorrect": false
+      },
+      {
+        "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+        "studentAnswer": 1,
+        "studentAnswerText": "CPU và bộ nhớ ngoài",
+        "correctAnswer": 0,
+        "correctAnswerText": "Phần mềm ứng dụng và phần cứng",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "isCorrect": false
+      },
+      {
+        "question": "Giấy phép Apache License có đặc điểm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "isCorrect": false
+      },
+      {
+        "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Máy quét (Scanner)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "HDMI",
+        "isCorrect": false
+      },
+      {
+        "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Thiết bị vào",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem, nhận xét và chỉnh sửa tệp",
+        "isCorrect": false
+      },
+      {
+        "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Xem (Viewer)",
+        "isCorrect": false
+      },
+      {
+        "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Chỉ hiển thị kết quả là các tệp PDF",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "isCorrect": false
+      },
+      {
+        "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "isCorrect": false
+      },
+      {
+        "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "isCorrect": false
+      },
+      {
+        "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "isCorrect": false
+      },
+      {
+        "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "isCorrect": false
+      },
+      {
+        "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "isCorrect": false
+      },
+      {
+        "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Ghi mới, sửa đổi và xóa dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "isCorrect": false
+      },
+      {
+        "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "isCorrect": false
+      },
+      {
+        "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "isCorrect": false
+      },
+      {
+        "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "isCorrect": false
+      },
+      {
+        "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+        "studentAnswer": -1,
+        "studentAnswerText": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Hệ CSDL tập trung",
+        "isCorrect": false
+      }
+    ]
+  }
+]

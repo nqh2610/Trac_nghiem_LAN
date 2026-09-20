@@ -771,7 +771,150 @@
         .option.selected .option-label {
             background: #28a745;
         }
-        
+
+        /* Type badge */
+        .type-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.78em;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .type-badge.type-multi {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+        .type-badge.type-tf {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #17a2b8;
+        }
+
+        /* True/False table */
+        .tf-table { width: 100%; border-collapse: collapse; }
+        .tf-header {
+            display: flex;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: #555;
+            padding: 4px 0 6px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 6px;
+        }
+        .tf-stmt-col { flex: 1; }
+        .tf-btn-col { width: 64px; text-align: center; }
+        .tf-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .tf-row:last-child { border-bottom: none; }
+        .tf-stmt {
+            flex: 1;
+            font-size: 1em;
+            line-height: 1.5;
+            padding-right: 10px;
+        }
+        .tf-btn {
+            width: 56px;
+            padding: 6px 0;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.15s;
+            margin: 0 4px;
+        }
+        .tf-btn:hover { border-color: #667eea; background: #f0f2ff; }
+        .tf-btn.tf-true.selected { background: #28a745; border-color: #28a745; color: #fff; }
+        .tf-btn.tf-false.selected { background: #dc3545; border-color: #dc3545; color: #fff; }
+
+        /* Multi-select */
+        .option-multi { padding-left: 14px; cursor: pointer; }
+        .option-multi .option-checkbox {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            background: white;
+        }
+        .option-multi.selected .option-checkbox {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        .option-multi.selected .option-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .multi-hint {
+            font-size: 0.82em;
+            color: #856404;
+            background: #fff8e1;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 5px 12px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .multi-check-btn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+        }
+        .multi-check-btn.visible { display: inline-block; }
+
+        /* TF practice feedback */
+        .tf-row.tf-practice-correct .tf-btn.selected {
+            background: #28a745 !important;
+            border-color: #28a745 !important;
+            color: white !important;
+        }
+        .tf-row.tf-practice-wrong .tf-btn.selected {
+            background: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+        }
+        .tf-correct-hint {
+            display: none;
+            width: 64px;
+            min-width: 64px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #155724;
+            font-weight: 700;
+            background: #d4edda;
+            border-radius: 6px;
+            padding: 2px 4px;
+            margin-left: 4px;
+        }
+        .tf-row.tf-practice-wrong .tf-correct-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Practice mode styles */
         .option.practice-correct {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
@@ -1810,7 +1953,7 @@
         <div class="fw-icon">⚠️</div>
         <h2>Bạn đã thoát toàn màn hình!</h2>
         <p>Bài thi yêu cầu làm bài ở chế độ toàn màn hình.<br>Vui lòng bấm nút bên dưới để quay lại.</p>
-        <button class="fw-btn" onclick="reenterFullscreen()">↩ Quay lại toàn màn hình</button>
+        <button class="fw-btn" id="fsReturnBtn" onclick="reenterFullscreen()">↩ Quay lại toàn màn hình (<span id="fsCountdown">10</span>s)</button>
         <div class="fw-violation">Vi phạm lần <span id="fsViolationCount">1</span> — Giáo viên đã được thông báo</div>
     </div>
 
@@ -1892,11 +2035,6 @@
                 <img src="/logo.svg" alt="Logo" style="width: 40px; height: 40px; margin-bottom: 8px;">
                 <p style="margin: 0; font-weight: bold; color: #667eea;">Trắc Nghiệm LAN</p>
                 <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #888;">Hệ thống thi trắc nghiệm mạng LAN</p>
-                <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
-                    Phát triển bởi <strong>Nguyễn Quang Hùng</strong><br>
-                    <span style="margin-right: 10px;">️ nqh2610@gmail.com</span>
-                    <span>0976.385.309</span>
-                </div>
             </div>
         </div>
     </div>
@@ -1958,6 +2096,63 @@
             var div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // Sanitizer HTML an toàn - allowlist tags (ES5, DOM-based)
+        function sanitizeHtmlClient(html) {
+            if (!html) return '';
+            var ALLOWED = {
+                'B': [], 'STRONG': [], 'I': [], 'EM': [], 'U': [],
+                'P': [], 'BR': [], 'SPAN': ['style'], 'SUB': [], 'SUP': [],
+                'IMG': ['src', 'alt', 'width', 'height', 'style']
+            };
+            var div = document.createElement('div');
+            div.innerHTML = html;
+            function cleanNode(node) {
+                var toRemove = [];
+                var children = node.childNodes;
+                for (var i = 0; i < children.length; i++) {
+                    var child = children[i];
+                    if (child.nodeType === 3) continue;
+                    if (child.nodeType !== 1) { toRemove.push(child); continue; }
+                    var tag = child.tagName;
+                    if (!ALLOWED.hasOwnProperty(tag)) {
+                        var frag = document.createDocumentFragment();
+                        while (child.firstChild) frag.appendChild(child.firstChild);
+                        node.insertBefore(frag, child);
+                        toRemove.push(child);
+                        continue;
+                    }
+                    var allowedAttrs = ALLOWED[tag];
+                    var attrNames = [];
+                    for (var a = 0; a < child.attributes.length; a++) {
+                        attrNames.push(child.attributes[a].name);
+                    }
+                    for (var a = 0; a < attrNames.length; a++) {
+                        if (allowedAttrs.indexOf(attrNames[a]) < 0) {
+                            child.removeAttribute(attrNames[a]);
+                        }
+                    }
+                    if (tag === 'IMG') {
+                        var src = child.getAttribute('src') || '';
+                        if (src.indexOf('data:image/') !== 0) child.removeAttribute('src');
+                    }
+                    cleanNode(child);
+                }
+                for (var r = 0; r < toRemove.length; r++) {
+                    if (toRemove[r].parentNode === node) node.removeChild(toRemove[r]);
+                }
+            }
+            cleanNode(div);
+            return div.innerHTML;
+        }
+
+        // Render nội dung câu hỏi/đáp án an toàn (HTML đã sanitized từ server)
+        function renderContent(html) {
+            if (!html) return '';
+            // Nội dung đã được sanitize ở server, chỉ cần trả về trực tiếp
+            // Nhưng vẫn sanitize lại ở client để đảm bảo an toàn
+            return sanitizeHtmlClient(String(html));
         }
         
         var mySocketId = null;
@@ -2034,19 +2229,28 @@
             return qOrder.map(function(origIndex, newIndex) {
                 var origQ = originalQs[origIndex];
                 var optOrder = optOrders[origIndex];
-                
-                // Dao thu tu dap an
-                var shuffledOptions = optOrder.map(function(i) { return origQ.options[i]; });
-                
-                // Copy object va thay options
+                var type = origQ.type || 'single';
+
+                // Loại truefalse không đảo thứ tự đáp án
+                var shuffledOptions;
+                var effectiveOptOrder;
+                if (type === 'truefalse') {
+                    shuffledOptions = origQ.options.slice();
+                    effectiveOptOrder = [];
+                    for (var k = 0; k < origQ.options.length; k++) effectiveOptOrder.push(k);
+                } else {
+                    shuffledOptions = optOrder.map(function(i) { return origQ.options[i]; });
+                    effectiveOptOrder = optOrder;
+                }
+
                 var newQ = {};
                 for (var key in origQ) {
                     newQ[key] = origQ[key];
                 }
                 newQ.options = shuffledOptions;
-                newQ._optionOrder = optOrder; // Luu de chuyen doi khi nop bai
+                newQ._optionOrder = effectiveOptOrder;
                 newQ._originalIndex = origIndex;
-                
+
                 return newQ;
             });
         }
@@ -2066,6 +2270,30 @@
                 showMessage('success', 'Giáo viên đã mở bài thi!');
             } else {
                 showMessage('error', '⏸️ Giáo viên đã đóng bài thi!');
+            }
+        });
+
+        socket.on('settingsChanged', function(data) {
+            if (typeof data.practiceMode === 'undefined') return;
+            var newMode = data.practiceMode;
+            if (newMode === practiceMode) return; // không đổi
+            practiceMode = newMode;
+            // Chỉ cập nhật UI nếu đang trong màn hình làm bài
+            var examScreen = document.getElementById('examScreen');
+            if (!examScreen || examScreen.style.display === 'none') return;
+            if (practiceMode) {
+                showPracticeModeNotice();
+                document.getElementById('timer').style.display = 'none';
+                showPracticeModeBadge();
+                showMessage('success', 'Giáo viên đã bật chế độ ôn tập');
+            } else {
+                document.getElementById('timer').style.display = '';
+                hidePracticeModeBadge();
+                // Ẩn tất cả feedback ôn tập đang hiển thị
+                var toasts = document.querySelectorAll('.practice-toast');
+                for (var i = 0; i < toasts.length; i++) toasts[i].remove();
+                showMessage('info', 'Giáo viên đã tắt chế độ ôn tập');
+                startTimer();
             }
         });
 
@@ -2090,7 +2318,7 @@
             
             // Nếu đang làm bài thì cảnh báo
             if (document.getElementById('examScreen').style.display !== 'none') {
-                showMessage('warning', `Giáo viên đã chuyển sang bài: "${data.examName}". Hãy nộp bài hiện tại!`);
+                showMessage('warning', 'Giáo viên đã chuyển sang bài: "' + data.examName + '". Hãy nộp bài hiện tại!');
             }
             
             // Reset trạng thái để sẵn sàng cho bài mới
@@ -2105,21 +2333,18 @@
             
             var modal = document.createElement('div');
             modal.id = 'newExamModal';
-            modal.innerHTML = `
-                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">
-                    <div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                        <div style="font-size: 4em; margin-bottom: 15px;"></div>
-                        <h2 style="margin: 0 0 10px 0; color: #333;">Bài kiểm tra mới!</h2>
-                        <p style="color: #666; margin-bottom: 20px;">Giáo viên đã chuyển sang bài:</p>
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; font-size: 1.2em; font-weight: bold; margin-bottom: 20px;">
-                            ${examName}
-                        </div>
-                        <button onclick="closeNewExamModal()" style="background: #28a745; color: white; border: none; padding: 15px 40px; border-radius: 10px; font-size: 1.1em; cursor: pointer; font-weight: bold;">
-                            Đã hiểu, làm bài mới
-                        </button>
-                    </div>
-                </div>
-            `;
+            modal.innerHTML =
+                '<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; justify-content: center; align-items: center;">' +
+                    '<div style="background: white; border-radius: 20px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">' +
+                        '<div style="font-size: 4em; margin-bottom: 15px;"></div>' +
+                        '<h2 style="margin: 0 0 10px 0; color: #333;">Bài kiểm tra mới!</h2>' +
+                        '<p style="color: #666; margin-bottom: 20px;">Giáo viên đã chuyển sang bài:</p>' +
+                        '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; font-size: 1.2em; font-weight: bold; margin-bottom: 20px;">' +
+                            examName +
+                        '</div>' +
+                        '<button onclick="closeNewExamModal()" style="background: #28a745; color: white; border: none; padding: 15px 40px; border-radius: 10px; font-size: 1.1em; cursor: pointer; font-weight: bold;">Đã hiểu, làm bài mới</button>' +
+                    '</div>' +
+                '</div>';
             document.body.appendChild(modal);
         }
         
@@ -2264,9 +2489,9 @@
                     extraText = ' (Được làm lại)';
                 }
                 
-                return `<option value="${s.stt}" ${disabled ? 'disabled' : ''} style="padding: 12px 16px; ${style}">
-                    ${s.stt}. ${escapeHtml(s.fullName)}${statusIcon}${extraText}
-                </option>`;
+                return '<option value="' + s.stt + '" ' + (disabled ? 'disabled' : '') + ' style="padding: 12px 16px; ' + style + '">' +
+                    s.stt + '. ' + escapeHtml(s.fullName) + statusIcon + extraText +
+                '</option>';
             }).join('');
         }
 
@@ -2338,11 +2563,10 @@
 
         function goBackToStep1() {
             if (selectedStudent) {
-                fetch('/api/deselect-student', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId })
-                });
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/deselect-student', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId }));
             }
             selectedStudent = null;
             nameConfirmed = false;
@@ -2391,18 +2615,17 @@
         function confirmSelection() {
             if (!selectedStudent) return;
             nameConfirmed = true;
-            document.getElementById('confirmedName').textContent = 
-                `${selectedStudent.ho} ${selectedStudent.ten} (STT ${selectedStudent.stt})`;
+            document.getElementById('confirmedName').textContent =
+                selectedStudent.ho + ' ' + selectedStudent.ten + ' (STT ' + selectedStudent.stt + ')';
             updateSteps(3);
         }
 
         function cancelSelection() {
             if (selectedStudent) {
-                fetch('/api/deselect-student', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId })
-                });
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/deselect-student', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({ stt: selectedStudent.stt, socketId: mySocketId }));
             }
             selectedStudent = null;
             nameConfirmed = false;
@@ -2817,43 +3040,96 @@
         function renderQuestions() {
             var container = document.getElementById('questionsContainer');
             var html = '';
-            
+
             for (var i = 0; i < questions.length; i++) {
                 var q = questions[i];
+                var type = q.type || 'single';
                 html += '<div class="question-card' + (i === 0 ? ' active' : '') + '" id="question' + i + '">';
                 html += '<div class="question-header">';
                 html += '<span class="question-number">Câu ' + (i + 1) + '</span>';
+                if (type === 'multi') {
+                    html += '<span class="type-badge type-multi">Nhiều đáp án</span>';
+                } else if (type === 'truefalse') {
+                    html += '<span class="type-badge type-tf">Đúng/Sai</span>';
+                }
                 html += '</div>';
-                html += '<div class="question-text">' + escapeHtml(q.question) + '</div>';
+                html += '<div class="question-text">' + renderContent(q.question) + '</div>';
                 if (q.image) {
                     html += '<img src="' + q.image + '" class="question-image" alt="Hình">';
                 }
                 html += '<div class="options">';
-                for (var j = 0; j < q.options.length; j++) {
-                    html += '<label class="option" onclick="selectOption(' + i + ', ' + j + ')">';
-                    html += '<input type="radio" name="q' + i + '" value="' + j + '">';
-                    html += '<span class="option-label">' + String.fromCharCode(65 + j) + '</span>';
-                    html += '<span class="option-text">' + escapeHtml(q.options[j]) + '</span>';
-                    html += '</label>';
+                if (type === 'single') {
+                    html += renderSingleOptions(i, q);
+                } else if (type === 'multi') {
+                    html += renderMultiOptions(i, q);
+                } else if (type === 'truefalse') {
+                    html += renderTrueFalseOptions(i, q);
+                } else {
+                    html += renderSingleOptions(i, q);
                 }
                 html += '</div>';
                 html += '</div>';
             }
-            
+
             container.innerHTML = html;
             document.getElementById('totalCount').textContent = questions.length;
             document.getElementById('totalCount2').textContent = questions.length;
             updateQuestionNavigation();
         }
 
+        function renderSingleOptions(qIndex, q) {
+            var html = '';
+            for (var j = 0; j < q.options.length; j++) {
+                html += '<label class="option" onclick="selectOption(' + qIndex + ', ' + j + ')">';
+                html += '<input type="radio" name="q' + qIndex + '" value="' + j + '">';
+                html += '<span class="option-label">' + String.fromCharCode(65 + j) + '</span>';
+                html += '<span class="option-text">' + renderContent(q.options[j]) + '</span>';
+                html += '</label>';
+            }
+            return html;
+        }
+
+        function renderMultiOptions(qIndex, q) {
+            var html = '';
+            for (var j = 0; j < q.options.length; j++) {
+                html += '<div class="option option-multi" onclick="toggleMultiOption(' + qIndex + ', ' + j + ')">';
+                html += '<span class="option-checkbox" id="optChk' + qIndex + '_' + j + '"></span>';
+                html += '<span class="option-label">' + String.fromCharCode(65 + j) + '</span>';
+                html += '<span class="option-text">' + renderContent(q.options[j]) + '</span>';
+                html += '</div>';
+            }
+            html += '<button class="multi-check-btn" id="multiCheckBtn' + qIndex + '" onclick="checkMultiPractice(' + qIndex + ')">Kiểm tra đáp án</button>';
+            return html;
+        }
+
+        function renderTrueFalseOptions(qIndex, q) {
+            var html = '<div class="tf-table">';
+            html += '<div class="tf-header">';
+            html += '<span class="tf-stmt-col">Phát biểu</span>';
+            html += '<span class="tf-btn-col">Đúng</span>';
+            html += '<span class="tf-btn-col">Sai</span>';
+            html += '<span class="tf-btn-col"></span>';
+            html += '</div>';
+            for (var j = 0; j < q.options.length; j++) {
+                html += '<div class="tf-row" id="tfrow-' + qIndex + '-' + j + '">';
+                html += '<span class="tf-stmt">' + String.fromCharCode(65 + j) + '. ' + renderContent(q.options[j]) + '</span>';
+                html += '<button class="tf-btn tf-true" onclick="selectTF(' + qIndex + ', ' + j + ', true)">Đúng</button>';
+                html += '<button class="tf-btn tf-false" onclick="selectTF(' + qIndex + ', ' + j + ', false)">Sai</button>';
+                html += '<span class="tf-correct-hint" id="tfhint-' + qIndex + '-' + j + '"></span>';
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
         // Select option
         function selectOption(questionIndex, optionIndex) {
             answers[questionIndex] = optionIndex;
-            
+
             // Update question card UI
             var card = document.getElementById('question' + questionIndex);
             card.classList.add('answered');
-            
+
             var options = card.querySelectorAll('.option');
             for (var i = 0; i < options.length; i++) {
                 if (i === optionIndex) {
@@ -2862,27 +3138,145 @@
                     options[i].classList.remove('selected');
                 }
             }
-            
+
             updateProgress();
-            
+
             // Save to localStorage
             saveExamProgress();
-            
+
             // Chế độ ôn tập - kiểm tra đáp án ngay
             if (practiceMode) {
                 checkAnswerPractice(questionIndex, optionIndex);
             }
         }
-        
+
+        // Chọn nhiều đáp án (toggle)
+        function toggleMultiOption(questionIndex, optionIndex) {
+            if (!Array.isArray(answers[questionIndex])) {
+                answers[questionIndex] = [];
+            }
+            var arr = answers[questionIndex];
+            var pos = -1;
+            for (var x = 0; x < arr.length; x++) {
+                if (arr[x] === optionIndex) { pos = x; break; }
+            }
+            if (pos >= 0) {
+                arr.splice(pos, 1);
+            } else {
+                arr.push(optionIndex);
+            }
+
+            var card = document.getElementById('question' + questionIndex);
+            var options = card.querySelectorAll('.option');
+            for (var i = 0; i < options.length; i++) {
+                var inArr = false;
+                for (var y = 0; y < arr.length; y++) {
+                    if (arr[y] === i) { inArr = true; break; }
+                }
+                if (inArr) {
+                    options[i].classList.add('selected');
+                } else {
+                    options[i].classList.remove('selected');
+                }
+                // Xóa feedback cũ khi chọn lại
+                options[i].classList.remove('practice-correct', 'practice-wrong', 'practice-answer');
+            }
+
+            if (arr.length === 0) {
+                delete answers[questionIndex];
+                card.classList.remove('answered');
+            } else {
+                card.classList.add('answered');
+            }
+
+            // Hiện nút Kiểm tra trong practice mode khi đã chọn ít nhất 1
+            if (practiceMode) {
+                var checkBtn = document.getElementById('multiCheckBtn' + questionIndex);
+                if (checkBtn) {
+                    if (arr.length > 0) {
+                        checkBtn.classList.add('visible');
+                    } else {
+                        checkBtn.classList.remove('visible');
+                    }
+                }
+            }
+
+            updateProgress();
+            saveExamProgress();
+        }
+
+        // Chọn đúng/sai cho từng phát biểu
+        function selectTF(questionIndex, statementIndex, value) {
+            var q = questions[questionIndex];
+            if (!Array.isArray(answers[questionIndex])) {
+                var nullArr = [];
+                for (var k = 0; k < q.options.length; k++) nullArr.push(null);
+                answers[questionIndex] = nullArr;
+            }
+            answers[questionIndex][statementIndex] = value;
+
+            var row = document.getElementById('tfrow-' + questionIndex + '-' + statementIndex);
+            if (row) {
+                var btns = row.querySelectorAll('.tf-btn');
+                for (var i = 0; i < btns.length; i++) btns[i].classList.remove('selected');
+                if (value === true && btns[0]) btns[0].classList.add('selected');
+                if (value === false && btns[1]) btns[1].classList.add('selected');
+                // Xóa feedback cũ khi chọn lại
+                row.classList.remove('tf-practice-correct', 'tf-practice-wrong');
+                var hint = document.getElementById('tfhint-' + questionIndex + '-' + statementIndex);
+                if (hint) hint.textContent = '';
+            }
+
+            // Đánh dấu answered khi tất cả phát biểu đã được chọn
+            var arr = answers[questionIndex];
+            var allDone = true;
+            for (var j = 0; j < arr.length; j++) {
+                if (arr[j] === null) { allDone = false; break; }
+            }
+            var card = document.getElementById('question' + questionIndex);
+            if (allDone) {
+                card.classList.add('answered');
+            } else {
+                card.classList.remove('answered');
+            }
+
+            updateProgress();
+            saveExamProgress();
+
+            if (practiceMode && allDone) {
+                checkAnswerPractice(questionIndex, null);
+            }
+        }
+
+        // Nút Kiểm tra cho câu multi trong ôn tập
+        function checkMultiPractice(questionIndex) {
+            var checkBtn = document.getElementById('multiCheckBtn' + questionIndex);
+            if (checkBtn) checkBtn.classList.remove('visible');
+            checkAnswerPractice(questionIndex, null);
+        }
+
         // Kiểm tra đáp án trong chế độ ôn tập
         function checkAnswerPractice(questionIndex, selectedOption) {
             // Tìm originalIndex từ questionOrder
             var originalIndex = questionOrder[questionIndex];
-            
-            // Tìm đáp án gốc từ optionOrders (vì đáp án đã bị đảo)
-            var optionOrder = optionOrders[questionIndex];
-            var originalAnswer = optionOrder[selectedOption]; // Đáp án gốc tương ứng
-            
+            var q = questions[questionIndex];
+            var type = q ? (q.type || 'single') : 'single';
+
+            // Tìm đáp án gốc
+            var optionOrder = optionOrders[originalIndex];
+            var originalAnswer;
+            if (type === 'single') {
+                originalAnswer = optionOrder ? optionOrder[selectedOption] : selectedOption;
+            } else if (type === 'multi') {
+                var arr = Array.isArray(answers[questionIndex]) ? answers[questionIndex] : [];
+                originalAnswer = [];
+                for (var m = 0; m < arr.length; m++) {
+                    originalAnswer.push(optionOrder ? optionOrder[arr[m]] : arr[m]);
+                }
+            } else if (type === 'truefalse') {
+                originalAnswer = answers[questionIndex];
+            }
+
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/api/check-answer', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -2891,33 +3285,93 @@
                     try {
                         var result = JSON.parse(xhr.responseText);
                         if (result.error) return;
-                        
+
                         var card = document.getElementById('question' + questionIndex);
                         var options = card.querySelectorAll('.option');
-                        
-                        // Xóa các class cũ
+
+                        // Xóa class cũ
                         for (var i = 0; i < options.length; i++) {
                             options[i].classList.remove('practice-correct', 'practice-wrong', 'practice-answer');
                         }
-                        
-                        // Tìm index của đáp án đúng trong thứ tự đã đảo
-                        var correctOriginalIndex = result.correctAnswer;
-                        var correctShuffledIndex = optionOrder.indexOf(correctOriginalIndex);
-                        
+
                         if (result.isCorrect) {
-                            // Đúng - highlight xanh
-                            options[selectedOption].classList.add('practice-correct');
+                            if (type === 'single') {
+                                options[selectedOption].classList.add('practice-correct');
+                            } else if (type === 'multi') {
+                                // Highlight tất cả đáp án đúng (shuffled)
+                                var correctListOrig = result.correctList || [];
+                                for (var ci = 0; ci < correctListOrig.length; ci++) {
+                                    var shuffledIdx = optionOrder ? optionOrder.indexOf(correctListOrig[ci]) : correctListOrig[ci];
+                                    if (shuffledIdx >= 0 && options[shuffledIdx]) options[shuffledIdx].classList.add('practice-correct');
+                                }
+                            } else if (type === 'truefalse') {
+                                // Highlight xanh tất cả dòng
+                                var correctTFArr = result.correctTF || [];
+                                for (var ti = 0; ti < correctTFArr.length; ti++) {
+                                    var row = document.getElementById('tfrow-' + questionIndex + '-' + ti);
+                                    if (row) row.classList.add('tf-practice-correct');
+                                }
+                            }
                             showPracticeToast('Chính xác!', 'correct');
                         } else {
-                            // Sai - highlight đỏ cho đáp án đã chọn, xanh cho đáp án đúng
-                            options[selectedOption].classList.add('practice-wrong');
-                            if (correctShuffledIndex >= 0) {
-                                options[correctShuffledIndex].classList.add('practice-answer');
+                            if (type === 'single') {
+                                options[selectedOption].classList.add('practice-wrong');
+                                var correctOriginalIndex = result.correctAnswer;
+                                var correctShuffledIndex = optionOrder ? optionOrder.indexOf(correctOriginalIndex) : correctOriginalIndex;
+                                if (correctShuffledIndex >= 0 && options[correctShuffledIndex]) {
+                                    options[correctShuffledIndex].classList.add('practice-answer');
+                                }
+                                showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
+                            } else if (type === 'multi') {
+                                // Highlight đáp án đã chọn sai (đỏ) và đáp án đúng (xanh)
+                                var correctListOrig = result.correctList || [];
+                                var studentArr = Array.isArray(answers[questionIndex]) ? answers[questionIndex] : [];
+                                for (var oi = 0; oi < options.length; oi++) {
+                                    var origIdx = optionOrder ? optionOrder[oi] : oi;
+                                    var isCorrectOpt = false;
+                                    for (var ci = 0; ci < correctListOrig.length; ci++) {
+                                        if (correctListOrig[ci] === origIdx) { isCorrectOpt = true; break; }
+                                    }
+                                    var isStudentSel = false;
+                                    for (var si = 0; si < studentArr.length; si++) {
+                                        if (studentArr[si] === oi) { isStudentSel = true; break; }
+                                    }
+                                    if (isCorrectOpt && isStudentSel) options[oi].classList.add('practice-correct');
+                                    else if (!isCorrectOpt && isStudentSel) options[oi].classList.add('practice-wrong');
+                                    else if (isCorrectOpt && !isStudentSel) options[oi].classList.add('practice-answer');
+                                }
+                                var correctLetters = correctListOrig.map(function(orig) {
+                                    var si = optionOrder ? optionOrder.indexOf(orig) : orig;
+                                    return String.fromCharCode(65 + si);
+                                }).join(', ');
+                                showPracticeToast('Chưa đúng! Đáp án đúng: ' + correctLetters, 'wrong');
+                            } else if (type === 'truefalse') {
+                                // Highlight từng dòng đúng/sai
+                                var correctTFArr = result.correctTF || [];
+                                var studentTFArr = Array.isArray(answers[questionIndex]) ? answers[questionIndex] : [];
+                                var wrongCount = 0;
+                                for (var ti = 0; ti < correctTFArr.length; ti++) {
+                                    var row = document.getElementById('tfrow-' + questionIndex + '-' + ti);
+                                    if (!row) continue;
+                                    var studentVal = studentTFArr[ti];
+                                    var correctVal = correctTFArr[ti];
+                                    row.classList.remove('tf-practice-correct', 'tf-practice-wrong');
+                                    if (studentVal === correctVal) {
+                                        row.classList.add('tf-practice-correct');
+                                    } else {
+                                        row.classList.add('tf-practice-wrong');
+                                        wrongCount++;
+                                        // Hiện hint đáp án đúng
+                                        var hint = document.getElementById('tfhint-' + questionIndex + '-' + ti);
+                                        if (hint) hint.textContent = correctVal ? '→ Đúng' : '→ Sai';
+                                    }
+                                }
+                                if (wrongCount > 0) {
+                                    showPracticeToast('Có ' + wrongCount + ' phát biểu chưa đúng', 'wrong');
+                                }
                             }
-                            showPracticeToast('Sai rồi! Đáp án đúng là ' + String.fromCharCode(65 + correctShuffledIndex), 'wrong');
                         }
-                    } catch(e) {
-                    }
+                    } catch(e) {}
                 }
             };
             xhr.send(JSON.stringify({
@@ -3164,10 +3618,16 @@
             // Apply restored answers to UI
             var keys = Object.keys(answers);
             for (var k = 0; k < keys.length; k++) {
-                var qIndex = keys[k];
-                var optionIndex = answers[qIndex];
+                var qIndex = parseInt(keys[k]);
+                var storedAnswer = answers[qIndex];
                 var card = document.getElementById('question' + qIndex);
-                if (card) {
+                if (!card) continue;
+
+                var q = questions[qIndex];
+                var type = q ? (q.type || 'single') : 'single';
+
+                if (type === 'single') {
+                    var optionIndex = storedAnswer;
                     card.classList.add('answered');
                     var options = card.querySelectorAll('.option');
                     for (var i = 0; i < options.length; i++) {
@@ -3176,6 +3636,40 @@
                         } else {
                             options[i].classList.remove('selected');
                         }
+                    }
+                } else if (type === 'multi') {
+                    if (Array.isArray(storedAnswer) && storedAnswer.length > 0) {
+                        card.classList.add('answered');
+                        var options = card.querySelectorAll('.option');
+                        for (var i = 0; i < options.length; i++) {
+                            var inArr = false;
+                            for (var y = 0; y < storedAnswer.length; y++) {
+                                if (storedAnswer[y] === i) { inArr = true; break; }
+                            }
+                            if (inArr) options[i].classList.add('selected');
+                        }
+                        // Restore nút Kiểm tra trong practice mode
+                        if (practiceMode) {
+                            var checkBtn = document.getElementById('multiCheckBtn' + qIndex);
+                            if (checkBtn) checkBtn.classList.add('visible');
+                        }
+                    }
+                } else if (type === 'truefalse') {
+                    if (Array.isArray(storedAnswer)) {
+                        var allDone = true;
+                        for (var j = 0; j < storedAnswer.length; j++) {
+                            if (storedAnswer[j] === null) { allDone = false; }
+                            if (storedAnswer[j] !== null) {
+                                var row = document.getElementById('tfrow-' + qIndex + '-' + j);
+                                if (row) {
+                                    var btns = row.querySelectorAll('.tf-btn');
+                                    for (var b = 0; b < btns.length; b++) btns[b].classList.remove('selected');
+                                    if (storedAnswer[j] === true && btns[0]) btns[0].classList.add('selected');
+                                    if (storedAnswer[j] === false && btns[1]) btns[1].classList.add('selected');
+                                }
+                            }
+                        }
+                        if (allDone) card.classList.add('answered');
                     }
                 }
             }
@@ -3377,20 +3871,24 @@
 
         // Update progress
         function updateProgress() {
-            var answered = Object.keys(answers).length;
+            var answered = 0;
+            for (var i = 0; i < questions.length; i++) {
+                var card = document.getElementById('question' + i);
+                if (card && card.classList.contains('answered')) answered++;
+            }
             var total = questions.length;
             var percent = total > 0 ? (answered / total) * 100 : 0;
-            
+
             document.getElementById('answeredCount').textContent = answered;
             document.getElementById('answeredCount2').textContent = answered;
             document.getElementById('progressBar').style.width = percent + '%';
-            
-            // Update nav buttons - chi xanh cau da tra loi
+
+            // Update nav buttons
             for (var i = 0; i < questions.length; i++) {
                 var btn = document.getElementById('nav' + i);
                 if (btn) {
-                    // Chi danh dau 'answered' neu cau do da co trong object answers
-                    btn.classList.toggle('answered', answers[i] !== undefined);
+                    var cardForNav = document.getElementById('question' + i);
+                    btn.classList.toggle('answered', cardForNav ? cardForNav.classList.contains('answered') : false);
                     btn.classList.toggle('current', i === currentQuestionIndex);
                 }
             }
@@ -3519,18 +4017,33 @@
             // Chuyển đổi answers từ thứ tự đảo về thứ tự gốc
             var answersArray = [];
             for (var i = 0; i < originalQuestions.length; i++) {
-                answersArray.push(-1);
+                answersArray.push(null);
             }
-            
+
             // Map answers về vị trí gốc
             for (var shuffledIndex = 0; shuffledIndex < questions.length; shuffledIndex++) {
-                if (answers[shuffledIndex] !== undefined) {
-                    var originalQIndex = questionOrder[shuffledIndex];
-                    var shuffledOptionIndex = answers[shuffledIndex];
-                    var originalOptionIndex = optionOrders[originalQIndex] 
-                        ? optionOrders[originalQIndex][shuffledOptionIndex] 
-                        : shuffledOptionIndex;
-                    answersArray[originalQIndex] = originalOptionIndex;
+                if (answers[shuffledIndex] === undefined) continue;
+                var originalQIndex = questionOrder[shuffledIndex];
+                var type = originalQuestions[originalQIndex].type || 'single';
+                var optionOrder = optionOrders[originalQIndex];
+
+                if (type === 'single') {
+                    var shuffledOpt = answers[shuffledIndex];
+                    answersArray[originalQIndex] = (optionOrder && typeof shuffledOpt === 'number')
+                        ? optionOrder[shuffledOpt]
+                        : shuffledOpt;
+                } else if (type === 'multi') {
+                    var shuffledArr = answers[shuffledIndex];
+                    if (Array.isArray(shuffledArr)) {
+                        var mappedArr = [];
+                        for (var m = 0; m < shuffledArr.length; m++) {
+                            mappedArr.push(optionOrder ? optionOrder[shuffledArr[m]] : shuffledArr[m]);
+                        }
+                        answersArray[originalQIndex] = mappedArr;
+                    }
+                } else if (type === 'truefalse') {
+                    // truefalse không shuffle options, copy trực tiếp
+                    answersArray[originalQIndex] = answers[shuffledIndex];
                 }
             }
             
@@ -3576,31 +4089,26 @@
                 modal = document.createElement('div');
                 modal.id = 'submitErrorModal';
                 modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content" style="text-align: center;">
-                        <div class="modal-header">
-                            <div class="icon"></div>
-                            <h3 style="color: #dc3545;">Không thể nộp bài!</h3>
-                        </div>
-                        <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                            <p id="submitErrorMessage" style="margin: 0; color: #856404;"></p>
-                        </div>
-                        <div style="background: #e8f5e9; border: 1px solid #4caf50; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                            <p style="margin: 0; color: #2e7d32; font-size: 0.9em;">
-                                <strong>Câu trả lời của bạn vẫn được lưu!</strong><br>
-                                Khi kết nối được khôi phục, hãy bấm "Thử nộp lại".
-                            </p>
-                        </div>
-                        <div class="btn-group" style="flex-direction: column; gap: 10px;">
-                            <button class="btn btn-success" onclick="retrySubmitExam()" style="font-size: 1.1em; padding: 15px;">
-                                Thử nộp lại
-                            </button>
-                            <button class="btn" onclick="closeSubmitErrorModal()" style="background: #6c757d; color: white;">
-                                Đóng (tiếp tục làm bài)
-                            </button>
-                        </div>
-                    </div>
-                `;
+                modal.innerHTML =
+                    '<div class="modal-content" style="text-align: center;">' +
+                        '<div class="modal-header">' +
+                            '<div class="icon"></div>' +
+                            '<h3 style="color: #dc3545;">Không thể nộp bài!</h3>' +
+                        '</div>' +
+                        '<div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 12px; margin-bottom: 20px;">' +
+                            '<p id="submitErrorMessage" style="margin: 0; color: #856404;"></p>' +
+                        '</div>' +
+                        '<div style="background: #e8f5e9; border: 1px solid #4caf50; padding: 15px; border-radius: 12px; margin-bottom: 20px;">' +
+                            '<p style="margin: 0; color: #2e7d32; font-size: 0.9em;">' +
+                                '<strong>Câu trả lời của bạn vẫn được lưu!</strong><br>' +
+                                'Khi kết nối được khôi phục, hãy bấm "Thử nộp lại".' +
+                            '</p>' +
+                        '</div>' +
+                        '<div class="btn-group" style="flex-direction: column; gap: 10px;">' +
+                            '<button class="btn btn-success" onclick="retrySubmitExam()" style="font-size: 1.1em; padding: 15px;">Thử nộp lại</button>' +
+                            '<button class="btn" onclick="closeSubmitErrorModal()" style="background: #6c757d; color: white;">Đóng (tiếp tục làm bài)</button>' +
+                        '</div>' +
+                    '</div>';
                 document.body.appendChild(modal);
             }
             
@@ -3933,8 +4441,8 @@
                     var watermark = document.createElement('div');
                     watermark.className = 'watermark-text';
                     watermark.textContent = text;
-                    watermark.style.top = `${(i * 14) + 5}%`;
-                    watermark.style.left = `${(j * 25) - 5}%`;
+                    watermark.style.top = ((i * 14) + 5) + '%';
+                    watermark.style.left = ((j * 25) - 5) + '%';
                     overlay.appendChild(watermark);
                 }
             }
@@ -4050,13 +4558,16 @@
 
         function reenterFullscreen() {
             requestFullscreen();
-            hideFullscreenWarning();
+            // Không ẩn warning ngay — chờ fullscreenchange event xác nhận
+            // Nếu sau 1.5s vẫn chưa vào được fullscreen thì giữ nguyên warning
         }
 
         function isFullscreen() {
             return !!(document.fullscreenElement || document.webkitFullscreenElement ||
                       document.mozFullScreenElement || document.msFullscreenElement);
         }
+
+        var fsCountdownInterval = null;
 
         function showFullscreenWarning() {
             fsViolationCount++;
@@ -4074,9 +4585,25 @@
                 count: fsViolationCount,
                 time: getServerTimeSync().toISOString()
             });
+
+            // Countdown tự động quay lại fullscreen
+            if (fsCountdownInterval) clearInterval(fsCountdownInterval);
+            var countdownEl = document.getElementById('fsCountdown');
+            var seconds = 10;
+            if (countdownEl) countdownEl.textContent = seconds;
+            fsCountdownInterval = setInterval(function() {
+                seconds--;
+                if (countdownEl) countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(fsCountdownInterval);
+                    fsCountdownInterval = null;
+                    reenterFullscreen();
+                }
+            }, 1000);
         }
 
         function hideFullscreenWarning() {
+            if (fsCountdownInterval) { clearInterval(fsCountdownInterval); fsCountdownInterval = null; }
             document.getElementById('fullscreenWarning').classList.remove('show');
         }
 

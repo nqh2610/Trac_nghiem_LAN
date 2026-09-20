@@ -282,6 +282,16 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
+
+        .question-options.options-single-col {
+            grid-template-columns: 1fr;
+        }
+
+        #newOptionsGrid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
         
         .question-option {
             padding: 10px 15px;
@@ -880,13 +890,6 @@
                 
                 <div style="padding: 25px; max-height: calc(90vh - 80px); overflow-y: auto;">
                     
-                    <!-- Hướng dẫn -->
-                    <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-                        <p style="margin: 0; color: #1565c0; font-size: 0.95em;">
-                            <strong>Cách dùng:</strong> Tạo lớp → Upload danh sách học sinh (DS) → Chọn lớp để dạy
-                        </p>
-                    </div>
-                    
                     <!-- Tạo lớp mới -->
                     <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; border: 2px solid #e0e0e0; margin-bottom: 25px;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
@@ -934,127 +937,101 @@
         </div>
 
         <!-- ========== MODAL QUẢN LÝ BÀI KIỂM TRA ========== -->
-        <div id="examManagerModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;">
-            <div style="background: white; border-radius: 20px; padding: 0; max-width: 700px; width: 95%; max-height: 90vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                
+        <div id="examManagerModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+            <div style="background: white; border-radius: 12px; padding: 0; max-width: 680px; width: 95%; max-height: 90vh; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18);">
+
                 <!-- Header -->
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin: 0; font-size: 1.3em;">Quản lý Bài kiểm tra</h2>
-                    <button onclick="hideExamManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 8px 12px; border-radius: 8px;">X</button>
+                <div style="background: #667eea; color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin: 0; font-size: 1.15em; font-weight: 600;">Quản lý Bài kiểm tra</h2>
+                    <button onclick="hideExamManager()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 4px 10px; border-radius: 6px; line-height: 1;">&times;</button>
                 </div>
-                
-                <div style="padding: 25px; max-height: calc(90vh - 80px); overflow-y: auto;">
-                    
-                    <!-- Hướng dẫn -->
-                    <div style="background: #f0f7ff; border: 1px solid #b3d4ff; border-radius: 10px; padding: 15px; margin-bottom: 25px;">
-                        <p style="margin: 0; color: #0066cc; font-size: 0.95em;">
-                            <strong>Mẹo:</strong> Cùng một bài kiểm tra có thể dùng cho nhiều lớp. Mỗi lớp có kết quả riêng!
-                        </p>
-                    </div>
-                    
+
+                <div style="padding: 22px 24px; max-height: calc(90vh - 64px); overflow-y: auto;">
+
                     <!-- Tạo bài mới từ file -->
-                    <div style="background: #e8f5e9; border-radius: 12px; padding: 20px; border: 2px solid #81c784; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            
-                            <h4 style="margin: 0; color: #2e7d32;">Tạo bài mới từ file</h4>
-                        </div>
-                        <input type="text" id="newExamName" maxlength="40" placeholder="Tên bài kiểm tra (tối đa 40 ký tự)" style="width: 100%; padding: 12px; border: 1px solid #a5d6a7; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box;">
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                            <button class="btn" onclick="createNewExam()" style="background: #4caf50; color: white; padding: 12px; border-radius: 8px; font-weight: bold;">
+                    <div style="border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px;">
+                        <h4 style="margin: 0 0 14px 0; color: #555; font-size: 0.88em; text-transform: uppercase; letter-spacing: 0.06em;">Tạo bài mới từ file</h4>
+                        <input type="text" id="newExamName" maxlength="40" placeholder="Tên bài kiểm tra (tối đa 40 ký tự)" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 7px; margin-bottom: 12px; box-sizing: border-box; font-size: 0.95em; color: #333;">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                            <button class="btn" onclick="createNewExam()" style="background: #667eea; color: white; padding: 10px; border-radius: 7px; font-weight: 600; font-size: 0.9em; border: none;">
                                 Tạo bài trống
                             </button>
-                            <label class="btn" style="background: #2196F3; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;">
+                            <label class="btn" style="background: #667eea; color: white; padding: 10px; border-radius: 7px; font-weight: 600; font-size: 0.9em; text-align: center; cursor: pointer; border: none; opacity: 0.82;">
                                 Upload Word
                                 <input type="file" accept=".docx" style="display: none;" onchange="createExamFromFile(this, 'word')">
                             </label>
-                            <label class="btn" style="background: #ff9800; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;">
+                            <label class="btn" style="background: #667eea; color: white; padding: 10px; border-radius: 7px; font-weight: 600; font-size: 0.9em; text-align: center; cursor: pointer; border: none; opacity: 0.65;">
                                 Upload JSON
                                 <input type="file" accept=".json" style="display: none;" onchange="createExamFromFile(this, 'json')">
                             </label>
                         </div>
-                        
-                        <div style="margin-top: 12px; display: flex; gap: 10px; justify-content: center;">
-                            <a href="/data/mau-cau-hoi.docx" download style="color: #666; font-size: 0.85em; text-decoration: underline;">Tải mẫu Word</a>
-                            <a href="/data/mau-cau-hoi.json" download style="color: #666; font-size: 0.85em; text-decoration: underline;">Tải mẫu JSON</a>
+
+                        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <a href="/data/mau-cau-hoi.docx" download style="background:#f5f5f5; color:#555; border:1px solid #ddd; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:0.85em; font-weight:600;">Tải mẫu Word</a>
+                            <a href="/data/mau-cau-hoi.json" download style="background:#f5f5f5; color:#555; border:1px solid #ddd; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:0.85em; font-weight:600;">Tải mẫu JSON</a>
+                            <button type="button" onclick="showFormatGuide()" style="background:#f5f5f5; color:#555; border:1px solid #ddd; border-radius:6px; padding:6px 14px; cursor:pointer; font-size:0.85em; font-weight:600;">Xem hướng dẫn định dạng</button>
                         </div>
                     </div>
-                    
+
                     <!-- Lưu bài hiện tại -->
-                    <div style="background: #fff8e1; border-radius: 12px; padding: 20px; border: 2px solid #ffcc02; margin-bottom: 25px;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            
-                            <h4 style="margin: 0; color: #f57f17;">Lưu bài đang làm</h4>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="saveExamName" maxlength="40" placeholder="Nhập tên để lưu (tối đa 40 ký tự)" style="flex: 1; padding: 12px; border: 1px solid #ffe082; border-radius: 8px; box-sizing: border-box;">
-                            <button class="btn" onclick="saveCurrentExam()" style="background: #ff9800; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; white-space: nowrap;">
+                    <div style="border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px;">
+                        <h4 style="margin: 0 0 12px 0; color: #555; font-size: 0.88em; text-transform: uppercase; letter-spacing: 0.06em;">Lưu bài đang làm</h4>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="saveExamName" maxlength="40" placeholder="Nhập tên để lưu (tối đa 40 ký tự)" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 7px; box-sizing: border-box; font-size: 0.95em;">
+                            <button class="btn" onclick="saveCurrentExam()" style="background: #667eea; color: white; padding: 10px 20px; border-radius: 7px; font-weight: 600; white-space: nowrap; border: none; font-size: 0.9em;">
                                 Lưu
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Danh sách bài đã lưu -->
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                                 Bài kiểm tra đã lưu
-                            </h4>
-                            <span id="examCount" style="background: #667eea; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.85em;">0 bài</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 style="margin: 0; color: #555; font-size: 0.88em; text-transform: uppercase; letter-spacing: 0.06em;">Bài kiểm tra đã lưu</h4>
+                            <span id="examCount" style="background: #f0f0ff; color: #667eea; border: 1px solid #c7d2fe; padding: 3px 12px; border-radius: 12px; font-size: 0.82em; font-weight: 600;">0 bài</span>
                         </div>
-                        <div id="savedExamsList" style="max-height: 350px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 10px;">
-                            <p style="color: #666; text-align: center; padding: 30px;">Đang tải...</p>
+                        <div id="savedExamsList" style="max-height: 320px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
+                            <p style="color: #999; text-align: center; padding: 28px; margin: 0;">Đang tải...</p>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
         <!-- Panel Câu hỏi -->
         <div id="questions" class="panel active">
-            
+
             <!-- Banner hướng dẫn -->
-            <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 1px solid #667eea40; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;">
-                <h4 style="margin: 0 0 5px 0; color: #667eea;">Đang soạn: <span id="currentExamNameInQuestions" style="color: #333;">--</span></h4>
-                <p style="margin: 0; color: #666; font-size: 0.9em;">Các câu hỏi bên dưới sẽ được thêm vào bài kiểm tra đang chọn</p>
+            <div style="background: #f0f0ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 12px 18px; margin-bottom: 20px;">
+                <h4 style="margin: 0 0 3px 0; color: #667eea; font-size: 0.95em;">Đang soạn: <span id="currentExamNameInQuestions" style="color: #333; font-weight: 700;">--</span></h4>
+                <p style="margin: 0; color: #666; font-size: 0.88em;">Các câu hỏi bên dưới sẽ được thêm vào bài kiểm tra đang chọn</p>
             </div>
-            
+
             <h2>Thêm câu hỏi mới</h2>
-            
-            <h3>️ Thêm câu hỏi thủ công</h3>
+
             <form id="questionForm">
+                <div class="form-group">
+                    <label>Loại câu hỏi:</label>
+                    <select id="newQuestionType" onchange="updateNewFormForType()" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:0.95em;width:100%;max-width:320px;">
+                        <option value="single">Một đáp án đúng</option>
+                        <option value="multi">Nhiều đáp án đúng</option>
+                        <option value="truefalse">Đúng / Sai</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>Nội dung câu hỏi:</label>
                     <textarea id="questionText" placeholder="Nhập nội dung câu hỏi..." required></textarea>
                 </div>
-                
+
                 <div class="form-group">
-                    <label>Các đáp án (chọn đáp án đúng):</label>
-                    <div class="options-grid">
-                        <div class="option-input">
-                            <input type="radio" name="correct" value="0" checked>
-                            <span class="option-label">A</span>
-                            <input type="text" id="optionA" placeholder="Đáp án A" required>
-                        </div>
-                        <div class="option-input">
-                            <input type="radio" name="correct" value="1">
-                            <span class="option-label">B</span>
-                            <input type="text" id="optionB" placeholder="Đáp án B" required>
-                        </div>
-                        <div class="option-input">
-                            <input type="radio" name="correct" value="2">
-                            <span class="option-label">C</span>
-                            <input type="text" id="optionC" placeholder="Đáp án C" required>
-                        </div>
-                        <div class="option-input">
-                            <input type="radio" name="correct" value="3">
-                            <span class="option-label">D</span>
-                            <input type="text" id="optionD" placeholder="Đáp án D" required>
-                        </div>
-                    </div>
+                    <label id="newOptionsLabel">Các đáp án (chọn đáp án đúng):</label>
+                    <div id="newOptionsGrid" class="options-grid"></div>
+                    <button type="button" id="addNewOptionBtn" class="btn btn-secondary" style="margin-top:10px;font-size:0.85em;padding:6px 14px;" onclick="addNewOptionRow()">+ Thêm đáp án</button>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary">Thêm câu hỏi</button>
             </form>
 
@@ -1252,46 +1229,47 @@
     </div>
 
     <!-- Modal sửa câu hỏi -->
-    <div id="editQuestionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
-        <div style="background: white; border-radius: 16px; width: 95%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+    <div id="editQuestionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: flex-start; overflow-y: auto; padding: 20px; box-sizing: border-box;">
+        <div style="background: white; border-radius: 16px; width: 95%; max-width: 750px; margin: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 25px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0;">️ Sửa câu hỏi</h3>
+                <h3 style="margin: 0;">✏️ Sửa câu hỏi</h3>
                 <button onclick="closeEditQuestionModal()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5em; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">&times;</button>
             </div>
             <div style="padding: 25px;">
                 <input type="hidden" id="editQuestionId">
-                
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #333;">Loại câu hỏi:</label>
+                    <select id="editQuestionType" onchange="updateEditFormForType()" style="width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; cursor: pointer;">
+                        <option value="single">Một đáp án đúng</option>
+                        <option value="multi">Nhiều đáp án đúng</option>
+                        <option value="truefalse">Đúng / Sai</option>
+                    </select>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Nội dung câu hỏi:</label>
-                    <textarea id="editQuestionText" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; resize: vertical; box-sizing: border-box;" placeholder="Nhập nội dung câu hỏi..."></textarea>
+                    <textarea id="editQuestionText" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em; resize: vertical; box-sizing: border-box;" placeholder="Nhập nội dung câu hỏi (hỗ trợ HTML)..."></textarea>
                 </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">Các đáp án (chọn đáp án đúng):</label>
-                    <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="radio" name="editCorrect" value="0" id="editCorrect0" style="width: 20px; height: 20px; cursor: pointer;">
-                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</span>
-                            <input type="text" id="editOptionA" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án A">
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="radio" name="editCorrect" value="1" id="editCorrect1" style="width: 20px; height: 20px; cursor: pointer;">
-                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">B</span>
-                            <input type="text" id="editOptionB" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án B">
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="radio" name="editCorrect" value="2" id="editCorrect2" style="width: 20px; height: 20px; cursor: pointer;">
-                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">C</span>
-                            <input type="text" id="editOptionC" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án C">
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="radio" name="editCorrect" value="3" id="editCorrect3" style="width: 20px; height: 20px; cursor: pointer;">
-                            <span style="background: #667eea; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">D</span>
-                            <input type="text" id="editOptionD" style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;" placeholder="Đáp án D">
-                        </div>
+
+                <!-- Options cho single/multi -->
+                <div id="editOptionsSingleMulti" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;" id="editOptionsLabel">Các đáp án:</label>
+                    <div style="display: grid; gap: 12px;" id="editOptionsGrid">
+                        <!-- Generated dynamically by buildOptionRow -->
                     </div>
+                    <button onclick="addOptionRow()" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;">+ Thêm đáp án</button>
                 </div>
-                
+
+                <!-- Options cho truefalse -->
+                <div id="editOptionsTF" style="display:none; margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">Các phát biểu (chọn Đúng hoặc Sai cho mỗi phát biểu):</label>
+                    <div style="display: grid; gap: 12px;" id="editTFGrid">
+                        <!-- Generated by updateEditFormForType -->
+                    </div>
+                    <button onclick="addTFRow()" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;">+ Thêm phát biểu</button>
+                </div>
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px;">
                     <button onclick="closeEditQuestionModal()" style="padding: 12px 25px; background: #e0e0e0; color: #333; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">Hủy</button>
                     <button onclick="saveEditQuestion()" style="padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;">Lưu thay đổi</button>
@@ -1308,6 +1286,71 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal hướng dẫn định dạng Word -->
+    <div id="formatGuideModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:flex-start; overflow-y:auto; padding:20px; box-sizing:border-box;">
+        <div style="background:white; border-radius:16px; max-width:700px; width:100%; margin:auto; padding:30px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <button onclick="document.getElementById('formatGuideModal').style.display='none'" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:24px;cursor:pointer;color:#888;">&times;</button>
+            <h2 style="margin:0 0 20px 0; color:#1A237E;">Hướng dẫn định dạng file Word</h2>
+
+            <!-- Loại 1 -->
+            <div style="background:#e8f5e9; border-left:4px solid #43a047; border-radius:8px; padding:14px 18px; margin-bottom:16px;">
+                <div style="font-weight:bold; color:#2e7d32; margin-bottom:8px;">LOẠI 1: Một đáp án đúng (mặc định)</div>
+                <div style="font-size:0.88em; color:#555; margin-bottom:8px;">Không cần ký hiệu loại. Đáp án đúng có dấu <strong>*</strong> ở cuối dòng.</div>
+                <pre style="background:#f5f5f5; border-radius:6px; padding:10px; font-size:0.85em; margin:0; white-space:pre-wrap;">Câu 1: Thủ đô của Việt Nam là?
+A. TP. Hồ Chí Minh
+B. Hà Nội *
+C. Đà Nẵng
+D. Cần Thơ</pre>
+            </div>
+
+            <!-- Loại 2 -->
+            <div style="background:#e3f2fd; border-left:4px solid #1976d2; border-radius:8px; padding:14px 18px; margin-bottom:16px;">
+                <div style="font-weight:bold; color:#1565c0; margin-bottom:8px;">LOẠI 2: Nhiều đáp án đúng — thêm <code style="background:#fff;padding:2px 6px;border-radius:4px;">[MULTI]</code></div>
+                <div style="font-size:0.88em; color:#555; margin-bottom:8px;">Mỗi đáp án đúng có dấu <strong>*</strong>. Học sinh phải chọn đúng và đủ tất cả.</div>
+                <pre style="background:#f5f5f5; border-radius:6px; padding:10px; font-size:0.85em; margin:0; white-space:pre-wrap;">Câu 2: [MULTI] Chọn các thành phố trực thuộc TW:
+A. Hà Nội *
+B. Nghệ An
+C. TP. Hồ Chí Minh *
+D. Đà Nẵng *
+E. Cần Thơ *</pre>
+            </div>
+
+            <!-- Loại 3 -->
+            <div style="background:#fff3e0; border-left:4px solid #e65100; border-radius:8px; padding:14px 18px; margin-bottom:16px;">
+                <div style="font-weight:bold; color:#bf360c; margin-bottom:8px;">LOẠI 3: Đúng/Sai — thêm <code style="background:#fff;padding:2px 6px;border-radius:4px;">[ĐÚNG/SAI]</code></div>
+                <div style="font-size:0.88em; color:#555; margin-bottom:8px;">Cuối mỗi phát biểu ghi <strong>(đúng)</strong> hoặc <strong>(sai)</strong>. Ký hiệu tắt: <strong>(Đ)</strong> / <strong>(S)</strong></div>
+                <pre style="background:#f5f5f5; border-radius:6px; padding:10px; font-size:0.85em; margin:0; white-space:pre-wrap;">Câu 3: [ĐÚNG/SAI] Xác định đúng/sai:
+A. Hà Nội là thủ đô Việt Nam. (đúng)
+B. Việt Nam có 63 tỉnh thành. (đúng)
+C. Đà Nẵng nằm ở miền Bắc. (sai)
+
+hoặc dùng ký hiệu tắt:
+Câu 4: [ĐÚNG/SAI] Các mệnh đề vật lý:
+A. Nước sôi ở 100°C. (Đ)
+B. Ánh sáng chậm hơn âm thanh. (S)
+C. Công thức nước là H₂O. (Đ)</pre>
+            </div>
+
+            <!-- Lưu ý -->
+            <div style="background:#fce4ec; border-left:4px solid #c62828; border-radius:8px; padding:14px 18px; margin-bottom:20px;">
+                <div style="font-weight:bold; color:#b71c1c; margin-bottom:8px;">Lưu ý quan trọng</div>
+                <ul style="margin:0; padding-left:20px; font-size:0.9em; color:#444; line-height:1.8;">
+                    <li>Mỗi câu hỏi cần ít nhất <strong>2 đáp án</strong></li>
+                    <li>Câu 1 đáp án phải có <strong>đúng 1 dấu *</strong></li>
+                    <li>Câu nhiều đáp án phải có <strong>ít nhất 2 dấu *</strong></li>
+                    <li>Câu đúng/sai: mỗi phát biểu đều phải có <strong>(đúng)/(sai)/(Đ)/(S)</strong></li>
+                    <li>Không dùng <strong>bullet list / numbered list</strong> của Word</li>
+                    <li>Hỗ trợ hình ảnh — chèn trực tiếp vào dòng câu hỏi hoặc đáp án</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;">
+                <a href="/data/mau-cau-hoi.docx" download style="background:#43a047; color:white; padding:10px 28px; border-radius:8px; text-decoration:none; font-weight:bold; margin-right:10px;">Tải file mẫu Word</a>
+                <button onclick="document.getElementById('formatGuideModal').style.display='none'" style="background:#eee; color:#333; border:none; padding:10px 24px; border-radius:8px; cursor:pointer; font-size:0.95em;">Đóng</button>
+            </div>
         </div>
     </div>
 
@@ -1388,6 +1431,50 @@
             return div.innerHTML;
         }
 
+        // Sanitize HTML — allowlist tags để giữ formatting hợp lệ, loại bỏ script/XSS
+        function sanitizeHtmlClient(html) {
+            if (!html) return '';
+            const ALLOWED_TAGS = ['B','STRONG','I','EM','U','P','BR','SPAN','SUB','SUP','IMG'];
+            function walk(node, out) {
+                for (let child of Array.from(node.childNodes)) {
+                    if (child.nodeType === 3) { // text node
+                        out.appendChild(document.createTextNode(child.textContent));
+                    } else if (child.nodeType === 1) {
+                        const tag = child.tagName.toUpperCase();
+                        if (ALLOWED_TAGS.includes(tag)) {
+                            const el = document.createElement(tag);
+                            if (tag === 'IMG') {
+                                const src = child.getAttribute('src') || '';
+                                if (src.startsWith('data:image/')) el.src = src;
+                                const alt = child.getAttribute('alt');
+                                if (alt) el.alt = alt;
+                                const w = child.getAttribute('width');
+                                if (w) el.width = w;
+                                const h = child.getAttribute('height');
+                                if (h) el.height = h;
+                            }
+                            if (tag === 'SPAN') {
+                                const style = child.getAttribute('style') || '';
+                                // Block dangerous CSS
+                                if (!/url\(|expression\(|javascript:/i.test(style)) {
+                                    el.style.cssText = style;
+                                }
+                            }
+                            walk(child, el);
+                            out.appendChild(el);
+                        } else {
+                            walk(child, out); // strip tag, keep children
+                        }
+                    }
+                }
+            }
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            const out = document.createElement('div');
+            walk(tmp, out);
+            return out.innerHTML;
+        }
+
         // Socket events
         socket.on('newResult', (result) => {
             showNotification(`${result.studentName} đã nộp bài - Điểm: ${result.score}`);
@@ -1454,53 +1541,235 @@
                 return;
             }
 
-            container.innerHTML = questions.map((q, i) => `
+            const typeLabel = { single: 'Một đáp án', multi: 'Nhiều đáp án', truefalse: 'Đúng/Sai' };
+            const typeBadgeColor = {
+                single: 'background:#e9ecef;color:#495057;',
+                multi: 'background:#fff3cd;color:#856404;border:1px solid #ffc107;',
+                truefalse: 'background:#d1ecf1;color:#0c5460;border:1px solid #17a2b8;'
+            };
+
+            container.innerHTML = questions.map((q, i) => {
+                const type = q.type || 'single';
+                const label = typeLabel[type] || type;
+                const badgeStyle = typeBadgeColor[type] || typeBadgeColor.single;
+
+                let optionsHtml = '';
+                if (type === 'single') {
+                    optionsHtml = q.options.map((opt, j) => `
+                        <div class="question-option ${j === q.correct ? 'correct' : ''}">
+                            <span class="option-label">${String.fromCharCode(65 + j)}</span>
+                            ${sanitizeHtmlClient(opt)}
+                            ${j === q.correct ? ' ✓' : ''}
+                        </div>`).join('');
+                } else if (type === 'multi') {
+                    optionsHtml = q.options.map((opt, j) => {
+                        const isCorrect = Array.isArray(q.correctList) && q.correctList.indexOf(j) >= 0;
+                        return `<div class="question-option ${isCorrect ? 'correct' : ''}">
+                            <span class="option-label">${String.fromCharCode(65 + j)}</span>
+                            ${sanitizeHtmlClient(opt)}
+                            ${isCorrect ? ' ✓' : ''}
+                        </div>`;
+                    }).join('');
+                } else if (type === 'truefalse') {
+                    optionsHtml = q.options.map((opt, j) => {
+                        const tfVal = Array.isArray(q.correctTF) ? q.correctTF[j] : undefined;
+                        const badge = tfVal === true
+                            ? '<span style="background:#28a745;color:#fff;padding:2px 8px;border-radius:6px;font-size:0.8em;margin-left:8px;">Đúng</span>'
+                            : '<span style="background:#dc3545;color:#fff;padding:2px 8px;border-radius:6px;font-size:0.8em;margin-left:8px;">Sai</span>';
+                        return `<div class="question-option" style="border-left:4px solid ${tfVal ? '#28a745' : '#dc3545'}">
+                            <span class="option-label">${String.fromCharCode(65 + j)}</span>
+                            ${sanitizeHtmlClient(opt)}${badge}
+                        </div>`;
+                    }).join('');
+                }
+
+                return `
                 <div class="question-item">
                     <div class="question-header">
-                        <span class="question-number">Câu ${i + 1}</span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="question-number">Câu ${i + 1}</span>
+                            <span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.78em;font-weight:600;${badgeStyle}">${label}</span>
+                        </div>
                         <div class="question-actions">
-                            <button class="btn btn-warning" onclick="editQuestion(${i})">️ Sửa</button>
-                            <button class="btn btn-danger" onclick="deleteQuestion(${i})">️ Xóa</button>
+                            <button class="btn btn-warning" onclick="editQuestion(${i})">✏️ Sửa</button>
+                            <button class="btn btn-danger" onclick="deleteQuestion(${i})">🗑️ Xóa</button>
                         </div>
                     </div>
-                    <div class="question-text">${escapeHtml(q.question)}</div>
+                    <div class="question-text">${sanitizeHtmlClient(q.question)}</div>
                     ${q.image ? `<img src="${q.image}" style="max-width: 300px; margin-bottom: 15px; border-radius: 8px;">` : ''}
-                    <div class="question-options">
-                        ${q.options.map((opt, j) => `
-                            <div class="question-option ${j === q.correct ? 'correct' : ''}">
-                                <span class="option-label">${String.fromCharCode(65 + j)}</span>
-                                ${escapeHtml(opt)}
-                                ${j === q.correct ? ' ' : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
+                    <div class="question-options${type === 'truefalse' ? ' options-single-col' : ''}">${optionsHtml}</div>
+                </div>`;
+            }).join('');
         }
+
+        // ========== FORM THÊM CÂU HỎI MỚI ==========
+        // Layout 1 cột: [control] [badge] [input text] [select TF?] [Xóa?]
+        function buildNewOptionRow(j, type, totalRows) {
+            const letter = String.fromCharCode(65 + j);
+            const canRemove = totalRows > 2;
+            let control = '';
+            let tfSelect = '';
+            if (type === 'single') {
+                control = `<input type="radio" name="newCorrect" value="${j}" ${j === 0 ? 'checked' : ''} style="width:auto;margin:0;cursor:pointer;flex-shrink:0;">`;
+            } else if (type === 'multi') {
+                control = `<input type="checkbox" name="newCorrectMulti" value="${j}" style="width:auto;margin:0;cursor:pointer;flex-shrink:0;">`;
+            } else {
+                // truefalse: không có radio/checkbox, select Đúng/Sai đặt sau input
+                control = '';
+                tfSelect = `<select name="newCorrectTF" data-idx="${j}" style="padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.9em;width:120px;flex-shrink:0;">
+                    <option value="">Chọn...</option>
+                    <option value="true">✓ Đúng</option>
+                    <option value="false">✗ Sai</option>
+                </select>`;
+            }
+            const removeBtn = canRemove
+                ? `<button type="button" onclick="removeNewOptionRow(${j})" title="Xóa" style="background:none;color:#dc3545;border:1px solid #dc3545;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.82em;white-space:nowrap;flex-shrink:0;">✕ Xóa</button>`
+                : `<span style="width:62px;flex-shrink:0;"></span>`;
+            return `<div class="option-input" id="newOptRow_${j}" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:#fafafa;border:1px solid #eee;border-radius:8px;padding:8px 12px;">
+                ${control}
+                <span class="option-label" style="flex-shrink:0;">${letter}</span>
+                <input type="text" id="newOpt_${j}" placeholder="${type === 'truefalse' ? 'Nội dung phát biểu ' + letter : 'Nội dung đáp án ' + letter}" style="flex:1;min-width:0;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.95em;" required>
+                ${tfSelect}
+                ${removeBtn}
+            </div>`;
+        }
+
+        function updateNewFormForType() {
+            const type = document.getElementById('newQuestionType').value;
+            const label = document.getElementById('newOptionsLabel');
+            if (type === 'single') {
+                label.textContent = 'Các đáp án (chọn radio đáp án đúng):';
+            } else if (type === 'multi') {
+                label.textContent = 'Các đáp án (tick tất cả đáp án đúng):';
+            } else {
+                label.textContent = 'Các phát biểu (chọn Đúng/Sai cho từng phát biểu):';
+            }
+            const grid = document.getElementById('newOptionsGrid');
+            const existingTexts = [];
+            grid.querySelectorAll('[id^="newOpt_"]').forEach(inp => existingTexts.push(inp.value));
+            const count = Math.max(existingTexts.length, type === 'truefalse' ? 2 : 4);
+            let html = '';
+            for (let j = 0; j < count; j++) html += buildNewOptionRow(j, type, count);
+            grid.innerHTML = html;
+            existingTexts.forEach((t, j) => {
+                const el = document.getElementById('newOpt_' + j);
+                if (el) el.value = t;
+            });
+        }
+
+        function reindexNewOptionRows(type) {
+            const grid = document.getElementById('newOptionsGrid');
+            const rows = grid.querySelectorAll('.option-input');
+            const total = rows.length;
+            // Re-render toàn bộ để đảm bảo nút Xóa đúng
+            const texts = [];
+            const tfVals = [];
+            rows.forEach((row, j) => {
+                const inp = document.getElementById('newOpt_' + j);
+                texts.push(inp ? inp.value : '');
+                const sel = row.querySelector('select[name="newCorrectTF"]');
+                tfVals.push(sel ? sel.value : '');
+            });
+            let html = '';
+            for (let j = 0; j < total; j++) html += buildNewOptionRow(j, type, total);
+            grid.innerHTML = html;
+            texts.forEach((t, j) => {
+                const el = document.getElementById('newOpt_' + j);
+                if (el) el.value = t;
+            });
+            if (type === 'truefalse') {
+                tfVals.forEach((v, j) => {
+                    const sel = grid.querySelectorAll('select[name="newCorrectTF"]')[j];
+                    if (sel && v) sel.value = v;
+                });
+            }
+        }
+
+        function addNewOptionRow() {
+            const type = document.getElementById('newQuestionType').value;
+            const grid = document.getElementById('newOptionsGrid');
+            const j = grid.querySelectorAll('.option-input').length;
+            if (j >= 8) { showNotification('Tối đa 8 đáp án'); return; }
+            grid.insertAdjacentHTML('beforeend', buildNewOptionRow(j, type, j + 1));
+            reindexNewOptionRows(type);
+        }
+
+        function removeNewOptionRow(j) {
+            const type = document.getElementById('newQuestionType').value;
+            const grid = document.getElementById('newOptionsGrid');
+            if (grid.querySelectorAll('.option-input').length <= 2) {
+                showNotification('Tối thiểu 2 đáp án'); return;
+            }
+            const row = document.getElementById('newOptRow_' + j);
+            if (row) row.remove();
+            reindexNewOptionRows(type);
+        }
+
+        // Khởi tạo form với 4 đáp án single mặc định
+        (function initNewForm() {
+            const grid = document.getElementById('newOptionsGrid');
+            let html = '';
+            for (let j = 0; j < 4; j++) html += buildNewOptionRow(j, 'single', 4);
+            grid.innerHTML = html;
+        })();
 
         // Add question
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const question = document.getElementById('questionText').value;
-            const options = [
-                document.getElementById('optionA').value,
-                document.getElementById('optionB').value,
-                document.getElementById('optionC').value,
-                document.getElementById('optionD').value
-            ];
-            const correct = parseInt(document.querySelector('input[name="correct"]:checked').value);
+            const type = document.getElementById('newQuestionType').value;
+            const question = document.getElementById('questionText').value.trim();
+            if (!question) { showNotification('Vui lòng nhập nội dung câu hỏi'); return; }
+
+            const grid = document.getElementById('newOptionsGrid');
+            const rows = grid.querySelectorAll('.option-input');
+            const options = [];
+            for (let j = 0; j < rows.length; j++) {
+                const val = (document.getElementById('newOpt_' + j) || {}).value || '';
+                if (!val.trim()) { showNotification('Vui lòng nhập đầy đủ nội dung các đáp án'); return; }
+                options.push(val.trim());
+            }
+
+            let payload = { type, question, options };
+
+            if (type === 'single') {
+                const checked = document.querySelector('input[name="newCorrect"]:checked');
+                if (!checked) { showNotification('Vui lòng chọn đáp án đúng'); return; }
+                payload.correct = parseInt(checked.value);
+                payload.correctList = null;
+                payload.correctTF = null;
+            } else if (type === 'multi') {
+                const checked = document.querySelectorAll('input[name="newCorrectMulti"]:checked');
+                if (checked.length < 2) { showNotification('Chọn ít nhất 2 đáp án đúng cho câu nhiều đáp án'); return; }
+                payload.correct = 0;
+                payload.correctList = Array.from(checked).map(c => parseInt(c.value));
+                payload.correctTF = null;
+            } else {
+                const selects = document.querySelectorAll('select[name="newCorrectTF"]');
+                const correctTF = [];
+                for (let s of selects) {
+                    if (s.value === '') { showNotification('Vui lòng chọn Đúng/Sai cho tất cả phát biểu'); return; }
+                    correctTF.push(s.value === 'true');
+                }
+                payload.correct = 0;
+                payload.correctList = null;
+                payload.correctTF = correctTF;
+            }
 
             const res = await fetch('/api/questions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question, options, correct })
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
                 showNotification('Đã thêm câu hỏi!');
                 e.target.reset();
+                document.getElementById('newQuestionType').value = 'single';
+                updateNewFormForType();
                 loadQuestions();
+            } else {
+                const err = await res.json();
+                showNotification('Lỗi: ' + (err.error || 'Không thêm được'));
             }
         });
 
@@ -1515,80 +1784,281 @@
             }
         }
 
+        // Build one option row for single/multi editor
+        function buildOptionRow(j, text, type, q) {
+            const letter = String.fromCharCode(65 + j);
+            const canRemove = j >= 2;
+            let ctrlHtml = '';
+            if (type === 'single') {
+                const checked = q && q.correct === j ? 'checked' : '';
+                ctrlHtml = `<input type="radio" name="editCorrect" value="${j}" id="editCorrect${j}" ${checked} style="width:20px;height:20px;cursor:pointer;" title="Đáp án đúng">`;
+            } else if (type === 'multi') {
+                const checked = q && Array.isArray(q.correctList) && q.correctList.indexOf(j) >= 0 ? 'checked' : '';
+                ctrlHtml = `<input type="checkbox" name="editCorrectMulti" value="${j}" id="editCorrectMulti${j}" ${checked} style="width:20px;height:20px;cursor:pointer;" title="Đáp án đúng">`;
+            }
+            return `<div style="display:flex;align-items:flex-start;gap:10px;" id="optEditRow${j}">
+                <span style="margin-top:10px;">${ctrlHtml}</span>
+                <span style="background:#667eea;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;margin-top:6px;">${letter}</span>
+                <textarea id="optEditText${j}" rows="2" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;resize:vertical;" placeholder="Đáp án ${letter}">${text}</textarea>
+                ${canRemove ? `<button onclick="removeOptionRow(${j})" style="padding:6px 10px;background:#dc3545;color:white;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;margin-top:6px;">✕</button>` : ''}
+            </div>`;
+        }
+
+        function reindexOptionRows(type) {
+            const grid = document.getElementById('editOptionsGrid');
+            Array.from(grid.children).forEach((row, idx) => {
+                row.id = 'optEditRow' + idx;
+                const letter = String.fromCharCode(65 + idx);
+                const badge = row.querySelector('span[style*="border-radius:50%"]');
+                if (badge) badge.textContent = letter;
+                const ta = row.querySelector('textarea');
+                if (ta) { ta.id = 'optEditText' + idx; ta.placeholder = 'Đáp án ' + letter; }
+                // update radio/checkbox value and id
+                if (type === 'single') {
+                    const inp = row.querySelector('input[type=radio]');
+                    if (inp) { inp.value = idx; inp.id = 'editCorrect' + idx; }
+                } else if (type === 'multi') {
+                    const inp = row.querySelector('input[type=checkbox]');
+                    if (inp) { inp.value = idx; inp.id = 'editCorrectMulti' + idx; }
+                }
+                // update remove button
+                const btn = row.querySelector('button');
+                if (idx >= 2 && !btn) {
+                    // row cần nút xóa nhưng chưa có (vừa được reindex lên vị trí >= 2)
+                    const newBtn = document.createElement('button');
+                    newBtn.setAttribute('onclick', 'removeOptionRow(' + idx + ')');
+                    newBtn.setAttribute('style', 'padding:6px 10px;background:#dc3545;color:white;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;margin-top:6px;');
+                    newBtn.textContent = '✕';
+                    row.appendChild(newBtn);
+                } else if (btn && idx >= 2) {
+                    btn.setAttribute('onclick', 'removeOptionRow(' + idx + ')');
+                } else if (btn && idx < 2) {
+                    btn.remove();
+                }
+            });
+        }
+
+        function addOptionRow() {
+            const grid = document.getElementById('editOptionsGrid');
+            const j = grid.children.length;
+            if (j >= 8) { showAlert('Tối đa 8 đáp án!'); return; }
+            const type = document.getElementById('editQuestionType').value;
+            grid.insertAdjacentHTML('beforeend', buildOptionRow(j, '', type, null));
+        }
+
+        function removeOptionRow(j) {
+            const row = document.getElementById('optEditRow' + j);
+            if (row) row.remove();
+            const type = document.getElementById('editQuestionType').value;
+            reindexOptionRows(type);
+        }
+
         // Edit question - mở modal sửa
+        function stripHtmlTags(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
         function editQuestion(id) {
             const q = questions[id];
             if (!q) return;
-            
-            // Điền dữ liệu vào form
+
             document.getElementById('editQuestionId').value = id;
-            document.getElementById('editQuestionText').value = q.question || '';
-            document.getElementById('editOptionA').value = q.options[0] || '';
-            document.getElementById('editOptionB').value = q.options[1] || '';
-            document.getElementById('editOptionC').value = q.options[2] || '';
-            document.getElementById('editOptionD').value = q.options[3] || '';
-            
-            // Chọn đáp án đúng
-            const correctRadio = document.getElementById('editCorrect' + q.correct);
-            if (correctRadio) correctRadio.checked = true;
-            
-            // Hiện modal
+            document.getElementById('editQuestionText').value = stripHtmlTags(q.question || '');
+
+            const type = q.type || 'single';
+            document.getElementById('editQuestionType').value = type;
+
+            if (type === 'truefalse') {
+                document.getElementById('editOptionsSingleMulti').style.display = 'none';
+                document.getElementById('editOptionsTF').style.display = 'block';
+                const grid = document.getElementById('editTFGrid');
+                grid.innerHTML = '';
+                for (let j = 0; j < q.options.length; j++) {
+                    const tfVal = Array.isArray(q.correctTF) ? q.correctTF[j] : true;
+                    grid.insertAdjacentHTML('beforeend', buildTFRow(j, stripHtmlTags(q.options[j] || ''), tfVal));
+                }
+            } else {
+                document.getElementById('editOptionsSingleMulti').style.display = 'block';
+                document.getElementById('editOptionsTF').style.display = 'none';
+                const grid = document.getElementById('editOptionsGrid');
+                grid.innerHTML = '';
+                const opts = q.options || ['', ''];
+                for (let j = 0; j < opts.length; j++) {
+                    grid.insertAdjacentHTML('beforeend', buildOptionRow(j, stripHtmlTags(opts[j] || ''), type, q));
+                }
+                if (opts.length < 2) {
+                    for (let j = opts.length; j < 2; j++) {
+                        grid.insertAdjacentHTML('beforeend', buildOptionRow(j, '', type, q));
+                    }
+                }
+            }
+
             document.getElementById('editQuestionModal').style.display = 'flex';
         }
-        
+
+        function buildTFRow(j, text, isTrue) {
+            const letter = String.fromCharCode(65 + j);
+            return `<div style="display:flex;align-items:flex-start;gap:10px;" id="tfEditRow${j}">
+                <span style="background:#667eea;color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;margin-top:4px;">${letter}</span>
+                <textarea rows="2" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;resize:vertical;" placeholder="Phát biểu ${letter}" id="tfEditOpt${j}">${text}</textarea>
+                <select id="tfEditCorrect${j}" style="padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;cursor:pointer;">
+                    <option value="true" ${isTrue ? 'selected' : ''}>Đúng</option>
+                    <option value="false" ${!isTrue ? 'selected' : ''}>Sai</option>
+                </select>
+                ${j >= 2 ? `<button onclick="removeTFRow(${j})" style="padding:6px 10px;background:#dc3545;color:white;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;">✕</button>` : ''}
+            </div>`;
+        }
+
+        function updateEditFormForType() {
+            const type = document.getElementById('editQuestionType').value;
+            if (type === 'truefalse') {
+                document.getElementById('editOptionsSingleMulti').style.display = 'none';
+                document.getElementById('editOptionsTF').style.display = 'block';
+                const grid = document.getElementById('editTFGrid');
+                if (grid.children.length === 0) {
+                    grid.innerHTML = buildTFRow(0, '', true) + buildTFRow(1, '', false);
+                }
+            } else {
+                document.getElementById('editOptionsSingleMulti').style.display = 'block';
+                document.getElementById('editOptionsTF').style.display = 'none';
+                // Re-render all option rows with updated controls for new type
+                const grid = document.getElementById('editOptionsGrid');
+                const rows = Array.from(grid.children);
+                if (rows.length === 0) {
+                    grid.innerHTML = buildOptionRow(0, '', type, null) + buildOptionRow(1, '', type, null);
+                } else {
+                    rows.forEach((row, idx) => {
+                        const ta = row.querySelector('textarea');
+                        const text = ta ? ta.value : '';
+                        const newRow = document.createElement('div');
+                        newRow.innerHTML = buildOptionRow(idx, text, type, null);
+                        grid.replaceChild(newRow.firstElementChild, row);
+                    });
+                }
+            }
+        }
+
+        let _tfRowCount = 4; // max rows in TF editor
+        function addTFRow() {
+            const grid = document.getElementById('editTFGrid');
+            const j = grid.children.length;
+            if (j >= 8) { showAlert('Tối đa 8 phát biểu!'); return; }
+            grid.insertAdjacentHTML('beforeend', buildTFRow(j, '', true));
+        }
+
+        function removeTFRow(j) {
+            const row = document.getElementById('tfEditRow' + j);
+            if (row) row.remove();
+            // Re-index remaining rows
+            const grid = document.getElementById('editTFGrid');
+            Array.from(grid.children).forEach((row, idx) => {
+                row.id = 'tfEditRow' + idx;
+                const letter = String.fromCharCode(65 + idx);
+                const badge = row.querySelector('span');
+                if (badge) badge.textContent = letter;
+                const ta = row.querySelector('textarea');
+                if (ta) { ta.id = 'tfEditOpt' + idx; ta.placeholder = 'Phát biểu ' + letter; }
+                const sel = row.querySelector('select');
+                if (sel) sel.id = 'tfEditCorrect' + idx;
+                const btn = row.querySelector('button');
+                if (btn && idx >= 2) btn.setAttribute('onclick', 'removeTFRow(' + idx + ')');
+            });
+        }
+
         function closeEditQuestionModal() {
             document.getElementById('editQuestionModal').style.display = 'none';
         }
-        
+
         async function saveEditQuestion() {
             const id = document.getElementById('editQuestionId').value;
+            const type = document.getElementById('editQuestionType').value;
             const question = document.getElementById('editQuestionText').value.trim();
-            const optionA = document.getElementById('editOptionA').value.trim();
-            const optionB = document.getElementById('editOptionB').value.trim();
-            const optionC = document.getElementById('editOptionC').value.trim();
-            const optionD = document.getElementById('editOptionD').value.trim();
-            const correct = parseInt(document.querySelector('input[name="editCorrect"]:checked')?.value || '0');
-            
-            // Validate
-            if (!question) {
-                alert('Vui lòng nhập nội dung câu hỏi!');
-                return;
+
+            if (!question) { showAlert('Vui lòng nhập nội dung câu hỏi!'); return; }
+
+            let updatedQuestion = { type, question, image: null };
+
+            if (type === 'single') {
+                const grid = document.getElementById('editOptionsGrid');
+                const options = [];
+                let emptyIdx = -1;
+                Array.from(grid.children).forEach((row, j) => {
+                    const ta = document.getElementById('optEditText' + j);
+                    const val = ta ? ta.value.trim() : '';
+                    options.push(val);
+                    if (!val && emptyIdx < 0) emptyIdx = j;
+                });
+                if (options.length < 2 || !options[0] || !options[1]) { showAlert('Cần ít nhất 2 đáp án!'); return; }
+                if (emptyIdx >= 0) { showAlert('Đáp án ' + String.fromCharCode(65 + emptyIdx) + ' không được để trống!'); return; }
+                const correctRadio = document.querySelector('input[name="editCorrect"]:checked');
+                let correct = correctRadio ? parseInt(correctRadio.value) : 0;
+                if (correct >= options.length) correct = 0;
+                updatedQuestion.options = options;
+                updatedQuestion.correct = correct;
+                updatedQuestion.correctList = null;
+                updatedQuestion.correctTF = null;
+
+            } else if (type === 'multi') {
+                const grid = document.getElementById('editOptionsGrid');
+                const options = [];
+                let emptyIdx = -1;
+                Array.from(grid.children).forEach((row, j) => {
+                    const ta = document.getElementById('optEditText' + j);
+                    const val = ta ? ta.value.trim() : '';
+                    options.push(val);
+                    if (!val && emptyIdx < 0) emptyIdx = j;
+                });
+                if (options.length < 2 || !options[0] || !options[1]) { showAlert('Cần ít nhất 2 đáp án!'); return; }
+                if (emptyIdx >= 0) { showAlert('Đáp án ' + String.fromCharCode(65 + emptyIdx) + ' không được để trống!'); return; }
+                const correctList = [];
+                document.querySelectorAll('input[name="editCorrectMulti"]:checked').forEach(cb => {
+                    const v = parseInt(cb.value);
+                    if (v < options.length) correctList.push(v);
+                });
+                if (correctList.length === 0) { showAlert('Chọn ít nhất 1 đáp án đúng!'); return; }
+                updatedQuestion.options = options;
+                updatedQuestion.correct = correctList[0];
+                updatedQuestion.correctList = correctList;
+                updatedQuestion.correctTF = null;
+
+            } else if (type === 'truefalse') {
+                const grid = document.getElementById('editTFGrid');
+                const rows = grid.children;
+                if (rows.length < 2) { showAlert('Cần ít nhất 2 phát biểu!'); return; }
+                const options = [];
+                const correctTF = [];
+                for (let j = 0; j < rows.length; j++) {
+                    const ta = document.getElementById('tfEditOpt' + j);
+                    const sel = document.getElementById('tfEditCorrect' + j);
+                    if (!ta || !sel) continue;
+                    const text = ta.value.trim();
+                    if (!text) { showAlert('Phát biểu ' + String.fromCharCode(65+j) + ' không được để trống!'); return; }
+                    options.push(text);
+                    correctTF.push(sel.value === 'true');
+                }
+                updatedQuestion.options = options;
+                updatedQuestion.correct = 0;
+                updatedQuestion.correctList = null;
+                updatedQuestion.correctTF = correctTF;
             }
-            if (!optionA || !optionB) {
-                alert('Cần ít nhất 2 đáp án!');
-                return;
-            }
-            
-            // Tạo mảng options (bỏ qua đáp án trống)
-            const options = [optionA, optionB];
-            if (optionC) options.push(optionC);
-            if (optionD) options.push(optionD);
-            
-            // Kiểm tra correct có hợp lệ không
-            const validCorrect = Math.min(correct, options.length - 1);
-            
-            const updatedQuestion = {
-                question,
-                options,
-                correct: validCorrect
-            };
-            
+
             try {
                 const res = await fetch(`/api/questions/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updatedQuestion)
                 });
-                
                 if (res.ok) {
                     showNotification('Đã cập nhật câu hỏi!');
                     closeEditQuestionModal();
                     loadQuestions();
                 } else {
-                    alert('Lỗi khi lưu câu hỏi!');
+                    showAlert('Lỗi khi lưu câu hỏi!');
                 }
             } catch (err) {
-                alert('Lỗi: ' + err.message);
+                showAlert('Lỗi: ' + err.message);
             }
         }
 
@@ -1649,81 +2119,68 @@
         function showDetail(index) {
             const r = results[index];
             const content = document.getElementById('detailContent');
-            
-            // Hàm kiểm tra học sinh có chọn đáp án không
-            function hasAnswer(answerIndex) {
-                return answerIndex !== undefined && 
-                       answerIndex !== null && 
-                       answerIndex !== -1 &&
-                       !isNaN(answerIndex) &&
-                       typeof answerIndex === 'number' &&
-                       answerIndex >= 0;
+
+            function hasAnswer(ans) {
+                return ans !== undefined && ans !== null && ans !== -1;
             }
-            
-            // Hàm format đáp án: hiển thị nội dung text đầy đủ
-            // Tìm từ data lưu sẵn hoặc từ câu hỏi hiện tại
-            function formatAnswer(answerIndex, answerText, questionIndex, isCorrectAnswer) {
-                // Kiểm tra học sinh có chọn đáp án không
-                if (!hasAnswer(answerIndex)) {
-                    return '<em style="color: #ff9800; font-weight: bold;">Không chọn đáp án</em>';
-                }
-                
-                const letter = String.fromCharCode(65 + answerIndex);
-                
-                // Ưu tiên dùng text đã lưu
-                if (answerText) {
-                    return `<strong>${letter}.</strong> ${escapeHtml(answerText)}`;
-                }
-                
-                // Fallback: tìm từ danh sách câu hỏi hiện tại (nếu có)
-                if (questions && questions[questionIndex] && questions[questionIndex].options) {
-                    const optionText = questions[questionIndex].options[answerIndex];
-                    if (optionText) {
-                        return `<strong>${letter}.</strong> ${escapeHtml(optionText)}`;
-                    }
-                }
-                
-                // Không tìm được text, chỉ hiện chữ cái
-                return `<strong>${letter}</strong> <em style="color: #999;">(không có nội dung)</em>`;
-            }
-            
-            // Đếm số câu không trả lời
+
             const unansweredCount = r.details.filter(d => !hasAnswer(d.studentAnswer)).length;
-            
-            // Tạo HTML cho chi tiết từng câu
+
             let detailsHtml = r.details.map((d, i) => {
+                const type = d.type || 'single';
                 const studentDidNotAnswer = !hasAnswer(d.studentAnswer);
-                let html = `<div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left: 4px solid #ff9800;' : ''}">
-                    <strong>Câu ${i + 1}:</strong> ${escapeHtml(d.question)}<br>
-                    <div style="margin-top: 5px;">
-                        <span style="color: ${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
-                            HS chọn: ${formatAnswer(d.studentAnswer, d.studentAnswerText, i, false)}
+                let studentAnswerHtml = '';
+                let correctAnswerHtml = '';
+
+                if (studentDidNotAnswer) {
+                    studentAnswerHtml = '<em style="color:#ff9800;font-weight:bold;">Không chọn đáp án</em>';
+                } else if (type === 'single') {
+                    const letter = typeof d.studentAnswer === 'number' ? String.fromCharCode(65 + d.studentAnswer) : '?';
+                    studentAnswerHtml = `<strong>${letter}.</strong> ${escapeHtml(d.studentAnswerText || '')}`;
+                } else if (type === 'multi') {
+                    studentAnswerHtml = escapeHtml(d.studentAnswerText || (Array.isArray(d.studentAnswer) ? d.studentAnswer.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
+                } else if (type === 'truefalse') {
+                    studentAnswerHtml = escapeHtml(d.studentAnswerText || '?');
+                }
+
+                if (type === 'single') {
+                    const cLetter = typeof d.correctAnswer === 'number' ? String.fromCharCode(65 + d.correctAnswer) : '?';
+                    correctAnswerHtml = `<strong>${cLetter}.</strong> ${escapeHtml(d.correctAnswerText || '')}`;
+                } else if (type === 'multi') {
+                    correctAnswerHtml = escapeHtml(d.correctAnswerText || (Array.isArray(d.correctList) ? d.correctList.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
+                } else if (type === 'truefalse') {
+                    correctAnswerHtml = escapeHtml(d.correctAnswerText || (Array.isArray(d.correctTF) ? d.correctTF.map((v,j) => String.fromCharCode(65+j)+':'+(v?'Đúng':'Sai')).join(', ') : '?'));
+                }
+
+                let html = `<div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left:4px solid #ff9800;' : ''}">
+                    <strong>Câu ${i + 1}:</strong> ${sanitizeHtmlClient(d.question || '')}<br>
+                    <div style="margin-top:5px;">
+                        <span style="color:${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
+                            HS chọn: ${studentAnswerHtml}
                         </span>
                     </div>`;
-                
+
                 if (!d.isCorrect) {
-                    html += `<div style="margin-top: 3px;">
-                        <span style="color: #2e7d32;">
-                            Đáp án đúng: ${formatAnswer(d.correctAnswer, d.correctAnswerText, i, true)}
-                        </span>
+                    html += `<div style="margin-top:3px;">
+                        <span style="color:#2e7d32;">Đáp án đúng: ${correctAnswerHtml}</span>
                     </div>`;
                 }
-                
+
                 html += `</div>`;
                 return html;
             }).join('');
-            
+
             content.innerHTML = `
                 <p><strong>Họ tên:</strong> ${escapeHtml(r.studentName)}</p>
                 <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
                 <p><strong>STT:</strong> ${r.studentSTT || r.studentId || '-'}</p>
                 <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng)</p>
-                ${unansweredCount > 0 ? `<p style="color: #ff9800; font-weight: bold;">Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
-                <hr style="margin: 15px 0;">
+                ${unansweredCount > 0 ? `<p style="color:#ff9800;font-weight:bold;">Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
+                <hr style="margin:15px 0;">
                 <h4>Chi tiết từng câu:</h4>
                 ${detailsHtml}
             `;
-            
+
             document.getElementById('detailModal').classList.add('active');
         }
 
@@ -2823,7 +3280,116 @@
             }
         }
 
-        // Import Word file
+        // === IMPORT WORD với PREVIEW ===
+        let _pendingWordFile = null;
+
+        function showFormatGuide() {
+            document.getElementById('formatGuideModal').style.display = 'flex';
+        }
+
+        async function previewWordImport(input) {
+            const file = input.files[0];
+            if (!file) return;
+            _pendingWordFile = file;
+            input.value = '';
+
+            document.getElementById('wordImportFileName').textContent = file.name;
+            const statusDiv = document.getElementById('wordImportStatus');
+            statusDiv.innerHTML = '<span style="color:#1976d2;">Đang phân tích file...</span>';
+            document.getElementById('wordPreviewPanel').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch('/api/preview-word', { method: 'POST', body: formData });
+                const result = await res.json();
+                if (!result.success) {
+                    statusDiv.innerHTML = `<span style="color:#c62828;">${result.error}</span>`;
+                    _pendingWordFile = null;
+                    return;
+                }
+                if (result.count === 0) {
+                    statusDiv.innerHTML = '<span style="color:#c62828;">Không nhận ra câu hỏi nào. Kiểm tra định dạng file — nhấn "Xem hướng dẫn định dạng" để biết thêm.</span>';
+                    _pendingWordFile = null;
+                    return;
+                }
+                statusDiv.innerHTML = '';
+                renderWordPreview(result);
+                document.getElementById('wordPreviewPanel').style.display = 'block';
+            } catch (err) {
+                statusDiv.innerHTML = `<span style="color:#c62828;">Lỗi: ${err.message}</span>`;
+                _pendingWordFile = null;
+            }
+        }
+
+        function renderWordPreview(result) {
+            document.getElementById('wordPreviewCount').textContent = result.count;
+
+            // Warnings
+            const wDiv = document.getElementById('wordPreviewWarnings');
+            if (result.warnings && result.warnings.length > 0) {
+                wDiv.innerHTML = `<div style="background:#fff3e0;border:1px solid #ffb300;border-radius:8px;padding:10px 14px;">
+                    <div style="font-weight:bold;color:#e65100;margin-bottom:6px;">Cảnh báo (${result.warnings.length} vấn đề):</div>
+                    ${result.warnings.map(w => `<div style="color:#bf360c;font-size:0.88em;margin:2px 0;">⚠ ${w.msg}</div>`).join('')}
+                </div>`;
+            } else {
+                wDiv.innerHTML = '<div style="color:#2e7d32;font-size:0.9em;margin-bottom:4px;">Tất cả câu hỏi hợp lệ.</div>';
+            }
+
+            // Preview list
+            const typeLabel = { single: 'Một đáp án', multi: 'Nhiều đáp án', truefalse: 'Đúng/Sai' };
+            const typeBadgeColor = { single: '#1976d2', multi: '#7b1fa2', truefalse: '#e65100' };
+            const listDiv = document.getElementById('wordPreviewList');
+            listDiv.innerHTML = result.preview.map((q, i) => {
+                const badge = `<span style="background:${typeBadgeColor[q.type]||'#555'};color:white;border-radius:4px;padding:1px 7px;font-size:0.78em;margin-left:6px;">${typeLabel[q.type]||q.type}</span>`;
+                const imgIcon = q.hasImage ? ' <span title="Có hình ảnh" style="font-size:0.85em;">🖼</span>' : '';
+                const warn = result.warnings && result.warnings.some(w => w.index === q.index)
+                    ? ' <span style="color:#e65100;font-size:0.82em;">(có cảnh báo)</span>' : '';
+                return `<div style="padding:6px 8px;border-bottom:1px solid #e8f5e9;font-size:0.9em;">
+                    <span style="color:#888;margin-right:6px;">${i+1}.</span>
+                    <span>${escapeHtml(q.questionPreview)}${q.questionPreview.length>=120?'…':''}</span>
+                    ${badge}${imgIcon}${warn}
+                    <span style="color:#888;font-size:0.82em;margin-left:6px;">(${q.optionCount} đáp án)</span>
+                </div>`;
+            }).join('');
+        }
+
+        async function confirmWordImport() {
+            if (!_pendingWordFile) return;
+            const btn = document.getElementById('wordConfirmBtn');
+            btn.disabled = true;
+            btn.textContent = 'Đang import...';
+            const statusDiv = document.getElementById('wordImportStatus');
+
+            const formData = new FormData();
+            formData.append('file', _pendingWordFile);
+            try {
+                const res = await fetch('/api/import-word', { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.success) {
+                    statusDiv.innerHTML = `<span style="color:#2e7d32;font-weight:bold;">Đã import thành công ${result.imported} câu hỏi! Tổng: ${result.total} câu.</span>`;
+                    document.getElementById('wordPreviewPanel').style.display = 'none';
+                    document.getElementById('wordImportFileName').textContent = 'Chưa chọn file';
+                    _pendingWordFile = null;
+                    loadQuestions();
+                } else {
+                    statusDiv.innerHTML = `<span style="color:#c62828;">${result.error}</span>`;
+                }
+            } catch (err) {
+                statusDiv.innerHTML = `<span style="color:#c62828;">Lỗi: ${err.message}</span>`;
+            }
+            btn.disabled = false;
+            btn.textContent = 'Xác nhận import';
+        }
+
+        function cancelWordImport() {
+            _pendingWordFile = null;
+            document.getElementById('wordPreviewPanel').style.display = 'none';
+            document.getElementById('wordImportFileName').textContent = 'Chưa chọn file';
+            document.getElementById('wordImportStatus').innerHTML = '';
+        }
+
+        // Import Word file (dùng cho Exams panel)
         async function importWord(input) {
             const file = input.files[0];
             if (!file) return;
@@ -2859,31 +3425,71 @@
         function downloadSampleJSON() {
             const sampleQuestions = [
                 {
-                    "question": "Thủ đô của Việt Nam là gì?",
-                    "options": ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Huế"],
-                    "correct": 0
+                    "type": "single",
+                    "question": "Thủ đô của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là thành phố nào?",
+                    "options": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"],
+                    "correct": 1,
+                    "correctList": null,
+                    "correctTF": null
                 },
                 {
-                    "question": "1 + 1 = ?",
-                    "options": ["1", "2", "3", "4"],
-                    "correct": 1
+                    "type": "single",
+                    "question": "Năm nào Việt Nam chính thức thống nhất đất nước?",
+                    "options": ["1954", "1968", "1975", "1986"],
+                    "correct": 2,
+                    "correctList": null,
+                    "correctTF": null
                 },
                 {
-                    "question": "Thẻ HTML nào dùng để tạo tiêu đề lớn nhất?",
-                    "options": ["<h6>", "<h1>", "<header>", "<title>"],
-                    "correct": 1
+                    "type": "multi",
+                    "question": "Chọn tất cả các tỉnh/thành phố trực thuộc Trung ương của Việt Nam:",
+                    "options": ["Hà Nội", "Nghệ An", "TP. Hồ Chí Minh", "Đà Nẵng", "Cần Thơ"],
+                    "correct": 0,
+                    "correctList": [0, 2, 3, 4],
+                    "correctTF": null
+                },
+                {
+                    "type": "multi",
+                    "question": "Chọn các ngôn ngữ lập trình hướng đối tượng:",
+                    "options": ["Python", "HTML", "Java", "CSS", "C++"],
+                    "correct": 0,
+                    "correctList": [0, 2, 4],
+                    "correctTF": null
+                },
+                {
+                    "type": "truefalse",
+                    "question": "Xác định tính đúng/sai của các phát biểu sau về địa lý Việt Nam:",
+                    "options": [
+                        "Hà Nội là thủ đô và là thành phố lớn nhất Việt Nam.",
+                        "Việt Nam có đường bờ biển dài hơn 3.000 km.",
+                        "Sông Hồng chảy qua Hà Nội.",
+                        "Việt Nam không có chung biên giới với Trung Quốc."
+                    ],
+                    "correct": 0,
+                    "correctList": null,
+                    "correctTF": [false, true, true, false]
+                },
+                {
+                    "type": "truefalse",
+                    "question": "Cho biết các mệnh đề vật lý sau đúng hay sai:",
+                    "options": [
+                        "Nước tinh khiết sôi ở 100°C ở áp suất 1 atm.",
+                        "Ánh sáng trong chân không di chuyển chậm hơn âm thanh.",
+                        "Công thức hóa học của nước là H2O."
+                    ],
+                    "correct": 0,
+                    "correctList": null,
+                    "correctTF": [true, false, true]
                 }
             ];
-            
+
             const dataStr = JSON.stringify(sampleQuestions, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = 'mau-cau-hoi.json';
             a.click();
-            
             URL.revokeObjectURL(url);
         }
 
@@ -2954,17 +3560,6 @@
                 </div>
             </div>
             <div style="flex: 1; min-width: 250px; text-align: center;">
-                <div style="font-size: 1.1em; font-weight: 600; margin-bottom: 10px;">
-                    Phát triển bởi <span style="color: #ffd700;">Nguyễn Quang Hùng</span>
-                </div>
-                <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap;">
-                    <a href="mailto:nqh2610@gmail.com" style="color: #4fc3f7; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
-                        <span style="font-size: 1.2em;">️</span> nqh2610@gmail.com
-                    </a>
-                    <a href="tel:0976385309" style="color: #81c784; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.3s;">
-                         0976.385.309
-                    </a>
-                </div>
             </div>
             <div style="flex: 1; min-width: 150px; text-align: right;">
                 <div style="font-size: 0.85em; color: #888;">

@@ -551,13 +551,83 @@ function parseStudentData(data) {
     }).filter(s => s.stt && (s.ho || s.ten)); // Cần có STT và ít nhất họ hoặc tên
 }
 
+// Migrate câu hỏi cũ sang định dạng mới (thêm type, strip tags thừa)
+function migrateQuestion(q) {
+    if (!q) return q;
+    var question = q.question || '';
+
+    // Detect type từ tags trong question text
+    var type = q.type;
+    if (!type) {
+        if (/\[MULTI\]/i.test(question)) {
+            type = 'multi';
+        } else if (/\[ĐÚNG\/SAI\]|\[DUNGSAI\]|\[DUNG\/SAI\]/i.test(question)) {
+            type = 'truefalse';
+        } else {
+            type = 'single';
+        }
+    }
+
+    // Strip type tags khỏi question text
+    question = question
+        .replace(/\[MULTI\]/gi, '')
+        .replace(/\[ĐÚNG\/SAI\]/gi, '')
+        .replace(/\[DUNGSAI\]/gi, '')
+        .replace(/\[DUNG\/SAI\]/gi, '')
+        .trim();
+
+    var TF_TRUE_RE = /\(đúng\)|\(dung\)|\(Đ\)|\(đ\)|\(D\)|\(d\)|\(T\)|\(t\)|\(Y\)|\(y\)/i;
+    var TF_FALSE_RE = /\(sai\)|\(S\)|\(s\)|\(F\)|\(f\)|\(N\)|\(n\)/i;
+    var TF_ALL_RE   = /\(đúng\)|\(dung\)|\(Đ\)|\(đ\)|\(D\)|\(d\)|\(T\)|\(t\)|\(Y\)|\(y\)|\(sai\)|\(S\)|\(s\)|\(F\)|\(f\)|\(N\)|\(n\)/gi;
+    var CORRECT_RE  = /\s*\*\s*$/;
+
+    var options = Array.isArray(q.options) ? q.options.slice() : [];
+    var correct = typeof q.correct === 'number' ? q.correct : 0;
+    var correctList = Array.isArray(q.correctList) ? q.correctList : null;
+    var correctTF = Array.isArray(q.correctTF) ? q.correctTF : null;
+
+    if (type === 'truefalse' && !correctTF) {
+        // Build correctTF từ markers trong options
+        correctTF = options.map(function(opt) {
+            return TF_TRUE_RE.test(opt);
+        });
+        // Strip markers khỏi options
+        options = options.map(function(opt) {
+            return opt.replace(TF_ALL_RE, '').trim();
+        });
+    }
+
+    if (type === 'multi' && !correctList) {
+        // Build correctList từ dấu * trong options
+        correctList = [];
+        options = options.map(function(opt, i) {
+            if (CORRECT_RE.test(opt)) {
+                correctList.push(i);
+                return opt.replace(CORRECT_RE, '').trim();
+            }
+            return opt;
+        });
+        if (correctList.length === 0) correctList = [correct];
+    }
+
+    return {
+        type: type,
+        question: question,
+        options: options,
+        correct: correct,
+        correctList: type === 'multi' ? correctList : null,
+        correctTF: type === 'truefalse' ? correctTF : null,
+        image: q.image || null
+    };
+}
+
 // Load câu hỏi từ file hoặc từ bài kiểm tra hiện tại
 function loadQuestions() {
     // Nếu đang có session với examId, load từ exam đã lưu
     if (currentSession.examId) {
         var exam = loadExam(currentSession.examId);
         if (exam) {
-            questions = exam.questions || [];
+            questions = (exam.questions || []).map(migrateQuestion);
             examSettings = mergeObjects(examSettings, exam.settings);
             console.log('[OK] Da tai ' + questions.length + ' cau hoi tu bai "' + currentSession.examName + '"');
             return;
@@ -568,6 +638,7 @@ function loadQuestions() {
     try {
         var data = fs.readFileSync(path.join(__dirname, 'data', 'questions.json'), 'utf8');
         questions = JSON.parse(data);
+        questions = questions.map(migrateQuestion);
         console.log('[OK] Da tai ' + questions.length + ' cau hoi');
     } catch (err) {
         questions = [];
@@ -964,12 +1035,16 @@ app.get('/api/exam', (req, res) => {
     if (!examSettings.isOpen) {
         return res.json({ error: 'Bài thi chưa được mở' });
     }
-    var examQuestions = questions.map((q, index) => ({
-        id: index,
-        question: q.question,
-        options: q.options,
-        image: q.image || null
-    }));
+    var examQuestions = questions.map((q, index) => {
+        var mq = migrateQuestion(q);
+        return {
+            id: index,
+            type: mq.type || 'single',
+            question: mq.question,
+            options: mq.options,
+            image: mq.image || null
+        };
+    });
     res.json({
         title: examSettings.title,
         timeLimit: examSettings.timeLimit,
@@ -986,19 +1061,23 @@ app.post('/api/check-answer', (req, res) => {
     if (!examSettings.practiceMode) {
         return res.status(403).json({ error: 'Chế độ ôn tập chưa được bật' });
     }
-    
+
     var { questionIndex, answer } = req.body;
-    
+
     if (questionIndex < 0 || questionIndex >= questions.length) {
         return res.json({ error: 'Câu hỏi không hợp lệ' });
     }
-    
-    var correctAnswer = questions[questionIndex].correct;
-    var isCorrect = answer === correctAnswer;
-    
+
+    var q = migrateQuestion(questions[questionIndex]);
+    var questionScore = scoreQuestion(q, answer);
+
     res.json({
-        isCorrect,
-        correctAnswer,
+        isCorrect: questionScore === 1,
+        questionScore: questionScore,
+        type: q.type || 'single',
+        correctAnswer: q.correct,
+        correctList: q.correctList || null,
+        correctTF: q.correctTF || null,
         yourAnswer: answer
     });
 });
@@ -1024,8 +1103,14 @@ app.post('/api/questions', (req, res) => {
     if (!isLocalhost(req)) {
         return res.status(403).json({ error: 'Không có quyền truy cập' });
     }
-    var { question, options, correct, image } = req.body;
-    questions.push({ question, options, correct, image: image || null });
+    var errors = [];
+    var normalized = validateAndNormalizeQuestion(req.body, questions.length + 1, errors);
+    if (!normalized) {
+        return res.status(400).json({ error: errors.join('; ') });
+    }
+    normalized.question = sanitizeHtml(normalized.question);
+    normalized.options = normalized.options.map(function(o) { return sanitizeHtml(o); });
+    questions.push(normalized);
     saveQuestions();
     io.emit('questionsUpdated', questions.length);
     res.json({ success: true, total: questions.length });
@@ -1038,7 +1123,15 @@ app.put('/api/questions/:id', (req, res) => {
     }
     var id = parseInt(req.params.id);
     if (id >= 0 && id < questions.length) {
-        questions[id] = req.body;
+        var errors = [];
+        var normalized = validateAndNormalizeQuestion(req.body, id + 1, errors);
+        if (!normalized) {
+            return res.status(400).json({ error: errors.join('; ') });
+        }
+        // Sanitize HTML fields
+        normalized.question = sanitizeHtml(normalized.question);
+        normalized.options = normalized.options.map(function(o) { return sanitizeHtml(o); });
+        questions[id] = normalized;
         saveQuestions();
         res.json({ success: true });
     } else {
@@ -1078,6 +1171,7 @@ app.post('/api/settings', (req, res) => {
     examSettings = mergeObjects(examSettings, req.body);
     saveCurrentSession();
     io.emit('examStatusChanged', examSettings.isOpen);
+    io.emit('settingsChanged', { practiceMode: examSettings.practiceMode });
     res.json({ success: true });
 });
 
@@ -1651,15 +1745,9 @@ app.post('/api/exams/:examId/import-json', upload.single('file'), (req, res) => 
         // Validate câu hỏi
         var validQuestions = [];
         uploadedQuestions.forEach((q, index) => {
-            if (q.question && q.options && Array.isArray(q.options) && q.options.length >= 2 &&
-                typeof q.correct === 'number' && q.correct >= 0 && q.correct < q.options.length) {
-                validQuestions.push({
-                    question: q.question.trim(),
-                    options: q.options.map(opt => String(opt).trim()),
-                    correct: q.correct,
-                    image: q.image || null
-                });
-            }
+            var errors = [];
+            var normalized = validateAndNormalizeQuestion(q, index + 1, errors);
+            if (normalized) validQuestions.push(normalized);
         });
         
         if (validQuestions.length === 0) {
@@ -1702,41 +1790,34 @@ app.post('/api/exams/:examId/import-word', upload.single('file'), (req, res) => 
         return res.json({ success: false, error: 'Không có file được upload' });
     }
     
-    try {
-        var result = mammoth.extractRawText({ buffer: req.file.buffer });
-        result.then(data => {
-            var text = data.value;
-            var parsedQuestions = parseQuestionsFromText(text);
-            
+    mammothToHtml(req.file.buffer).then(function(data) {
+            var html = data.value;
+            var parsedQuestions = parseQuestionsFromHtml(html);
+
             if (parsedQuestions.length === 0) {
                 return res.json({ success: false, error: 'Không tìm thấy câu hỏi hợp lệ trong file' });
             }
-            
+
             // Đọc và cập nhật bài kiểm tra
             var examFilePath = path.join(__dirname, 'data', 'exams', `${examId}.json`);
             if (!fs.existsSync(examFilePath)) {
                 return res.json({ success: false, error: 'Không tìm thấy bài kiểm tra' });
             }
-            
+
             var examData = JSON.parse(fs.readFileSync(examFilePath, 'utf8'));
             examData.questions = parsedQuestions;
             examData.updatedAt = new Date().toISOString();
-            
+
             fs.writeFileSync(examFilePath, JSON.stringify(examData, null, 2));
-            
-            res.json({ 
-                success: true, 
+
+            res.json({
+                success: true,
                 count: parsedQuestions.length,
                 message: `Đã import ${parsedQuestions.length} câu hỏi vào bài "${examData.name}"`
             });
-        }).catch(err => {
+        }).catch(function(err) {
             res.json({ success: false, error: 'Không thể đọc file Word: ' + err.message });
         });
-        
-    } catch (err) {
-        console.error('Lỗi import Word:', err);
-        res.json({ success: false, error: 'Lỗi: ' + err.message });
-    }
 });
 
 // Tạo bài kiểm tra mới và CHUYỂN SANG DÙNG NGAY (cũ - giữ lại để tương thích)
@@ -1796,6 +1877,42 @@ app.post('/api/exams/new', (req, res) => {
 
 // ========== END QUẢN LÝ BÀI KIỂM TRA ==========
 
+// ========== CHẤM ĐIỂM ==========
+// Trả về số thực 0.0–1.0 (phần điểm của câu đó)
+// single/multi: 0 hoặc 1 (all-or-nothing)
+// truefalse: số phát biểu đúng / tổng số phát biểu (theo chuẩn BGD 2025)
+function scoreQuestion(q, studentAnswer) {
+    var type = q.type || 'single';
+
+    if (type === 'single') {
+        return studentAnswer === q.correct ? 1 : 0;
+    }
+
+    if (type === 'multi') {
+        if (!Array.isArray(studentAnswer) || !Array.isArray(q.correctList)) return 0;
+        if (studentAnswer.length !== q.correctList.length) return 0;
+        var sorted1 = studentAnswer.slice().sort(function(a,b){return a-b;});
+        var sorted2 = q.correctList.slice().sort(function(a,b){return a-b;});
+        for (var i = 0; i < sorted1.length; i++) {
+            if (sorted1[i] !== sorted2[i]) return 0;
+        }
+        return 1;
+    }
+
+    if (type === 'truefalse') {
+        if (!Array.isArray(studentAnswer) || !Array.isArray(q.correctTF)) return 0;
+        var total = q.correctTF.length;
+        if (total === 0) return 0;
+        var correct = 0;
+        for (var j = 0; j < total; j++) {
+            if (j < studentAnswer.length && studentAnswer[j] === q.correctTF[j]) correct++;
+        }
+        return correct / total;
+    }
+
+    return 0;
+}
+
 // Nộp bài
 app.post('/api/submit', (req, res) => {
     var { studentSTT, studentName, studentClass, answers, timeSpent } = req.body;
@@ -1809,28 +1926,53 @@ app.post('/api/submit', (req, res) => {
     }
     
     // Chấm điểm
-    var correctCount = 0;
+    var totalScore = 0; // tổng điểm thực (mỗi câu tối đa 1.0)
+    var correctCount = 0; // số câu đúng hoàn toàn (để hiển thị)
     var details = questions.map((q, index) => {
-        var isCorrect = answers[index] === q.correct;
+        q = migrateQuestion(q);
+        var studentAnswer = answers[index];
+        var type = q.type || 'single';
+        var questionScore = scoreQuestion(q, studentAnswer); // 0.0–1.0
+        var isCorrect = questionScore === 1;
+        totalScore += questionScore;
         if (isCorrect) correctCount++;
-        
-        // Lấy nội dung text của đáp án để dễ kiểm tra (vì đề đã đảo thứ tự)
-        var studentAnswerText = (answers[index] >= 0 && answers[index] < q.options.length) 
-            ? q.options[answers[index]] 
-            : null;
-        var correctAnswerText = q.options[q.correct];
-        
+
+        // Nội dung đáp án để hiển thị
+        var studentAnswerText = null;
+        var correctAnswerText = null;
+        if (type === 'single') {
+            studentAnswerText = (typeof studentAnswer === 'number' && studentAnswer >= 0 && studentAnswer < q.options.length)
+                ? q.options[studentAnswer] : null;
+            correctAnswerText = q.options[q.correct];
+        } else if (type === 'multi') {
+            studentAnswerText = Array.isArray(studentAnswer)
+                ? studentAnswer.map(function(i) { return q.options[i] || ''; }).join(', ') : null;
+            correctAnswerText = Array.isArray(q.correctList)
+                ? q.correctList.map(function(i) { return q.options[i] || ''; }).join(', ') : '';
+        } else if (type === 'truefalse') {
+            studentAnswerText = Array.isArray(studentAnswer)
+                ? studentAnswer.map(function(v, i) { return (String.fromCharCode(65+i)) + ': ' + (v === true ? 'Đúng' : v === false ? 'Sai' : '?'); }).join(', ') : null;
+            correctAnswerText = Array.isArray(q.correctTF)
+                ? q.correctTF.map(function(v, i) { return (String.fromCharCode(65+i)) + ': ' + (v ? 'Đúng' : 'Sai'); }).join(', ') : '';
+        }
+
         return {
             question: q.question,
-            studentAnswer: answers[index],
-            studentAnswerText: studentAnswerText,  // Nội dung đáp án HS chọn
+            type: type,
+            studentAnswer: studentAnswer,
+            studentAnswerText: studentAnswerText,
             correctAnswer: q.correct,
-            correctAnswerText: correctAnswerText,  // Nội dung đáp án đúng
-            isCorrect
+            correctAnswerText: correctAnswerText,
+            correctList: q.correctList || null,
+            correctTF: q.correctTF || null,
+            isCorrect,
+            questionScore: questionScore
         };
     });
-    
-    var score = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) / 10 : 0;
+
+    // Điểm = (tổng điểm thực / số câu) × 10
+    // truefalse tính partial (số phát biểu đúng / tổng phát biểu), single/multi all-or-nothing
+    var score = questions.length > 0 ? Math.round((totalScore / questions.length) * 100) / 10 : 0;
     
     var result = {
         studentSTT,
@@ -2210,31 +2352,15 @@ app.post('/api/import-json-file', upload.single('file'), (req, res) => {
         // Validate và import câu hỏi
         var validQuestions = [];
         var errors = [];
-        
+
         uploadedQuestions.forEach((q, index) => {
-            var qNum = index + 1;
-            
-            if (!q.question || typeof q.question !== 'string' || q.question.trim() === '') {
-                errors.push(`Câu ${qNum}: Thiếu nội dung câu hỏi`);
-                return;
+            var qErrors = [];
+            var normalized = validateAndNormalizeQuestion(q, index + 1, qErrors);
+            if (normalized) {
+                validQuestions.push(normalized);
+            } else {
+                errors = errors.concat(qErrors);
             }
-            
-            if (!q.options || !Array.isArray(q.options) || q.options.length < 2) {
-                errors.push(`Câu ${qNum}: Thiếu hoặc không đủ đáp án`);
-                return;
-            }
-            
-            if (typeof q.correct !== 'number' || q.correct < 0 || q.correct >= q.options.length) {
-                errors.push(`Câu ${qNum}: Đáp án đúng không hợp lệ`);
-                return;
-            }
-            
-            validQuestions.push({
-                question: q.question.trim(),
-                options: q.options.map(opt => String(opt).trim()),
-                correct: q.correct,
-                image: q.image || null
-            });
         });
         
         if (validQuestions.length === 0) {
@@ -2292,40 +2418,15 @@ app.post('/api/upload-questions-json', express.json({ limit: '10mb' }), (req, re
         // Validate từng câu hỏi
         var validQuestions = [];
         var errors = [];
-        
+
         uploadedQuestions.forEach((q, index) => {
-            var qNum = index + 1;
-            
-            // Kiểm tra câu hỏi
-            if (!q.question || typeof q.question !== 'string' || q.question.trim() === '') {
-                errors.push(`Câu ${qNum}: Thiếu nội dung câu hỏi (question)`);
-                return;
+            var qErrors = [];
+            var normalized = validateAndNormalizeQuestion(q, index + 1, qErrors);
+            if (normalized) {
+                validQuestions.push(normalized);
+            } else {
+                errors = errors.concat(qErrors);
             }
-            
-            // Kiểm tra options
-            if (!q.options || !Array.isArray(q.options)) {
-                errors.push(`Câu ${qNum}: Thiếu danh sách đáp án (options)`);
-                return;
-            }
-            
-            if (q.options.length < 2) {
-                errors.push(`Câu ${qNum}: Phải có ít nhất 2 đáp án`);
-                return;
-            }
-            
-            // Kiểm tra đáp án đúng
-            if (typeof q.correct !== 'number' || q.correct < 0 || q.correct >= q.options.length) {
-                errors.push(`Câu ${qNum}: Đáp án đúng (correct) không hợp lệ`);
-                return;
-            }
-            
-            // Câu hỏi hợp lệ
-            validQuestions.push({
-                question: q.question.trim(),
-                options: q.options.map(opt => String(opt).trim()),
-                correct: q.correct,
-                image: q.image || null
-            });
         });
         
         if (validQuestions.length === 0) {
@@ -2359,6 +2460,60 @@ app.post('/api/upload-questions-json', express.json({ limit: '10mb' }), (req, re
     }
 });
 
+// Preview câu hỏi từ file Word (không lưu, trả về để xác nhận)
+app.post('/api/preview-word', upload.single('file'), function(req, res) {
+    if (!isLocalhost(req)) {
+        return res.status(403).json({ error: 'Không có quyền' });
+    }
+    if (!req.file || req.file.size === 0) {
+        return res.json({ success: false, error: 'Không nhận được file' });
+    }
+    mammothToHtml(req.file.buffer).then(function(result) {
+        var html = result.value;
+        var parsed = parseQuestionsFromHtml(html);
+        var warnings = [];
+        // Kiểm tra từng câu và thu thập cảnh báo
+        parsed.forEach(function(q, i) {
+            var num = i + 1;
+            var type = q.type || 'single';
+            if (!q.question || q.question.trim() === '') {
+                warnings.push({ index: i, msg: 'Câu ' + num + ': Thiếu nội dung câu hỏi' });
+            }
+            if (!q.options || q.options.length < 2) {
+                warnings.push({ index: i, msg: 'Câu ' + num + ': Chỉ có ' + (q.options ? q.options.length : 0) + ' đáp án (cần ít nhất 2)' });
+            }
+            if (type === 'single' && (q.correct === undefined || q.correct < 0)) {
+                warnings.push({ index: i, msg: 'Câu ' + num + ': Không tìm thấy đáp án đúng (thêm dấu * sau đáp án đúng)' });
+            }
+            if (type === 'multi' && (!q.correctList || q.correctList.length < 2)) {
+                warnings.push({ index: i, msg: 'Câu ' + num + ': Câu nhiều đáp án cần ít nhất 2 dấu *' });
+            }
+            if (type === 'truefalse' && q.correctTF) {
+                var undecided = q.correctTF.filter(function(v) { return v === undefined || v === null; }).length;
+                if (undecided > 0) {
+                    warnings.push({ index: i, msg: 'Câu ' + num + ': ' + undecided + ' phát biểu chưa có (đúng)/(sai)/(Đ)/(S)' });
+                }
+            }
+        });
+        // Preview: rút gọn options (bỏ base64 dài để giảm payload)
+        var preview = parsed.map(function(q, i) {
+            return {
+                index: i,
+                type: q.type || 'single',
+                questionPreview: stripHtmlTags(q.question).substring(0, 120),
+                optionCount: q.options ? q.options.length : 0,
+                correct: q.correct,
+                correctList: q.correctList,
+                correctTF: q.correctTF,
+                hasImage: /data:image\//i.test(q.question + (q.options || []).join(''))
+            };
+        });
+        res.json({ success: true, count: parsed.length, preview: preview, warnings: warnings });
+    }).catch(function(err) {
+        res.json({ success: false, error: 'Không thể đọc file Word: ' + err.message });
+    });
+});
+
 // Import câu hỏi từ file Word
 app.post('/api/import-word', upload.single('file'), async (req, res) => {
     if (!isLocalhost(req)) {
@@ -2371,31 +2526,303 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
         return res.json({ success: false, error: 'Không nhận được file' });
     }
     
-    try {
-        var result = await mammoth.extractRawText({ buffer: req.file.buffer });
-        var text = result.value;
-        
-        console.log('[INFO] Noi dung trich xuat: ' + text.substring(0, 200) + '...');
-        
-        // Parse câu hỏi từ text
-        var parsedQuestions = parseQuestionsFromText(text);
-        
+    mammothToHtml(req.file.buffer).then(function(result) {
+        var html = result.value;
+        console.log('[INFO] Mammoth HTML (200 chars): ' + html.substring(0, 200));
+        var parsedQuestions = parseQuestionsFromHtml(html);
+
         if (parsedQuestions.length === 0) {
             return res.json({ success: false, error: 'Không tìm thấy câu hỏi nào. Kiểm tra lại định dạng file.' });
         }
-        
-        // Thêm vào danh sách câu hỏi
+
         questions = questions.concat(parsedQuestions);
         saveQuestions();
-        
         io.emit('questionsUpdated', questions.length);
-        
         res.json({ success: true, imported: parsedQuestions.length, total: questions.length });
-    } catch (err) {
+    }).catch(function(err) {
         console.error('Lỗi đọc file Word:', err);
-        res.json({ success: false, error: 'Không thể đọc file Word' });
-    }
+        res.json({ success: false, error: 'Không thể đọc file Word: ' + err.message });
+    });
 });
+
+// ========== HTML SANITIZER (server-side, regex-based) ==========
+var ALLOWED_HTML_TAGS = {
+    'b': [], 'strong': [], 'i': [], 'em': [], 'u': [],
+    'p': [], 'br': [], 'span': ['style'], 'sub': [], 'sup': [],
+    'img': ['src', 'alt', 'width', 'height', 'style']
+};
+
+function sanitizeStyleAttr(style) {
+    if (/url\s*\(|expression\s*\(|javascript:/i.test(style)) return '';
+    var safeParts = [];
+    var declarations = style.split(';');
+    var SAFE_PROPS = ['color','background-color','font-size','font-weight','font-style',
+                      'text-decoration','vertical-align','width','height','max-width','max-height'];
+    for (var i = 0; i < declarations.length; i++) {
+        var parts = declarations[i].split(':');
+        if (parts.length >= 2) {
+            var prop = parts[0].trim().toLowerCase();
+            var val = parts.slice(1).join(':').trim();
+            if (SAFE_PROPS.indexOf(prop) >= 0 && !/url|expression|javascript/i.test(val)) {
+                safeParts.push(prop + ':' + val);
+            }
+        }
+    }
+    return safeParts.join(';');
+}
+
+function sanitizeHtml(html) {
+    if (!html || typeof html !== 'string') return '';
+    html = html.replace(/<script[\s\S]*?<\/script>/gi, '');
+    html = html.replace(/<style[\s\S]*?<\/style>/gi, '');
+    html = html.replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)>/gi, function(fullMatch, tagName, attrs) {
+        var lowerTag = tagName.toLowerCase();
+        if (fullMatch.charAt(1) === '/') {
+            return ALLOWED_HTML_TAGS.hasOwnProperty(lowerTag) ? '</' + lowerTag + '>' : '';
+        }
+        if (!ALLOWED_HTML_TAGS.hasOwnProperty(lowerTag)) return '';
+        var allowedAttrs = ALLOWED_HTML_TAGS[lowerTag];
+        var cleanAttrs = '';
+        for (var i = 0; i < allowedAttrs.length; i++) {
+            var attrName = allowedAttrs[i];
+            var attrRegex = new RegExp(attrName + '\\s*=\\s*("([^"]*)"' + "|'([^']*)'|(\\S+))", 'i');
+            var attrMatch = attrs.match(attrRegex);
+            if (attrMatch) {
+                var attrVal = attrMatch[2] !== undefined ? attrMatch[2] : (attrMatch[3] !== undefined ? attrMatch[3] : (attrMatch[4] || ''));
+                if (attrName === 'src') {
+                    if (attrVal.indexOf('data:image/') !== 0) continue;
+                }
+                if (attrName === 'style') {
+                    attrVal = sanitizeStyleAttr(attrVal);
+                    if (!attrVal) continue;
+                }
+                cleanAttrs += ' ' + attrName + '="' + attrVal + '"';
+            }
+        }
+        var selfClose = (lowerTag === 'br' || lowerTag === 'img') ? ' /' : '';
+        return '<' + lowerTag + cleanAttrs + selfClose + '>';
+    });
+    return html.trim();
+}
+
+// ========== MAMMOTH HTML HELPER ==========
+function mammothToHtml(buffer) {
+    return mammoth.convertToHtml(
+        { buffer: buffer },
+        {
+            convertImage: mammoth.images.imgElement(function(image) {
+                return image.read('base64').then(function(imageBase64) {
+                    return { src: 'data:' + image.contentType + ';base64,' + imageBase64 };
+                });
+            })
+        }
+    );
+}
+
+// ========== PARSE CÂU HỎI TỪ HTML (mammoth output) ==========
+function stripHtmlTags(html) {
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+}
+
+function removeCorrectMarkers(html) {
+    return html.replace(/\*|\[x\]|\[X\]/g, '').replace(/\(đúng\)|\(dung\)/gi, '').trim();
+}
+
+// Regex nhận dạng marker "đúng" cho truefalse: (đúng) (dung) (Đ) (D) (d) (đ) (T) (t) (Y) (y)
+var TF_TRUE_REGEX = /\(đúng\)|\(dung\)|\(Đ\)|\(đ\)|\(D\)|\(d\)|\(T\)|\(t\)|\(Y\)|\(y\)/i;
+// Regex nhận dạng marker "sai" cho truefalse: (sai) (S) (s) (F) (f) (N) (n)
+var TF_FALSE_REGEX = /\(sai\)|\(S\)|\(s\)|\(F\)|\(f\)|\(N\)|\(n\)/i;
+// Regex xóa tất cả TF markers khỏi HTML
+var TF_ALL_MARKERS = /\(đúng\)|\(dung\)|\(Đ\)|\(đ\)|\(D\)|\(d\)|\(T\)|\(t\)|\(Y\)|\(y\)|\(sai\)|\(S\)|\(s\)|\(F\)|\(f\)|\(N\)|\(n\)/gi;
+
+function removeTFMarkers(html) {
+    return html.replace(TF_ALL_MARKERS, '').trim();
+}
+
+function stripOptionPrefix(html) {
+    return html.replace(/^[A-Za-z][\.\)]\s*/, '');
+}
+
+function stripQuestionPrefix(html) {
+    // Loại bỏ "Câu N:" hoặc "N." ở đầu
+    return html.replace(/^(Câu\s*\d+[\.:]\s*|\d+[\.:]\s*)/i, '');
+}
+
+function stripTypeTags(html) {
+    return html.replace(/\[MULTI\]/gi, '')
+               .replace(/\[ĐÚNG\/SAI\]/gi, '')
+               .replace(/\[DUNGSAI\]/gi, '')
+               .replace(/\[DUNG\/SAI\]/gi, '')
+               .trim();
+}
+
+function buildQuestionObj(type, question, options, correctAnswer, correctList, correctTF) {
+    return {
+        type: type,
+        question: sanitizeHtml(question),
+        options: options.map(function(o) { return sanitizeHtml(o); }),
+        correct: correctAnswer >= 0 ? correctAnswer : 0,
+        correctList: type === 'multi' ? correctList : null,
+        correctTF: type === 'truefalse' ? correctTF : null,
+        image: null
+    };
+}
+
+function parseQuestionsFromHtml(html) {
+    var parsedQuestions = [];
+    var paragraphs = [];
+    var pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+    var match;
+    while ((match = pRegex.exec(html)) !== null) {
+        var inner = match[1].replace(/<br\s*\/?>/gi, ' ').trim();
+        if (inner) paragraphs.push(inner);
+    }
+    // Fallback nếu không có thẻ <p>
+    if (paragraphs.length === 0) {
+        return parseQuestionsFromText(html.replace(/<[^>]+>/g, '\n'));
+    }
+
+    var currentQuestion = null;
+    var currentOptions = [];
+    var currentType = 'single';
+    var correctAnswer = -1;
+    var correctList = [];
+    var correctTF = [];
+
+    for (var i = 0; i < paragraphs.length; i++) {
+        var paraHtml = paragraphs[i];
+        var plainText = stripHtmlTags(paraHtml);
+
+        var questionMatch = plainText.match(/^(Câu\s*\d+[\.:]\s*|\d+[\.:]\s*)(.*)/i);
+        if (questionMatch) {
+            if (currentQuestion !== null && currentOptions.length >= 2) {
+                parsedQuestions.push(buildQuestionObj(currentType, currentQuestion, currentOptions, correctAnswer, correctList, correctTF));
+            }
+            currentType = 'single';
+            correctAnswer = -1;
+            correctList = [];
+            correctTF = [];
+            currentOptions = [];
+
+            if (/\[MULTI\]/i.test(plainText)) {
+                currentType = 'multi';
+            } else if (/\[ĐÚNG\/SAI\]|\[DUNGSAI\]|\[DUNG\/SAI\]/i.test(plainText)) {
+                currentType = 'truefalse';
+            }
+
+            // Lấy inner HTML của câu hỏi, bỏ prefix "Câu N:" và type tags
+            var qHtml = stripQuestionPrefix(stripTypeTags(paraHtml));
+            // Nếu plain text prefix còn sót lại
+            qHtml = qHtml.replace(/^(Câu\s*\d+[\.:]\s*|\d+[\.:]\s*)/i, '');
+            currentQuestion = qHtml.trim();
+            continue;
+        }
+
+        var optionMatch = plainText.match(/^([A-Za-z])[\.\)]\s*(.*)/);
+        if (optionMatch && currentQuestion !== null) {
+            var optLetter = optionMatch[1].toUpperCase();
+            var optIndex = optLetter.charCodeAt(0) - 65;
+            var optHtml = stripOptionPrefix(paraHtml).trim();
+
+            if (currentType === 'single') {
+                if (plainText.indexOf('*') >= 0 || /\(đúng\)|\(dung\)/i.test(plainText)) {
+                    correctAnswer = optIndex;
+                }
+                optHtml = removeCorrectMarkers(optHtml);
+            } else if (currentType === 'multi') {
+                if (plainText.indexOf('*') >= 0 || /\(đúng\)|\(dung\)/i.test(plainText)) {
+                    correctList.push(optIndex);
+                }
+                optHtml = removeCorrectMarkers(optHtml);
+            } else if (currentType === 'truefalse') {
+                correctTF[optIndex] = TF_TRUE_REGEX.test(plainText);
+                optHtml = removeTFMarkers(optHtml);
+            }
+
+            while (currentOptions.length < optIndex) currentOptions.push('');
+            currentOptions[optIndex] = optHtml;
+        } else if (currentQuestion !== null && currentOptions.length === 0) {
+            currentQuestion += ' ' + paraHtml;
+        }
+    }
+
+    if (currentQuestion !== null && currentOptions.length >= 2) {
+        parsedQuestions.push(buildQuestionObj(currentType, currentQuestion, currentOptions, correctAnswer, correctList, correctTF));
+    }
+
+    return parsedQuestions;
+}
+
+// ========== VALIDATE CÂU HỎI (dùng chung) ==========
+function validateAndNormalizeQuestion(q, qNum, errors) {
+    if (!q.question || q.question.trim() === '') {
+        errors.push('Câu ' + qNum + ': Thiếu nội dung câu hỏi');
+        return null;
+    }
+    if (!q.options || !Array.isArray(q.options) || q.options.length < 2) {
+        errors.push('Câu ' + qNum + ': Thiếu hoặc không đủ đáp án (cần ít nhất 2)');
+        return null;
+    }
+
+    var type = q.type || 'single';
+
+    if (type === 'single') {
+        if (typeof q.correct !== 'number' || q.correct < 0 || q.correct >= q.options.length) {
+            errors.push('Câu ' + qNum + ': Đáp án đúng không hợp lệ');
+            return null;
+        }
+        return {
+            type: 'single',
+            question: String(q.question).trim(),
+            options: q.options.map(function(o) { return String(o).trim(); }),
+            correct: q.correct,
+            correctList: null,
+            correctTF: null,
+            image: q.image || null
+        };
+    }
+
+    if (type === 'multi') {
+        if (!Array.isArray(q.correctList) || q.correctList.length === 0) {
+            errors.push('Câu ' + qNum + ': Loại nhiều đáp án cần có correctList');
+            return null;
+        }
+        for (var i = 0; i < q.correctList.length; i++) {
+            if (typeof q.correctList[i] !== 'number' || q.correctList[i] < 0 || q.correctList[i] >= q.options.length) {
+                errors.push('Câu ' + qNum + ': correctList chứa chỉ số không hợp lệ');
+                return null;
+            }
+        }
+        return {
+            type: 'multi',
+            question: String(q.question).trim(),
+            options: q.options.map(function(o) { return String(o).trim(); }),
+            correct: q.correctList[0],
+            correctList: q.correctList,
+            correctTF: null,
+            image: q.image || null
+        };
+    }
+
+    if (type === 'truefalse') {
+        if (!Array.isArray(q.correctTF) || q.correctTF.length !== q.options.length) {
+            errors.push('Câu ' + qNum + ': Loại đúng/sai cần correctTF cùng độ dài options');
+            return null;
+        }
+        return {
+            type: 'truefalse',
+            question: String(q.question).trim(),
+            options: q.options.map(function(o) { return String(o).trim(); }),
+            correct: 0,
+            correctList: null,
+            correctTF: q.correctTF,
+            image: q.image || null
+        };
+    }
+
+    errors.push('Câu ' + qNum + ': Loại câu hỏi không hợp lệ (' + type + ')');
+    return null;
+}
 
 // Hàm parse câu hỏi từ text
 function parseQuestionsFromText(text) {
@@ -2430,7 +2857,7 @@ function parseQuestionsFromText(text) {
         }
         
         // Kiểm tra nếu là đáp án (A. B. C. D. hoặc A) B) C) D))
-        var optionMatch = line.match(/^([A-Da-d])[\.\)]\s*(.*)/);
+        var optionMatch = line.match(/^([A-Za-z])[\.\)]\s*(.*)/);
         
         if (optionMatch && currentQuestion) {
             var optionText = optionMatch[2];
@@ -2450,7 +2877,7 @@ function parseQuestionsFromText(text) {
             currentOptions[optionIndex] = optionText;
         }
         // Nếu không match và đang có câu hỏi, có thể là phần tiếp của câu hỏi
-        else if (currentQuestion && currentOptions.length === 0 && !line.match(/^[A-Da-d][\.\)]/)) {
+        else if (currentQuestion && currentOptions.length === 0 && !line.match(/^[A-Za-z][\.\)]/)) {
             currentQuestion += ' ' + line;
         }
     }

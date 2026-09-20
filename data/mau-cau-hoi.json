@@ -1,0 +1,32 @@
+[
+  {
+    "question": "Thủ đô của Việt Nam là gì?",
+    "options": ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Huế"],
+    "correct": 0
+  },
+  {
+    "question": "1 + 1 = ?",
+    "options": ["1", "2", "3", "4"],
+    "correct": 1
+  },
+  {
+    "question": "Thẻ HTML nào dùng để tạo tiêu đề lớn nhất?",
+    "options": ["<h6>", "<h1>", "<header>", "<title>"],
+    "correct": 1
+  },
+  {
+    "question": "Ngôn ngữ lập trình nào được sử dụng phổ biến nhất cho web?",
+    "options": ["Python", "Java", "JavaScript", "C++"],
+    "correct": 2
+  },
+  {
+    "question": "CSS là viết tắt của gì?",
+    "options": [
+      "Computer Style Sheets",
+      "Cascading Style Sheets", 
+      "Creative Style Sheets",
+      "Colorful Style Sheets"
+    ],
+    "correct": 1
+  }
+]

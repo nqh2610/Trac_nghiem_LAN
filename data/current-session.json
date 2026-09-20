@@ -1,0 +1,24 @@
+{
+  "currentSession": {
+    "classId": "class_1764766952564",
+    "className": "11A4",
+    "examId": "exam_1765906381946",
+    "examName": "Đề kiểm tra HK 1 K11"
+  },
+  "examSettings": {
+    "title": "Đề kiểm tra HK 1 K11",
+    "timeLimit": 30,
+    "isOpen": true,
+    "showScore": false,
+    "practiceMode": true,
+    "examPassword": "",
+    "requirePassword": false,
+    "currentSession": {
+      "classId": "class_1764766952564",
+      "className": "11A4",
+      "examId": "exam_1764770257487",
+      "examName": "BaiTest_1764770257484"
+    },
+    "currentExamId": "exam_1764770257487"
+  }
+}

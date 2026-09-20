@@ -1,0 +1,119 @@
+Câu 1: Thẻ nào dùng để tạo danh sách không có thứ tự trong HTML?
+A. <ul>
+B. <ol>
+C. <li>
+D. <list>
+
+Câu 2: Thẻ nào dùng để tạo danh sách có thứ tự trong HTML?
+A. <ol>
+B. <ul>
+C. <li>
+D. <dl>
+
+Câu 3: Thẻ <li> được sử dụng để làm gì?
+A. Định nghĩa một mục trong danh sách
+B. Tạo danh sách mới
+C. Tạo bảng
+D. Tạo dòng trong bảng
+
+Câu 4: Thẻ nào dùng để tạo bảng trong HTML?
+A. <table>
+B. <tab>
+C. <tb>
+D. <tbl>
+
+Câu 5: Thẻ <tr> trong bảng HTML dùng để làm gì?
+A. Tạo dòng (hàng)
+B. Tạo cột
+C. Tạo ô
+D. Tạo tiêu đề bảng
+
+Câu 6: Thẻ nào dùng để tạo ô tiêu đề trong bảng HTML?
+A. <th>
+B. <td>
+C. <thead>
+D. <header>
+
+Câu 7: Thuộc tính nào thay đổi kiểu đánh số của danh sách <ol>?
+A. type
+B. style
+C. list-style
+D. number
+
+Câu 8: Giá trị nào của thuộc tính type trong <ol> sẽ hiển thị số La Mã viết hoa?
+A. I
+B. a
+C. A
+D. i
+
+Câu 9: Thuộc tính colspan trong bảng HTML dùng để làm gì?
+A. Gộp nhiều cột thành một
+B. Gộp nhiều dòng thành một
+C. Tạo khoảng cách giữa các ô
+D. Căn chỉnh nội dung ô
+
+Câu 10: Thuộc tính rowspan trong bảng HTML dùng để làm gì?
+A. Gộp nhiều dòng thành một
+B. Gộp nhiều cột thành một
+C. Tạo viền cho bảng
+D. Căn chỉnh dòng
+
+Câu 11: Thẻ <dl> trong HTML dùng để tạo loại danh sách nào?
+A. Danh sách định nghĩa (mô tả)
+B. Danh sách có thứ tự
+C. Danh sách không có thứ tự
+D. Danh sách lồng nhau
+
+Câu 12: Trong danh sách định nghĩa, thẻ <dt> dùng để làm gì?
+A. Định nghĩa thuật ngữ (term)
+B. Định nghĩa mô tả
+C. Định nghĩa danh sách
+D. Định nghĩa dữ liệu
+
+Câu 13: Đoạn code sau hiển thị kết quả gì? <ol start="5"><li>Mục A</li><li>Mục B</li></ol>
+A. 5. Mục A, 6. Mục B
+B. 1. Mục A, 2. Mục B
+C. A. Mục A, B. Mục B
+D. 5. Mục A, 5. Mục B
+
+Câu 14: Thẻ nào dùng để nhóm phần thân của bảng HTML?
+A. <tbody>
+B. <body>
+C. <tfoot>
+D. <main>
+
+Câu 15: Thẻ <caption> trong bảng HTML được đặt ở vị trí nào?
+A. Ngay sau thẻ <table>
+B. Cuối bảng
+C. Trước thẻ <table>
+D. Trong thẻ <tr>
+
+Câu 16: Cho đoạn code: <td colspan="3" rowspan="2">Nội dung</td>. Ô này chiếm bao nhiêu ô trong bảng?
+A. 6 ô
+B. 3 ô
+C. 2 ô
+D. 5 ô
+
+Câu 17: Thuộc tính reversed trong thẻ <ol> có tác dụng gì?
+A. Đảo ngược thứ tự đánh số (giảm dần)
+B. Sắp xếp lại các mục
+C. Xóa số thứ tự
+D. Đổi kiểu số thành chữ
+
+Câu 18: Để tạo danh sách lồng nhau (nested list), ta cần đặt thẻ <ul> hoặc <ol> ở đâu?
+A. Bên trong thẻ <li>
+B. Bên ngoài thẻ <li>
+C. Bên trong thẻ <dl>
+D. Sau thẻ đóng </ul>
+
+Câu 19: Đoạn code nào sau đây tạo bảng có viền bằng CSS hiện đại?
+A. <table style="border: 1px solid black; border-collapse: collapse;">
+B. <table border="1">
+C. <table frame="border">
+D. <table bordercolor="black">
+
+Câu 20: Cho cấu trúc bảng có 4 cột. Dòng 1 có ô đầu tiên colspan="2", dòng 2 có ô đầu tiên rowspan="2". Để bảng hiển thị đúng, dòng 1 cần bao nhiêu thẻ <td> hoặc <th>?
+A. 3 thẻ
+B. 4 thẻ
+C. 2 thẻ
+D. 5 thẻ

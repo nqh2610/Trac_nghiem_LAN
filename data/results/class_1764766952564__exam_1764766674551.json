@@ -1,0 +1,86 @@
+[
+  {
+    "studentSTT": "2",
+    "studentName": "Nguyễn Trần Trâm Anh",
+    "studentClass": "11A4",
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 5,
+    "timeSpent": "30 phút 1 giây",
+    "submittedAt": "21:46:29 3/12/2025",
+    "details": [
+      {
+        "question": "Lệnh SQL nào dùng để tạo bảng mới trong cơ sở dữ liệu?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Để thêm dữ liệu mới vào bảng, ta sử dụng lệnh nào?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào dùng để cập nhật dữ liệu trong bảng?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Để xóa dữ liệu từ bảng, ta sử dụng lệnh nào?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào dùng để xóa hoàn toàn một bảng khỏi CSDL?",
+        "studentAnswer": 1,
+        "correctAnswer": 0,
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "studentSTT": "4",
+    "studentName": "Nguyễn Thị Ngọc Châm",
+    "studentClass": "11A4",
+    "score": 4,
+    "correctCount": 2,
+    "totalQuestions": 5,
+    "timeSpent": "1 phút 26 giây",
+    "submittedAt": "21:53:08 3/12/2025",
+    "details": [
+      {
+        "question": "Lệnh SQL nào dùng để tạo bảng mới trong cơ sở dữ liệu?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Để thêm dữ liệu mới vào bảng, ta sử dụng lệnh nào?",
+        "studentAnswer": 3,
+        "correctAnswer": 0,
+        "isCorrect": false
+      },
+      {
+        "question": "Lệnh nào dùng để cập nhật dữ liệu trong bảng?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Để xóa dữ liệu từ bảng, ta sử dụng lệnh nào?",
+        "studentAnswer": 0,
+        "correctAnswer": 0,
+        "isCorrect": true
+      },
+      {
+        "question": "Lệnh nào dùng để xóa hoàn toàn một bảng khỏi CSDL?",
+        "studentAnswer": 2,
+        "correctAnswer": 0,
+        "isCorrect": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,462 @@
+{
+  "name": "Đề kiểm tra HK 1 K11",
+  "questions": [
+    {
+      "question": "CPU đa lõi (multi-core) có ưu điểm gì so với CPU đơn lõi?",
+      "options": [
+        "Cho phép thực hiện nhiều công việc song song, tăng tốc độ xử lý",
+        "Tiêu thụ điện năng nhiều hơn nhưng xử lý chậm hơn",
+        "Chỉ chạy được một chương trình tại một thời điểm",
+        "Không cần bộ nhớ đệm để hoạt động"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Chuyển số nhị phân 10011 sang hệ thập phân được kết quả là bao nhiêu?",
+      "options": [
+        "19",
+        "17",
+        "23",
+        "21"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Bộ số học và logic (ALU) trong CPU có chức năng chính là gì?",
+      "options": [
+        "Thực hiện các phép tính số học và logic",
+        "Phối hợp và đồng bộ các thiết bị trong máy tính",
+        "Lưu trữ dữ liệu tạm thời",
+        "Khởi động hệ điều hành"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Với phép toán logic XOR, kết quả của biểu thức 1 XOR 0 là bao nhiêu?",
+      "options": [
+        "1",
+        "0",
+        "2",
+        "Không xác định"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "RAM có đặc điểm nào sau đây khác biệt với ROM?",
+      "options": [
+        "Dữ liệu bị mất khi tắt nguồn điện",
+        "Chỉ có thể đọc dữ liệu, không ghi được",
+        "Lưu trữ chương trình khởi động máy tính",
+        "Có dung lượng nhỏ hơn ROM"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Trong Access, để tạo bảng HocSinh với khóa chính là MaHS và khóa ngoại liên kết với bảng Lop, cú pháp nào sau đây là đúng?",
+      "options": [
+        "CREATE TABLE HocSinh (MaHS INT PRIMARY KEY, HoTen TEXT(50), MaLop TEXT(10), FOREIGN KEY (MaLop) REFERENCES Lop(MaLop))",
+        "CREATE TABLE HocSinh (MaHS INT, HoTen TEXT(50), MaLop TEXT(10) FOREIGN KEY REFERENCES Lop)",
+        "NEW TABLE HocSinh (MaHS INT PRIMARY, HoTen TEXT, MaLop LINK Lop)",
+        "MAKE TABLE HocSinh WITH KEY MaHS LINK MaLop TO Lop"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Trong Access, giá trị ngày tháng được bao bọc bởi ký tự nào?",
+      "options": [
+        "Dấu thăng #",
+        "Dấu nháy đơn '",
+        "Dấu nháy kép \"",
+        "Dấu ngoặc vuông []"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Câu lệnh SQL nào dùng để thêm cột DiaChi vào bảng GiaoVien trong Access?",
+      "options": [
+        "ALTER TABLE GiaoVien ADD COLUMN DiaChi TEXT(100)",
+        "UPDATE TABLE GiaoVien ADD DiaChi TEXT(100)",
+        "INSERT COLUMN DiaChi INTO GiaoVien",
+        "MODIFY TABLE GiaoVien NEW COLUMN DiaChi"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Câu lệnh INNER JOIN trong SQL có chức năng gì?",
+      "options": [
+        "Kết hợp dữ liệu từ hai bảng dựa trên điều kiện liên kết chung",
+        "Xóa các bản ghi trùng lặp trong bảng",
+        "Thêm dữ liệu vào nhiều bảng cùng lúc",
+        "Sắp xếp dữ liệu theo thứ tự tăng dần"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Câu lệnh SQL: DELETE FROM HocSinh WHERE MaLop = 'L01' sẽ thực hiện điều gì?",
+      "options": [
+        "Xóa tất cả học sinh thuộc lớp có mã L01",
+        "Xóa toàn bộ bảng HocSinh",
+        "Xóa cột MaLop khỏi bảng HocSinh",
+        "Xóa bảng Lop có mã L01"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Hệ điều hành nào sau đây được phát triển từ nhân Linux và sử dụng phổ biến cho điện thoại di động?",
+      "options": [
+        "Android",
+        "iOS",
+        "Windows Phone",
+        "BlackBerry OS"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Cơ chế Plug & Play trong hệ điều hành có chức năng chính là gì?",
+      "options": [
+        "Tự động nhận thiết bị ngoại vi khi khởi động",
+        "Tự động sao lưu dữ liệu khi khởi động",
+        "Tăng tốc độ xử lý của CPU",
+        "Bảo vệ máy tính khỏi virus"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Windows 95 mang lại những tính năng mới nổi bật nào so với các phiên bản trước?",
+      "options": [
+        "Start Menu, Taskbar, Shortcut và Plug & Play",
+        "Face ID, Siri và App Store",
+        "Giao diện dòng lệnh cải tiến",
+        "Chỉ hỗ trợ kiến trúc 128 bit"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Hệ điều hành đóng vai trò trung gian giữa những thành phần nào trong hệ thống máy tính?",
+      "options": [
+        "Phần mềm ứng dụng và phần cứng",
+        "CPU và bộ nhớ ngoài",
+        "Màn hình và bàn phím",
+        "Internet và mạng nội bộ"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Phần mềm mã nguồn mở có đặc điểm nào sau đây?",
+      "options": [
+        "Mã nguồn được công khai, cho phép chỉnh sửa và phân phối lại",
+        "Mã nguồn đóng kín, yêu cầu trả phí sử dụng",
+        "Chỉ được sử dụng trên hệ điều hành Windows",
+        "Không cho phép cộng đồng đóng góp phát triển"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Giấy phép GPL (GNU General Public License) yêu cầu điều gì đối với phần mềm được chỉnh sửa?",
+      "options": [
+        "Phiên bản chỉnh sửa cũng phải được phân phối dưới giấy phép GPL",
+        "Phiên bản chỉnh sửa có thể đóng mã nguồn hoàn toàn",
+        "Không được phép chỉnh sửa phần mềm gốc",
+        "Phải trả phí bản quyền cho tác giả gốc"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Giấy phép Apache License có đặc điểm gì?",
+      "options": [
+        "Không yêu cầu phải mở mã nguồn các phần mềm phát triển từ nó",
+        "Yêu cầu tất cả phần mềm phát sinh phải mở mã nguồn",
+        "Cấm sử dụng cho mục đích thương mại",
+        "Chỉ áp dụng cho hệ điều hành Linux"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Phần mềm chạy trên Internet có ưu điểm nào sau đây?",
+      "options": [
+        "Không cần cài đặt trên máy cá nhân, truy cập được từ mọi thiết bị có Internet",
+        "Chỉ hoạt động khi không có kết nối mạng",
+        "Không thể cập nhật sau khi phát hành",
+        "Yêu cầu cấu hình phần cứng rất cao"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Thiết bị nào sau đây thuộc nhóm thiết bị vào?",
+      "options": [
+        "Máy quét (Scanner)",
+        "Máy chiếu (Projector)",
+        "Loa (Speaker)",
+        "Máy in (Printer)"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Cổng kết nối nào phổ biến nhất để truyền tín hiệu video độ phân giải cao từ máy tính sang màn hình?",
+      "options": [
+        "HDMI",
+        "USB 2.0",
+        "PS/2",
+        "Serial Port"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Bảng vẽ điện tử (Graphic Tablet) thuộc loại thiết bị nào?",
+      "options": [
+        "Thiết bị vào",
+        "Thiết bị ra",
+        "Thiết bị lưu trữ",
+        "Thiết bị mạng"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Khi chia sẻ tệp trên Google Drive, quyền 'Chỉnh sửa' (Editor) cho phép người nhận làm gì?",
+      "options": [
+        "Xem, nhận xét và chỉnh sửa tệp",
+        "Chỉ có thể xem tệp",
+        "Chỉ có thể xem và thêm nhận xét",
+        "Xóa tệp của người chia sẻ vĩnh viễn"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Ổ đĩa trực tuyến như Google Drive, Dropbox có đặc điểm nào sau đây?",
+      "options": [
+        "Dữ liệu được lưu trữ trên máy chủ từ xa và truy cập qua Internet",
+        "Dữ liệu chỉ lưu trữ trên máy tính cá nhân",
+        "Không thể chia sẻ tệp với người khác",
+        "Yêu cầu cài đặt phần mềm nặng trên máy"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Khi muốn chia sẻ tệp cho người khác chỉ có quyền xem mà không được chỉnh sửa, nên chọn quyền nào trên Google Drive?",
+      "options": [
+        "Xem (Viewer)",
+        "Chỉnh sửa (Editor)",
+        "Nhận xét (Commenter)",
+        "Chủ sở hữu (Owner)"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Cú pháp tìm kiếm nâng cao 'filetype:pdf' trên Google có công dụng gì?",
+      "options": [
+        "Chỉ hiển thị kết quả là các tệp PDF",
+        "Tìm kiếm tất cả các loại tệp tin",
+        "Chuyển đổi kết quả thành định dạng PDF",
+        "Xóa các tệp PDF trong kết quả tìm kiếm"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Khi sử dụng máy tìm kiếm, việc thay đổi từ khóa khi không tìm được kết quả mong muốn nhằm mục đích gì?",
+      "options": [
+        "Nâng cao hiệu quả tìm kiếm và thu hẹp phạm vi kết quả",
+        "Làm chậm quá trình tìm kiếm",
+        "Tăng số lượng quảng cáo hiển thị",
+        "Xóa lịch sử tìm kiếm trước đó"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Tính năng tìm kiếm bằng giọng nói trên công cụ tìm kiếm yêu cầu người dùng thực hiện bước nào?",
+      "options": [
+        "Nhấp vào biểu tượng micro và nói từ khóa cần tìm",
+        "Gõ từ khóa bằng bàn phím ảo",
+        "Quét mã QR của từ khóa",
+        "Kết nối với máy in để in từ khóa"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Nguyên tắc 'Hãy chậm lại!' khi phòng tránh lừa đảo trên không gian số có ý nghĩa gì?",
+      "options": [
+        "Bình tĩnh suy xét, không hành động vội vàng theo yêu cầu khẩn cấp",
+        "Tắt máy tính ngay lập tức khi nhận được tin nhắn lạ",
+        "Chuyển tiền nhanh chóng để giải quyết vấn đề",
+        "Không sử dụng Internet trong 24 giờ"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Khi nhận được tin nhắn yêu cầu chuyển tiền gấp từ người quen, hành động đúng nhất là gì?",
+      "options": [
+        "Liên hệ trực tiếp với người đó qua kênh khác để xác minh",
+        "Chuyển tiền ngay để giúp đỡ bạn bè",
+        "Chia sẻ tin nhắn lên mạng xã hội",
+        "Cung cấp thêm thông tin cá nhân để xác nhận"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Quy tắc 'An toàn, bảo mật thông tin' khi giao tiếp trên môi trường số yêu cầu điều gì?",
+      "options": [
+        "Tuân thủ các quy định bảo vệ thông tin cá nhân và sử dụng phần mềm chống virus",
+        "Chia sẻ mật khẩu với bạn bè thân thiết",
+        "Đăng tải thông tin cá nhân công khai trên mạng xã hội",
+        "Tắt tất cả phần mềm diệt virus để tăng tốc máy"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Truy xuất dữ liệu trong quản lý bao gồm những hoạt động nào?",
+      "options": [
+        "Tìm kiếm, sắp xếp và lọc dữ liệu đã lưu trữ",
+        "Chỉ thêm dữ liệu mới vào hệ thống",
+        "Xóa toàn bộ dữ liệu trong cơ sở dữ liệu",
+        "Thay đổi cấu trúc bảng dữ liệu"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Thu thập dữ liệu tự động bằng mã vạch có ưu điểm gì so với nhập liệu thủ công?",
+      "options": [
+        "Nhanh chóng, chính xác và giảm thiểu sai sót do con người",
+        "Tốn nhiều thời gian hơn nhập liệu bằng tay",
+        "Yêu cầu nhân viên ghi chép lại thông tin",
+        "Chỉ hoạt động khi không có kết nối mạng"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Cập nhật dữ liệu trong quản lý bao gồm những thao tác nào?",
+      "options": [
+        "Ghi mới, sửa đổi và xóa dữ liệu",
+        "Chỉ đọc dữ liệu mà không thay đổi",
+        "Chỉ tạo bản sao lưu dữ liệu",
+        "Chuyển đổi định dạng file"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Tính 'không dư thừa' trong cơ sở dữ liệu có ý nghĩa gì?",
+      "options": [
+        "Mỗi thông tin chỉ được lưu trữ một lần để tránh lãng phí và sai sót",
+        "Xóa tất cả dữ liệu không sử dụng trong 30 ngày",
+        "Lưu trữ thông tin trùng lặp ở nhiều nơi để đảm bảo an toàn",
+        "Giới hạn dung lượng lưu trữ tối đa"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Tính 'toàn vẹn' của cơ sở dữ liệu đảm bảo điều gì?",
+      "options": [
+        "Dữ liệu phải hợp lệ và tuân theo các quy định đã thiết lập",
+        "Dữ liệu có thể nhập tự do mà không cần kiểm tra",
+        "Cho phép điểm học sinh vượt quá thang điểm 10",
+        "Tất cả người dùng đều có quyền truy cập như nhau"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Tính 'độc lập dữ liệu' trong CSDL có nghĩa là gì?",
+      "options": [
+        "Khi dữ liệu thay đổi, phần mềm quản lý không cần thay đổi theo",
+        "Dữ liệu không liên kết được với phần mềm nào",
+        "Mỗi bảng dữ liệu phải tách biệt hoàn toàn",
+        "Người dùng không thể truy cập dữ liệu từ xa"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Nhóm chức năng 'định nghĩa dữ liệu' của Hệ QTCSDL thực hiện những công việc gì?",
+      "options": [
+        "Khai báo, tạo lập và chỉnh sửa cấu trúc của cơ sở dữ liệu",
+        "Thêm, xóa và sửa các bản ghi dữ liệu",
+        "Tạo giao diện người dùng đồ họa",
+        "Sao lưu và khôi phục dữ liệu"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Hệ cơ sở dữ liệu (Hệ CSDL) bao gồm những thành phần nào?",
+      "options": [
+        "CSDL, Hệ QTCSDL và các phần mềm ứng dụng CSDL",
+        "Chỉ có phần cứng máy chủ",
+        "Chỉ có phần mềm ứng dụng",
+        "CPU, RAM và ổ cứng"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Hệ CSDL phân tán có đặc điểm gì khác biệt so với Hệ CSDL tập trung?",
+      "options": [
+        "Dữ liệu được lưu trữ trên nhiều máy tính khác nhau và liên kết qua mạng",
+        "Dữ liệu chỉ lưu trên một máy tính duy nhất",
+        "Không hỗ trợ truy cập từ xa",
+        "Không cần kết nối mạng để hoạt động"
+      ],
+      "correct": 0,
+      "image": null
+    },
+    {
+      "question": "Microsoft Access là ví dụ về loại hệ CSDL nào?",
+      "options": [
+        "Hệ CSDL tập trung",
+        "Hệ CSDL phân tán",
+        "Hệ CSDL đám mây",
+        "Hệ CSDL thời gian thực"
+      ],
+      "correct": 0,
+      "image": null
+    }
+  ],
+  "settings": {
+    "title": "Đề kiểm tra HK 1 K11",
+    "timeLimit": 30,
+    "isOpen": false,
+    "showScore": true,
+    "practiceMode": true,
+    "examPassword": "",
+    "requirePassword": false,
+    "currentSession": {
+      "classId": "class_1764766952564",
+      "className": "11A4",
+      "examId": "exam_1764770257487",
+      "examName": "BaiTest_1764770257484"
+    },
+    "currentExamId": "exam_1764770257487"
+  },
+  "createdAt": "2025-12-16T17:33:17.610Z"
+}

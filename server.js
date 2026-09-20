@@ -125,6 +125,7 @@ var results = [];
 var students = []; // Danh sách học sinh từ Excel
 var studentStatus = {}; // Trạng thái học sinh: { stt: { selected: false, selectedBy: null, completed: false, canRetry: false } }
 var reports = []; // Báo cáo chọn nhầm
+var serverProgress = {}; // Progress backup: { stt: { startTime, examId, answers, questionOrder, optionOrders, timeLimit, savedAt } }
 
 // ========== HỆ THỐNG QUẢN LÝ LỚP & BÀI KIỂM TRA ==========
 // Mỗi lớp có thể làm nhiều bài kiểm tra
@@ -747,6 +748,23 @@ function loadStudentStatus() {
     }
 }
 
+// Lưu server progress (backup bài làm dở)
+function saveServerProgress() {
+    var dir = path.join(__dirname, 'data', 'progress');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'server-progress.json'), JSON.stringify(serverProgress, null, 2), 'utf8');
+}
+
+// Load server progress
+function loadServerProgress() {
+    try {
+        var filePath = path.join(__dirname, 'data', 'progress', 'server-progress.json');
+        serverProgress = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch (err) {
+        serverProgress = {};
+    }
+}
+
 // Lưu báo cáo
 function saveReports() {
     var dir = path.join(__dirname, 'data');
@@ -1086,15 +1104,85 @@ app.post('/api/check-answer', (req, res) => {
 app.get('/api/check-submitted/:stt', (req, res) => {
     var stt = req.params.stt;
     var examId = currentSession.examId || 'default';
-    
+
     // Kiểm tra trong studentStatus
     var status = studentStatus[stt];
     var hasSubmitted = status && status.completed === true;
-    
+
     res.json({
         submitted: hasSubmitted,
         examId: examId,
         canRetry: status ? status.canRetry : false
+    });
+});
+
+// Bắt đầu làm bài - lưu startTime lên server
+app.post('/api/start-exam', (req, res) => {
+    var stt = String(req.body.stt);
+    var examId = req.body.examId;
+    var timeLimit = req.body.timeLimit || 30;
+
+    // Nếu đã có progress và cùng examId → giữ startTime cũ (restore sau restart)
+    if (serverProgress[stt] && serverProgress[stt].examId === examId) {
+        return res.json({ success: true, startTime: serverProgress[stt].startTime, restored: true });
+    }
+
+    serverProgress[stt] = {
+        startTime: Date.now(),
+        examId: examId,
+        timeLimit: timeLimit,
+        answers: {},
+        questionOrder: [],
+        optionOrders: [],
+        savedAt: new Date().toISOString()
+    };
+    saveServerProgress();
+    res.json({ success: true, startTime: serverProgress[stt].startTime, restored: false });
+});
+
+// Sync answers lên server (gọi mỗi 30s)
+app.post('/api/save-progress', (req, res) => {
+    var stt = String(req.body.stt);
+    var examId = req.body.examId;
+    var answers = req.body.answers;
+    var questionOrder = req.body.questionOrder;
+    var optionOrders = req.body.optionOrders;
+
+    if (!serverProgress[stt] || serverProgress[stt].examId !== examId) {
+        return res.json({ success: false, error: 'Không tìm thấy session' });
+    }
+
+    serverProgress[stt].answers = answers;
+    serverProgress[stt].questionOrder = questionOrder;
+    serverProgress[stt].optionOrders = optionOrders;
+    serverProgress[stt].savedAt = new Date().toISOString();
+    saveServerProgress();
+    res.json({ success: true });
+});
+
+// Lấy progress từ server (dùng khi restore sau Deep Freeze)
+app.get('/api/get-progress/:stt', (req, res) => {
+    var stt = String(req.params.stt);
+    var examId = currentSession.examId || 'default';
+
+    var progress = serverProgress[stt];
+    if (!progress || progress.examId !== examId) {
+        return res.json({ found: false });
+    }
+
+    // Tính timeRemaining từ startTime thực tế
+    var elapsed = Math.floor((Date.now() - progress.startTime) / 1000);
+    var timeRemaining = Math.max(0, progress.timeLimit * 60 - elapsed);
+
+    res.json({
+        found: true,
+        startTime: progress.startTime,
+        timeRemaining: timeRemaining,
+        timeLimit: progress.timeLimit,
+        answers: progress.answers,
+        questionOrder: progress.questionOrder,
+        optionOrders: progress.optionOrders,
+        savedAt: progress.savedAt
     });
 });
 
@@ -2013,10 +2101,16 @@ app.post('/api/submit', (req, res) => {
         studentStatus[studentSTT].completed = true;
         studentStatus[studentSTT].selected = false;
         studentStatus[studentSTT].selectedBy = null;
-        studentStatus[studentSTT].canRetry = false; // Reset canRetry sau khi nộp
+        studentStatus[studentSTT].canRetry = false;
         saveStudentStatus();
-        
+
         io.emit('studentStatusUpdated', { stt: studentSTT, status: studentStatus[studentSTT] });
+    }
+
+    // Xóa server progress sau khi nộp bài
+    if (serverProgress[String(studentSTT)]) {
+        delete serverProgress[String(studentSTT)];
+        saveServerProgress();
     }
     
     res.json({
@@ -3035,6 +3129,8 @@ try { loadStudentStatus(); safeLog('[OK] loadStudentStatus'); } catch(e) { safeL
 try { loadResults(); safeLog('[OK] loadResults'); } catch(e) { safeLog('[LOI] loadResults: ' + e.message); }
 
 try { loadReports(); safeLog('[OK] loadReports'); } catch(e) { safeLog('[LOI] loadReports: ' + e.message); }
+
+try { loadServerProgress(); safeLog('[OK] loadServerProgress'); } catch(e) { safeLog('[LOI] loadServerProgress: ' + e.message); }
 
 safeLog('');
 safeLog('========================================');

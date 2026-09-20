@@ -2968,45 +2968,28 @@
         function startExam() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('examScreen').style.display = 'block';
-            
+
             document.getElementById('displayName').textContent = studentInfo.name;
             document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
-            
+
             // Hiển thị banner chế độ ôn tập nếu được bật
             if (practiceMode) {
                 showPracticeModeNotice();
-                // Ẩn timer và hiển thị badge ôn tập
                 document.getElementById('timer').style.display = 'none';
                 showPracticeModeBadge();
             } else {
-                // Chế độ thi - hiện timer bình thường
                 document.getElementById('timer').style.display = '';
                 hidePracticeModeBadge();
             }
-            
-            // Check for saved progress
+
+            // Check for saved progress (localStorage)
             var hasProgress = restoreExamProgress();
-            
+
             renderQuestions();
             renderNavigation();
-            
+
             if (hasProgress && Object.keys(answers).length > 0) {
-                // Restore UI from saved answers
                 applyRestoredAnswers();
-                
-                // Nếu đã có startTime từ restore, giữ nguyên (đó là thời điểm thực sự bắt đầu làm bài)
-                if (!startTime) {
-                    // Fallback nếu không có startTime - tính từ timeRemaining
-                    if (timeRemaining <= 0) {
-                        timeRemaining = timeLimit * 60;
-                        startTime = new Date();
-                    } else {
-                        var totalTimeSeconds = timeLimit * 60;
-                        var timeSpentSeconds = totalTimeSeconds - timeRemaining;
-                        startTime = new Date(Date.now() - timeSpentSeconds * 1000);
-                    }
-                }
-                
                 var minutesLeft = Math.floor(timeRemaining / 60);
                 var secondsLeft = timeRemaining % 60;
                 var answeredCount = Object.keys(answers).length;
@@ -3015,21 +2998,50 @@
                 } else {
                     showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft + ' phút');
                 }
-            } else {
-                startTime = new Date();
-                timeRemaining = timeLimit * 60;
             }
-            
-            // Chỉ start timer khi không phải chế độ ôn tập
-            if (!practiceMode) {
-                startTimer();
-            }
-            
-            // Initialize anti-cheat measures
-            initAntiCheat();
-            
-            // Show first question
-            setTimeout(function() { showCurrentQuestion(); }, 100);
+
+            // Gọi server để lưu startTime (hoặc lấy startTime cũ nếu restore)
+            var xhrStart = new XMLHttpRequest();
+            xhrStart.open('POST', '/api/start-exam', true);
+            xhrStart.setRequestHeader('Content-Type', 'application/json');
+            xhrStart.onreadystatechange = function() {
+                if (xhrStart.readyState === 4) {
+                    if (xhrStart.status === 200) {
+                        try {
+                            var data = JSON.parse(xhrStart.responseText);
+                            if (data.success) {
+                                var serverStartTime = data.startTime;
+                                var elapsed = Math.floor((Date.now() - serverStartTime) / 1000);
+                                var serverTimeRemaining = Math.max(0, timeLimit * 60 - elapsed);
+                                if (!practiceMode) {
+                                    timeRemaining = serverTimeRemaining;
+                                    startTime = new Date(serverStartTime);
+                                    if (timeRemaining <= 0) {
+                                        submitExam();
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch(e) {}
+                    }
+                    // Fallback nếu server không trả lời hoặc sau khi xử lý server
+                    if (!startTime) {
+                        startTime = new Date();
+                        if (!hasProgress) timeRemaining = timeLimit * 60;
+                    }
+                    if (!practiceMode) startTimer();
+                    initAntiCheat();
+                    setTimeout(function() { showCurrentQuestion(); }, 100);
+                }
+            };
+            xhrStart.send(JSON.stringify({
+                stt: studentInfo.stt,
+                examId: currentExamId,
+                timeLimit: timeLimit
+            }));
+
+            // Bắt đầu sync answers mỗi 30s
+            startProgressSync();
         }
 
         // Render questions
@@ -3520,7 +3532,38 @@
                 localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
             } catch (e) {}
         }
-        
+
+        // ==================== SERVER PROGRESS SYNC ====================
+        var progressSyncInterval = null;
+
+        function startProgressSync() {
+            stopProgressSync();
+            progressSyncInterval = setInterval(function() {
+                syncProgressToServer();
+            }, 30000); // mỗi 30 giây
+        }
+
+        function stopProgressSync() {
+            if (progressSyncInterval) {
+                clearInterval(progressSyncInterval);
+                progressSyncInterval = null;
+            }
+        }
+
+        function syncProgressToServer() {
+            if (!studentInfo || !studentInfo.stt || !currentExamId) return;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/save-progress', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                stt: studentInfo.stt,
+                examId: currentExamId,
+                answers: answers,
+                questionOrder: questionOrder,
+                optionOrders: optionOrders
+            }));
+        }
+
         // Biến lưu thời gian server (được cập nhật khi gọi API)
         var cachedServerTime = null;
         var serverTimeOffset = 0; // Chênh lệch giữa server và client (ms)
@@ -3677,9 +3720,7 @@
             try {
                 var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (!data) return;
-                
                 var allProgress = JSON.parse(data);
-                // Tìm session đang làm bài
                 var activeSession = null;
                 var keys = Object.keys(allProgress);
                 for (var k = 0; k < keys.length; k++) {
@@ -3688,59 +3729,33 @@
                         break;
                     }
                 }
-                
                 if (!activeSession) return;
-                
-                // Lưu activeSession vào biến global để dùng trong callback
+
                 window._restoreSession = activeSession;
-                
-                // Gọi API lấy settings (thời gian server, practiceMode)
+
+                // Gọi API lấy settings
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', '/api/settings', true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
-                        var serverTime = null;
                         var serverPracticeMode = window._restoreSession.practiceMode || false;
-                        
                         if (xhr.status === 200) {
                             try {
                                 var settingsData = JSON.parse(xhr.responseText);
-                                serverTime = new Date(settingsData.serverTime);
-                                cachedServerTime = serverTime;
-                                serverTimeOffset = serverTime.getTime() - Date.now();
+                                cachedServerTime = new Date(settingsData.serverTime);
+                                serverTimeOffset = cachedServerTime.getTime() - Date.now();
                                 serverPracticeMode = settingsData.practiceMode || false;
                             } catch(e) {}
                         }
-                        
-                        // Tiếp tục khôi phục session
-                        continueRestoreSession(window._restoreSession, serverTime, serverPracticeMode);
+                        continueRestoreSession(window._restoreSession, serverPracticeMode);
                     }
                 };
                 xhr.send();
-                
-            } catch (e) {
-            }
+            } catch (e) {}
         }
-        
-        // Tiếp tục khôi phục session sau khi có server time
-        function continueRestoreSession(activeSession, serverTime, serverPracticeMode) {
-            var skipTimeCheck = !serverTime;
-            if (!serverTime) {
-                serverTime = new Date();
-            }
-            
-            // Kiểm tra thời gian (2 giờ)
-            var savedTime = activeSession.savedAt ? new Date(activeSession.savedAt) : null;
-            
-            if (!skipTimeCheck && savedTime) {
-                var hoursDiff = (serverTime - savedTime) / (1000 * 60 * 60);
-                if (hoursDiff > 2) {
-                    clearExamProgress(activeSession.stt, activeSession.examId);
-                    return;
-                }
-            }
-            
-            // Kiểm tra với server xem học sinh đã nộp bài chưa
+
+        // Tiếp tục khôi phục: kiểm tra đã nộp chưa, lấy progress từ server
+        function continueRestoreSession(activeSession, serverPracticeMode) {
             var xhr2 = new XMLHttpRequest();
             xhr2.open('GET', '/api/check-submitted/' + activeSession.stt, true);
             xhr2.onreadystatechange = function() {
@@ -3758,43 +3773,96 @@
                             }
                         } catch(e) {}
                     }
-                    // Tiếp tục khôi phục
-                    finalizeRestoreSession(activeSession, serverTime, serverPracticeMode, savedTime, skipTimeCheck);
+                    // Lấy progress từ server (ưu tiên server cho thời gian)
+                    var xhr3 = new XMLHttpRequest();
+                    xhr3.open('GET', '/api/get-progress/' + activeSession.stt, true);
+                    xhr3.onreadystatechange = function() {
+                        if (xhr3.readyState === 4) {
+                            var serverProg = null;
+                            if (xhr3.status === 200) {
+                                try { serverProg = JSON.parse(xhr3.responseText); } catch(e) {}
+                            }
+                            // Hiện popup xác nhận danh tính trước khi khôi phục
+                            showRestoreConfirm(activeSession, serverProg, serverPracticeMode);
+                        }
+                    };
+                    xhr3.send();
                 }
             };
             xhr2.send();
         }
-        
+
+        // Popup xác nhận danh tính
+        function showRestoreConfirm(activeSession, serverProg, serverPracticeMode) {
+            var overlay = document.createElement('div');
+            overlay.id = 'restoreConfirmOverlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = '<div style="background:#fff;border-radius:12px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">'
+                + '<div style="font-size:48px;margin-bottom:16px;"></div>'
+                + '<h3 style="margin:0 0 8px;color:#333;">Phát hiện bài làm dở</h3>'
+                + '<p style="color:#666;margin:0 0 20px;">Có bài làm chưa hoàn thành của <strong style="color:#1976d2;">' + activeSession.name + '</strong> (STT ' + activeSession.stt + ')</p>'
+                + '<p style="color:#e65100;font-weight:bold;margin:0 0 24px;">Bạn có phải <strong>' + activeSession.name + '</strong> không?</p>'
+                + '<div style="display:flex;gap:12px;justify-content:center;">'
+                + '<button onclick="confirmRestoreYes()" style="background:#1976d2;color:#fff;border:none;padding:12px 28px;border-radius:8px;font-size:16px;cursor:pointer;font-weight:bold;">Phải, tiếp tục bài</button>'
+                + '<button onclick="confirmRestoreNo()" style="background:#e0e0e0;color:#333;border:none;padding:12px 28px;border-radius:8px;font-size:16px;cursor:pointer;">Không phải tôi</button>'
+                + '</div></div>';
+            document.body.appendChild(overlay);
+            window._restorePending = { activeSession: activeSession, serverProg: serverProg, serverPracticeMode: serverPracticeMode };
+        }
+
+        function confirmRestoreYes() {
+            var el = document.getElementById('restoreConfirmOverlay');
+            if (el) el.parentNode.removeChild(el);
+            var p = window._restorePending;
+            if (p) finalizeRestoreSession(p.activeSession, p.serverProg, p.serverPracticeMode);
+            window._restorePending = null;
+        }
+
+        function confirmRestoreNo() {
+            var el = document.getElementById('restoreConfirmOverlay');
+            if (el) el.parentNode.removeChild(el);
+            var p = window._restorePending;
+            if (p) clearExamProgress(p.activeSession.stt, p.activeSession.examId);
+            window._restorePending = null;
+        }
+
         // Hoàn tất khôi phục session
-        function finalizeRestoreSession(activeSession, serverTime, serverPracticeMode, savedTime, skipTimeCheck) {
-            // Tính thời gian còn lại
-            var remainingTime = activeSession.timeRemaining || 0;
-            if (!skipTimeCheck && savedTime) {
-                var timePassed = Math.floor((serverTime - savedTime) / 1000);
-                remainingTime = Math.max(0, activeSession.timeRemaining - timePassed);
+        function finalizeRestoreSession(activeSession, serverProg, serverPracticeMode) {
+            // Tính timeRemaining: ưu tiên server (startTime thực tế), fallback localStorage
+            var remainingTime;
+            if (serverProg && serverProg.found) {
+                remainingTime = serverProg.timeRemaining;
+                // Merge answers: ưu tiên server nếu có nhiều câu hơn
+                var serverAnswerCount = serverProg.answers ? Object.keys(serverProg.answers).length : 0;
+                var localAnswerCount = activeSession.answers ? Object.keys(activeSession.answers).length : 0;
+                if (serverAnswerCount >= localAnswerCount) {
+                    activeSession.answers = serverProg.answers;
+                    activeSession.questionOrder = serverProg.questionOrder || activeSession.questionOrder;
+                    activeSession.optionOrders = serverProg.optionOrders || activeSession.optionOrders;
+                }
+            } else {
+                // Fallback localStorage: tính từ savedAt
+                var savedTime = activeSession.savedAt ? new Date(activeSession.savedAt) : null;
+                var now = cachedServerTime || new Date();
+                if (savedTime) {
+                    var timePassed = Math.floor((now - savedTime) / 1000);
+                    remainingTime = Math.max(0, (activeSession.timeRemaining || 0) - timePassed);
+                } else {
+                    remainingTime = activeSession.timeRemaining || 0;
+                }
             }
-            
-            // Kiểm tra hết giờ
+
             if (!serverPracticeMode && remainingTime <= 0) {
                 clearExamProgress(activeSession.stt, activeSession.examId);
                 return;
             }
-            
-            // Lưu currentExamId
+
             currentExamId = activeSession.examId;
-            
-            // Khôi phục session
-            studentInfo = {
-                stt: activeSession.stt,
-                name: activeSession.name,
-                class: activeSession.class
-            };
-            
+            studentInfo = { stt: activeSession.stt, name: activeSession.name, class: activeSession.class };
             originalQuestions = activeSession.originalQuestions || [];
             questionOrder = activeSession.questionOrder || [];
             optionOrders = activeSession.optionOrders || [];
-            
-            // Khôi phục câu hỏi đã đảo
+
             if (optionOrders.length > 0) {
                 questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
             } else {
@@ -3803,20 +3871,18 @@
                     questions.push(originalQuestions[questionOrder[qi]]);
                 }
             }
-            
+
             answers = activeSession.answers || {};
             timeLimit = activeSession.timeLimit || 30;
             timeRemaining = remainingTime;
             practiceMode = serverPracticeMode;
-            
-            // Hiển thị màn hình làm bài
+
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('examScreen').style.display = 'block';
             document.getElementById('displayName').textContent = studentInfo.name;
             document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
             document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
-            
-            // Hiển thị banner ôn tập nếu đang ở chế độ ôn tập
+
             if (practiceMode) {
                 showPracticeModeNotice();
                 document.getElementById('timer').style.display = 'none';
@@ -3825,34 +3891,31 @@
                 document.getElementById('timer').style.display = '';
                 hidePracticeModeBadge();
             }
-            
-            // Khôi phục startTime
-            if (activeSession.startTime) {
-                startTime = new Date(activeSession.startTime);
+
+            // startTime từ server nếu có, fallback tính từ timeRemaining
+            if (serverProg && serverProg.found && serverProg.startTime) {
+                startTime = new Date(serverProg.startTime);
             } else {
-                var totalTimeSeconds = timeLimit * 60;
-                var timeSpentSeconds = totalTimeSeconds - timeRemaining;
-                startTime = new Date(Date.now() - timeSpentSeconds * 1000);
+                var totalSecs = timeLimit * 60;
+                startTime = new Date(Date.now() - (totalSecs - timeRemaining) * 1000);
             }
-            
+
             renderQuestions();
             renderNavigation();
             applyRestoredAnswers();
-            
-            // Start timer khi không phải chế độ ôn tập
-            if (!practiceMode) {
-                startTimer();
-            }
-            
+
+            if (!practiceMode) startTimer();
+            startProgressSync();
             initAntiCheat();
-            
+
             var minutesLeft = Math.floor(timeRemaining / 60);
             var secondsLeft = timeRemaining % 60;
             if (practiceMode) {
-                showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập - không giới hạn thời gian)');
+                showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập)');
             } else {
                 showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
             }
+            setTimeout(function() { showCurrentQuestion(); }, 100);
         }
 
         // Render navigation
@@ -3995,6 +4058,7 @@
             closeConfirmModal();
             clearInterval(timerInterval);
             timerInterval = null;
+            stopProgressSync(); // Dừng sync khi nộp bài
 
             // Thoát fullscreen ngay khi nộp bài
             exitFullscreen();

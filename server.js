@@ -1927,15 +1927,23 @@ app.post('/api/submit', (req, res) => {
     
     // Chấm điểm
     var totalScore = 0; // tổng điểm thực (mỗi câu tối đa 1.0)
-    var correctCount = 0; // số câu đúng hoàn toàn (để hiển thị)
+    var correctCount = 0;   // câu đúng hoàn toàn (score = 1)
+    var partialCount = 0;   // câu đúng một phần (0 < score < 1, chỉ truefalse)
+    var wrongCount = 0;     // câu sai hoàn toàn (score = 0, có trả lời)
+    var unansweredCount = 0; // câu không trả lời
     var details = questions.map((q, index) => {
         q = migrateQuestion(q);
         var studentAnswer = answers[index];
         var type = q.type || 'single';
         var questionScore = scoreQuestion(q, studentAnswer); // 0.0–1.0
         var isCorrect = questionScore === 1;
+        var hasAnswer = studentAnswer !== undefined && studentAnswer !== null && studentAnswer !== -1
+            && !(Array.isArray(studentAnswer) && studentAnswer.length === 0);
         totalScore += questionScore;
         if (isCorrect) correctCount++;
+        else if (!hasAnswer) unansweredCount++;
+        else if (questionScore > 0) partialCount++;
+        else wrongCount++;
 
         // Nội dung đáp án để hiển thị
         var studentAnswerText = null;
@@ -1980,6 +1988,9 @@ app.post('/api/submit', (req, res) => {
         studentClass,
         score,
         correctCount,
+        partialCount,
+        wrongCount,
+        unansweredCount,
         totalQuestions: questions.length,
         timeSpent,
         submittedAt: new Date().toLocaleString('vi-VN'),
@@ -2008,10 +2019,13 @@ app.post('/api/submit', (req, res) => {
         io.emit('studentStatusUpdated', { stt: studentSTT, status: studentStatus[studentSTT] });
     }
     
-    res.json({ 
-        success: true, 
-        score, 
-        correctCount, 
+    res.json({
+        success: true,
+        score,
+        correctCount,
+        partialCount,
+        wrongCount,
+        unansweredCount,
         totalQuestions: questions.length,
         showScore: examSettings.showScore
     });
@@ -2071,46 +2085,62 @@ app.get('/api/results/export', (req, res) => {
     for (var i = 0; i < sortedStudents.length; i++) {
         var student = sortedStudents[i];
         // Tìm kết quả của học sinh này (theo STT)
-        var result = results.find(function(r) { return r.studentSTT === student.stt; });
+        var result = results.find(function(r) { return String(r.studentSTT) === String(student.stt); });
         
         // Ghép họ + tên thành họ tên đầy đủ
         var fullName = [student.ho, student.ten].filter(Boolean).join(' ').trim();
         
         if (result) {
+            var submitOrder = results.indexOf(result) + 1;
             // Học sinh đã thi - có điểm
             excelData.push({
                 'STT': student.stt,
                 'Họ tên': fullName || result.studentName || '',
+                'Lớp': result.studentClass || student.lop || '',
+                'TT nộp': submitOrder,
                 'Điểm': result.score,
-                'Số câu đúng': result.correctCount,
+                'Đúng HT': result.correctCount,
+                'Đúng 1 phần': result.partialCount || 0,
+                'Sai': result.wrongCount || 0,
+                'Chưa TL': result.unansweredCount || 0,
                 'Tổng câu': result.totalQuestions,
                 'Thời gian làm': result.timeSpent,
-                'Thời gian nộp': result.submittedAt
+                'Nộp lúc': result.submittedAt
             });
         } else {
             // Học sinh chưa thi - để trống điểm
             excelData.push({
                 'STT': student.stt,
                 'Họ tên': fullName,
+                'Lớp': student.lop || '',
+                'TT nộp': '',
                 'Điểm': '',
-                'Số câu đúng': '',
+                'Đúng HT': '',
+                'Đúng 1 phần': '',
+                'Sai': '',
+                'Chưa TL': '',
                 'Tổng câu': '',
                 'Thời gian làm': '',
-                'Thời gian nộp': ''
+                'Nộp lúc': ''
             });
         }
     }
-    
+
     // Tạo worksheet và workbook
     var ws = XLSX.utils.json_to_sheet(excelData);
     ws['!cols'] = [
         { wch: 5 },   // STT
         { wch: 25 },  // Họ tên
+        { wch: 12 },  // Lớp
+        { wch: 8 },   // TT nộp
         { wch: 8 },   // Điểm
-        { wch: 12 },  // Số câu đúng
+        { wch: 10 },  // Đúng HT
+        { wch: 12 },  // Đúng 1 phần
+        { wch: 8 },   // Sai
+        { wch: 10 },  // Chưa TL
         { wch: 10 },  // Tổng câu
         { wch: 15 },  // Thời gian làm
-        { wch: 20 }   // Thời gian nộp
+        { wch: 20 }   // Nộp lúc
     ];
     
     var wb = XLSX.utils.book_new();

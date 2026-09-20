@@ -567,6 +567,10 @@
             background: #f8d7da;
         }
 
+        .detail-partial {
+            background: #fff8e1;
+        }
+
         /* Student status badges */
         .student-status {
             padding: 5px 12px;
@@ -1137,7 +1141,10 @@
                         <th>Lớp</th>
                         <th>STT lớp</th>
                         <th>Điểm</th>
-                        <th>Số câu đúng</th>
+                        <th>Đúng HT</th>
+                        <th>Đúng 1 phần</th>
+                        <th>Sai</th>
+                        <th>Chưa TL</th>
                         <th>Thời gian làm</th>
                         <th>Nộp lúc</th>
                         <th>Chi tiết</th>
@@ -2075,7 +2082,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
         function renderResults() {
             const tbody = document.getElementById('resultsBody');
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #666;">Chưa có học sinh nào nộp bài</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: #666;">Chưa có học sinh nào nộp bài</td></tr>';
                 return;
             }
 
@@ -2086,7 +2093,10 @@ C. Công thức nước là H₂O. (Đ)</pre>
                     <td>${escapeHtml(r.studentClass || '-')}</td>
                     <td>${r.studentSTT || r.studentId || '-'}</td>
                     <td class="${r.score >= 8 ? 'score-high' : r.score >= 5 ? 'score-medium' : 'score-low'}">${r.score}</td>
-                    <td>${r.correctCount}/${r.totalQuestions}</td>
+                    <td style="color:#2e7d32;font-weight:bold;">${r.correctCount}</td>
+                    <td style="color:#f9a825;">${r.partialCount || 0}</td>
+                    <td style="color:#c62828;">${r.wrongCount || 0}</td>
+                    <td style="color:#ff9800;">${r.unansweredCount || 0}</td>
                     <td>${r.timeSpent || '-'}</td>
                     <td>${r.submittedAt}</td>
                     <td><button class="btn btn-secondary" onclick="showDetail(${i})">️ Xem</button></td>
@@ -2152,10 +2162,27 @@ C. Công thức nước là H₂O. (Đ)</pre>
                     correctAnswerHtml = escapeHtml(d.correctAnswerText || (Array.isArray(d.correctTF) ? d.correctTF.map((v,j) => String.fromCharCode(65+j)+':'+(v?'Đúng':'Sai')).join(', ') : '?'));
                 }
 
-                let html = `<div class="detail-item ${d.isCorrect ? 'detail-correct' : 'detail-wrong'}" style="${studentDidNotAnswer ? 'border-left:4px solid #ff9800;' : ''}">
-                    <strong>Câu ${i + 1}:</strong> ${sanitizeHtmlClient(d.question || '')}<br>
+                const isPartial = type === 'truefalse' && !d.isCorrect && !studentDidNotAnswer && d.questionScore > 0;
+                let borderColor = studentDidNotAnswer ? '#ff9800' : (d.isCorrect ? '' : (isPartial ? '#f9a825' : ''));
+                let itemClass = d.isCorrect ? 'detail-correct' : (isPartial ? 'detail-partial' : 'detail-wrong');
+                let statusLabel = '';
+                if (type === 'truefalse' && !studentDidNotAnswer) {
+                    const totalTF = Array.isArray(d.correctTF) ? d.correctTF.length : 0;
+                    const correctTFCount = Array.isArray(d.correctTF) && Array.isArray(d.studentAnswer)
+                        ? d.correctTF.filter((v, j) => d.studentAnswer[j] === v).length : 0;
+                    if (d.isCorrect) {
+                        statusLabel = ` <span style="color:#2e7d32;font-size:0.85em;">(${totalTF}/${totalTF} phát biểu đúng)</span>`;
+                    } else if (isPartial) {
+                        statusLabel = ` <span style="color:#f9a825;font-size:0.85em;">(${correctTFCount}/${totalTF} phát biểu đúng)</span>`;
+                    } else {
+                        statusLabel = ` <span style="color:#c62828;font-size:0.85em;">(0/${totalTF} phát biểu đúng)</span>`;
+                    }
+                }
+
+                let html = `<div class="detail-item ${itemClass}" style="${borderColor ? 'border-left:4px solid ' + borderColor + ';' : ''}">
+                    <strong>Câu ${i + 1}:</strong> ${sanitizeHtmlClient(d.question || '')}${statusLabel}<br>
                     <div style="margin-top:5px;">
-                        <span style="color:${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : '#c62828')};">
+                        <span style="color:${d.isCorrect ? '#2e7d32' : (studentDidNotAnswer ? '#ff9800' : (isPartial ? '#f9a825' : '#c62828'))};">
                             HS chọn: ${studentAnswerHtml}
                         </span>
                     </div>`;
@@ -2174,7 +2201,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 <p><strong>Họ tên:</strong> ${escapeHtml(r.studentName)}</p>
                 <p><strong>Lớp:</strong> ${escapeHtml(r.studentClass || '-')}</p>
                 <p><strong>STT:</strong> ${r.studentSTT || r.studentId || '-'}</p>
-                <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng)</p>
+                <p><strong>Điểm:</strong> ${r.score} (${r.correctCount}/${r.totalQuestions} câu đúng hoàn toàn${r.partialCount > 0 ? ', ' + r.partialCount + ' đúng một phần' : ''}${r.wrongCount > 0 ? ', ' + r.wrongCount + ' sai' : ''}${r.unansweredCount > 0 ? ', ' + r.unansweredCount + ' chưa trả lời' : ''})</p>
                 ${unansweredCount > 0 ? `<p style="color:#ff9800;font-weight:bold;">Có ${unansweredCount} câu không chọn đáp án!</p>` : ''}
                 <hr style="margin:15px 0;">
                 <h4>Chi tiết từng câu:</h4>

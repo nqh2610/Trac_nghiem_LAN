@@ -2009,10 +2009,6 @@
             
             <div class="result-details">
                 <div class="result-row">
-                    <span>Số câu đúng</span>
-                    <strong id="correctCount">0/0</strong>
-                </div>
-                <div class="result-row">
                     <span>Thời gian làm</span>
                     <strong id="timeSpent">00:00</strong>
                 </div>
@@ -4155,9 +4151,7 @@
                 document.getElementById('resultScore').textContent = result.score;
                 document.getElementById('resultScore').style.display = 'block';
                 document.querySelector('.result-label').style.display = 'block';
-                document.getElementById('correctCount').textContent = result.correctCount + '/' + result.totalQuestions;
-                document.getElementById('correctCount').parentElement.style.display = 'flex';
-                
+
                 // Icon based on score
                 var icon = document.getElementById('resultIcon');
                 if (result.score >= 8) {
@@ -4171,7 +4165,6 @@
                 // Ẩn điểm nếu giáo viên không cho phép
                 document.getElementById('resultScore').style.display = 'none';
                 document.querySelector('.result-label').style.display = 'none';
-                document.getElementById('correctCount').parentElement.style.display = 'none';
                 document.getElementById('resultIcon').textContent = '';
             }
             
@@ -4266,9 +4259,7 @@
                 document.getElementById('resultScore').textContent = result.score;
                 document.getElementById('resultScore').style.display = 'block';
                 document.querySelector('.result-label').style.display = 'block';
-                document.getElementById('correctCount').textContent = result.correctCount + '/' + result.totalQuestions;
-                document.getElementById('correctCount').parentElement.style.display = 'flex';
-                
+
                 var icon = document.getElementById('resultIcon');
                 if (result.score >= 8) icon.textContent = '';
                 else if (result.score >= 5) icon.textContent = '';
@@ -4276,10 +4267,9 @@
             } else {
                 document.getElementById('resultScore').style.display = 'none';
                 document.querySelector('.result-label').style.display = 'none';
-                document.getElementById('correctCount').parentElement.style.display = 'none';
                 document.getElementById('resultIcon').textContent = '';
             }
-            
+
             document.getElementById('timeSpent').textContent = result.timeSpent;
             document.getElementById('resultName').textContent = result.name;
         }

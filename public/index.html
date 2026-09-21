@@ -3946,8 +3946,14 @@
                 var localAnswerCount = activeSession.answers ? Object.keys(activeSession.answers).length : 0;
                 if (serverAnswerCount >= localAnswerCount) {
                     activeSession.answers = serverProg.answers;
-                    activeSession.questionOrder = serverProg.questionOrder || activeSession.questionOrder;
-                    activeSession.optionOrders = serverProg.optionOrders || activeSession.optionOrders;
+                    // Chỉ lấy questionOrder/optionOrders từ server nếu server thực sự có data
+                    // (tránh array rỗng [] ghi đè data hợp lệ từ localStorage — [] là truthy trong JS)
+                    if (serverProg.questionOrder && serverProg.questionOrder.length > 0) {
+                        activeSession.questionOrder = serverProg.questionOrder;
+                    }
+                    if (serverProg.optionOrders && serverProg.optionOrders.length > 0) {
+                        activeSession.optionOrders = serverProg.optionOrders;
+                    }
                 }
             } else {
                 // Fallback localStorage: tính từ savedAt
@@ -3968,63 +3974,92 @@
 
             currentExamId = activeSession.examId;
             studentInfo = { stt: activeSession.stt, name: activeSession.name, class: activeSession.class };
-            originalQuestions = activeSession.originalQuestions || [];
             questionOrder = activeSession.questionOrder || [];
             optionOrders = activeSession.optionOrders || [];
-
-            if (optionOrders.length > 0) {
-                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
-            } else {
-                questions = [];
-                for (var qi = 0; qi < questionOrder.length; qi++) {
-                    questions.push(originalQuestions[questionOrder[qi]]);
-                }
-            }
-
             answers = activeSession.answers || {};
             timeLimit = activeSession.timeLimit || 30;
             timeRemaining = remainingTime;
             practiceMode = serverPracticeMode;
 
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('examScreen').style.display = 'block';
-            document.getElementById('displayName').textContent = studentInfo.name;
-            document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
-            document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
+            function applyAndRenderRestore(restoredQuestions) {
+                originalQuestions = restoredQuestions;
+                _progressQuestionsCache = null;
 
-            if (practiceMode) {
-                showPracticeModeNotice();
-                document.getElementById('timer').style.display = 'none';
-                showPracticeModeBadge();
-            } else {
-                document.getElementById('timer').style.display = '';
-                hidePracticeModeBadge();
-            }
-
-            // startTime từ server nếu có, fallback tính từ timeRemaining
-            if (serverProg && serverProg.found && serverProg.startTime) {
-                startTime = new Date(serverProg.startTime);
-            } else {
-                var totalSecs = timeLimit * 60;
-                startTime = new Date(Date.now() - (totalSecs - timeRemaining) * 1000);
-            }
-
-            renderNavigation();
-            renderQuestions(function() {
-                applyRestoredAnswers();
-                var minutesLeft = Math.floor(timeRemaining / 60);
-                var secondsLeft = timeRemaining % 60;
-                if (practiceMode) {
-                    showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập)');
+                if (optionOrders.length > 0) {
+                    questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
                 } else {
-                    showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
+                    questions = [];
+                    for (var qi = 0; qi < questionOrder.length; qi++) {
+                        questions.push(originalQuestions[questionOrder[qi]]);
+                    }
                 }
-                setTimeout(function() { showCurrentQuestion(); }, 100);
-            });
 
-            if (!practiceMode) startTimer();
-            startProgressSync();
-            initAntiCheat();
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('examScreen').style.display = 'block';
+                document.getElementById('displayName').textContent = studentInfo.name;
+                document.getElementById('displayClass').textContent = studentInfo.class + ' - STT ' + studentInfo.stt;
+                document.getElementById('examTitle').textContent = activeSession.examTitle || 'Bài kiểm tra';
+
+                if (practiceMode) {
+                    showPracticeModeNotice();
+                    document.getElementById('timer').style.display = 'none';
+                    showPracticeModeBadge();
+                } else {
+                    document.getElementById('timer').style.display = '';
+                    hidePracticeModeBadge();
+                }
+
+                // startTime từ server nếu có, fallback tính từ timeRemaining
+                if (serverProg && serverProg.found && serverProg.startTime) {
+                    startTime = new Date(serverProg.startTime);
+                } else {
+                    var totalSecs = timeLimit * 60;
+                    startTime = new Date(Date.now() - (totalSecs - timeRemaining) * 1000);
+                }
+
+                _prevQuestionIndex = -1;
+                renderNavigation();
+                renderQuestions(function() {
+                    applyRestoredAnswers();
+                    var minutesLeft = Math.floor(timeRemaining / 60);
+                    var secondsLeft = timeRemaining % 60;
+                    if (practiceMode) {
+                        showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập)');
+                    } else {
+                        showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
+                    }
+                    setTimeout(function() { showCurrentQuestion(); }, 100);
+                });
+
+                if (!practiceMode) startTimer();
+                startProgressSync();
+                initAntiCheat();
+            }
+
+            // Nếu localStorage không có originalQuestions (quota exceeded khi lưu), fetch lại từ server
+            var localOriginal = activeSession.originalQuestions;
+            if (!localOriginal || localOriginal.length === 0) {
+                var xhrQ = new XMLHttpRequest();
+                xhrQ.open('GET', '/api/exam', true);
+                xhrQ.onreadystatechange = function() {
+                    if (xhrQ.readyState === 4) {
+                        if (xhrQ.status === 200) {
+                            try {
+                                var examData = JSON.parse(xhrQ.responseText);
+                                if (examData.questions && examData.questions.length > 0) {
+                                    applyAndRenderRestore(examData.questions);
+                                    return;
+                                }
+                            } catch(e) {}
+                        }
+                        // Fallback: không lấy được câu hỏi, dùng mảng rỗng
+                        applyAndRenderRestore([]);
+                    }
+                };
+                xhrQ.send();
+            } else {
+                applyAndRenderRestore(localOriginal);
+            }
         }
 
         // Render navigation

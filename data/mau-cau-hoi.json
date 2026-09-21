@@ -55,5 +55,47 @@
     "correct": 0,
     "correctList": null,
     "correctTF": [true, false, true]
+  },
+  {
+    "type": "single",
+    "question": "【CÔNG THỨC TOÁN】 Giá trị của \\(\\sqrt{4} + \\sqrt{9}\\) bằng bao nhiêu?\n\n💡 Hướng dẫn viết công thức: Bọc LaTeX trong \\( ... \\) cho công thức inline, hoặc \\[ ... \\] cho công thức dòng riêng.\nVí dụ: \\(x^2 + y^2 = z^2\\), \\(\\frac{a}{b}\\), \\(\\sqrt{x}\\), \\(\\sum_{i=1}^{n} i\\)",
+    "options": [
+      "\\(2\\)",
+      "\\(3\\)",
+      "\\(5\\)",
+      "\\(7\\)"
+    ],
+    "correct": 2,
+    "correctList": null,
+    "correctTF": null
+  },
+  {
+    "type": "single",
+    "question": "【CÔNG THỨC TOÁN】 Nghiệm của phương trình \\(x^2 - 5x + 6 = 0\\) là:",
+    "options": [
+      "\\(x = 1\\) hoặc \\(x = 6\\)",
+      "\\(x = 2\\) hoặc \\(x = 3\\)",
+      "\\(x = -2\\) hoặc \\(x = -3\\)",
+      "\\(x = 0\\) hoặc \\(x = 5\\)"
+    ],
+    "correct": 1,
+    "correctList": null,
+    "correctTF": null
+  },
+  {
+    "type": "single",
+    "question": "【HIỂN THỊ CODE】 Xét đoạn code Python sau, kết quả in ra là gì?\n<pre>x = 10\ny = 3\nprint(x // y)</pre>",
+    "options": ["3", "3.33", "4", "1"],
+    "correct": 0,
+    "correctList": null,
+    "correctTF": null
+  },
+  {
+    "type": "single",
+    "question": "【HIỂN THỊ CODE】 Đoạn code C++ sau in ra giá trị gì?\n<pre>#include &lt;iostream&gt;\nusing namespace std;\nint main() {\n    int x = 5;\n    cout &lt;&lt; x * x;\n}</pre>",
+    "options": ["5", "10", "25", "55"],
+    "correct": 2,
+    "correctList": null,
+    "correctTF": null
   }
 ]

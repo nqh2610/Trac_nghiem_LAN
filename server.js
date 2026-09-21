@@ -129,6 +129,7 @@ var questions = [];
 var results = [];
 var students = []; // Danh sách học sinh từ Excel
 var studentStatus = {}; // Trạng thái học sinh: { stt: { selected: false, selectedBy: null, completed: false, canRetry: false } }
+var socketToStt = {}; // Map socketId -> stt để O(1) lookup trong disconnect
 var reports = []; // Báo cáo chọn nhầm
 var serverProgress = {}; // Progress backup: { stt: { startTime, examId, answers, questionOrder, optionOrders, timeLimit, savedAt } }
 
@@ -774,14 +775,29 @@ function loadQuestions() {
     }
 }
 
+// Debounce helper: gom nhiều lần gọi trong window ms thành 1 lần ghi đĩa
+function makeDebouncedSaver(fn, delay) {
+    var timer = null;
+    return function() {
+        clearTimeout(timer);
+        timer = setTimeout(fn, delay);
+    };
+}
+
+// Ghi file async an toàn (không block event loop)
+function writeFileAsync(filePath, data) {
+    var dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFile(filePath, data, 'utf8', function(err) {
+        if (err) console.error('[ERR] Ghi file thất bại:', filePath, err.message);
+    });
+}
+
 // Lưu câu hỏi vào file
 function saveQuestions() {
     var dir = path.join(__dirname, 'data');
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(path.join(dir, 'questions.json'), JSON.stringify(questions, null, 2), 'utf8');
-    
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    writeFileAsync(path.join(dir, 'questions.json'), JSON.stringify(questions, null, 2));
     // Nếu đang có exam, cập nhật exam đó
     if (currentSession.examId && currentSession.examName) {
         saveExam(currentSession.examId, currentSession.examName);
@@ -792,15 +808,9 @@ function saveQuestions() {
 function saveResults() {
     var key = getSessionResultKey();
     if (key) {
-        // Lưu theo session
-        var dir = path.join(__dirname, 'data', 'results');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(results, null, 2), 'utf8');
+        writeFileAsync(path.join(__dirname, 'data', 'results', key + '.json'), JSON.stringify(results, null, 2));
     } else {
-        // Lưu vào file chung
-        var dir = path.join(__dirname, 'data');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, 'results.json'), JSON.stringify(results, null, 2), 'utf8');
+        writeFileAsync(path.join(__dirname, 'data', 'results.json'), JSON.stringify(results, null, 2));
     }
 }
 
@@ -845,13 +855,9 @@ function loadStudents() {
 function saveStudentStatus() {
     var key = getSessionResultKey();
     if (key) {
-        var dir = path.join(__dirname, 'data', 'student-status');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, `${key}.json`), JSON.stringify(studentStatus, null, 2), 'utf8');
+        writeFileAsync(path.join(__dirname, 'data', 'student-status', key + '.json'), JSON.stringify(studentStatus, null, 2));
     } else {
-        var dir = path.join(__dirname, 'data');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, 'student-status.json'), JSON.stringify(studentStatus, null, 2), 'utf8');
+        writeFileAsync(path.join(__dirname, 'data', 'student-status.json'), JSON.stringify(studentStatus, null, 2));
     }
 }
 
@@ -875,11 +881,12 @@ function loadStudentStatus() {
     }
 }
 
-// Lưu server progress (backup bài làm dở)
+// Lưu server progress (backup bài làm dở) — debounce 2s vì gọi rất thường xuyên
+var _saveProgressDebounced = makeDebouncedSaver(function() {
+    writeFileAsync(path.join(__dirname, 'data', 'progress', 'server-progress.json'), JSON.stringify(serverProgress, null, 2));
+}, 2000);
 function saveServerProgress() {
-    var dir = path.join(__dirname, 'data', 'progress');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'server-progress.json'), JSON.stringify(serverProgress, null, 2), 'utf8');
+    _saveProgressDebounced();
 }
 
 // Load server progress
@@ -894,11 +901,7 @@ function loadServerProgress() {
 
 // Lưu báo cáo
 function saveReports() {
-    var dir = path.join(__dirname, 'data');
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(path.join(dir, 'reports.json'), JSON.stringify(reports, null, 2), 'utf8');
+    writeFileAsync(path.join(__dirname, 'data', 'reports.json'), JSON.stringify(reports, null, 2));
 }
 
 // Load báo cáo
@@ -963,6 +966,7 @@ app.post('/api/select-student', (req, res) => {
     // Đánh dấu đã chọn
     status.selected = true;
     status.selectedBy = socketId;
+    socketToStt[socketId] = stt; // map để O(1) lookup khi disconnect
     if (status.canRetry) {
         status.canRetry = false; // Reset retry flag
     }
@@ -995,8 +999,9 @@ app.post('/api/deselect-student', (req, res) => {
     if (status.selectedBy === socketId && !status.completed) {
         status.selected = false;
         status.selectedBy = null;
+        delete socketToStt[socketId];
         saveStudentStatus();
-        
+
         io.emit('studentStatusUpdated', { stt, status: studentStatus[stt] });
     }
     
@@ -3390,19 +3395,14 @@ io.on('connection', function(socket) {
     // Khi ngắt kết nối, hủy chọn học sinh nếu chưa hoàn thành
     socket.on('disconnect', function() {
         console.log('[DISCONNECT] Ngat ket noi:', socket.id);
-        
-        // Tìm và hủy chọn học sinh
-        var keys = Object.keys(studentStatus);
-        for (var i = 0; i < keys.length; i++) {
-            var stt = keys[i];
-            var status = studentStatus[stt];
-            if (status.selectedBy === socket.id && !status.completed) {
-                status.selected = false;
-                status.selectedBy = null;
-                saveStudentStatus();
-                io.emit('studentStatusUpdated', { stt: stt, status: studentStatus[stt] });
-            }
+        var stt = socketToStt[socket.id];
+        if (stt && studentStatus[stt] && studentStatus[stt].selectedBy === socket.id && !studentStatus[stt].completed) {
+            studentStatus[stt].selected = false;
+            studentStatus[stt].selectedBy = null;
+            saveStudentStatus();
+            io.emit('studentStatusUpdated', { stt: stt, status: studentStatus[stt] });
         }
+        delete socketToStt[socket.id];
     });
 });
 

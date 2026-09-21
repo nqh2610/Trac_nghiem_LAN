@@ -2958,6 +2958,7 @@
                             var studentClass = data.className || 'Chưa chọn lớp';
                             document.getElementById('studentClass').value = studentClass;
                             currentExamId = data.examId || 'default';
+                            _progressQuestionsCache = null; // reset cache cho bài thi mới
                             practiceMode = data.practiceMode || false;
                             
                             studentInfo = { 
@@ -3031,20 +3032,20 @@
             // Check for saved progress (localStorage)
             var hasProgress = restoreExamProgress();
 
-            renderQuestions();
             renderNavigation();
-
-            if (hasProgress && Object.keys(answers).length > 0) {
-                applyRestoredAnswers();
-                var minutesLeft = Math.floor(timeRemaining / 60);
-                var secondsLeft = timeRemaining % 60;
-                var answeredCount = Object.keys(answers).length;
-                if (practiceMode) {
-                    showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! (Chế độ ôn tập - không giới hạn thời gian)');
-                } else {
-                    showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft + ' phút');
+            renderQuestions(function() {
+                if (hasProgress && Object.keys(answers).length > 0) {
+                    applyRestoredAnswers();
+                    var minutesLeft = Math.floor(timeRemaining / 60);
+                    var secondsLeft = timeRemaining % 60;
+                    var answeredCount = Object.keys(answers).length;
+                    if (practiceMode) {
+                        showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! (Chế độ ôn tập - không giới hạn thời gian)');
+                    } else {
+                        showMessage('success', 'Đã khôi phục ' + answeredCount + ' câu trả lời! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft + ' phút');
+                    }
                 }
-            }
+            });
 
             // Gọi server để lưu startTime (hoặc lấy startTime cũ nếu restore)
             var xhrStart = new XMLHttpRequest();
@@ -3090,45 +3091,69 @@
             startProgressSync();
         }
 
-        // Render questions
-        function renderQuestions() {
+        // Render questions — lazy batch để không block UI
+        function renderQuestions(onDone) {
             var container = document.getElementById('questionsContainer');
-            var html = '';
-
-            for (var i = 0; i < questions.length; i++) {
-                var q = questions[i];
-                var type = q.type || 'single';
-                html += '<div class="question-card' + (i === 0 ? ' active' : '') + '" id="question' + i + '">';
-                html += '<div class="question-header">';
-                html += '<span class="question-number">Câu ' + (i + 1) + '</span>';
-                if (type === 'multi') {
-                    html += '<span class="type-badge type-multi">Nhiều đáp án</span>';
-                } else if (type === 'truefalse') {
-                    html += '<span class="type-badge type-tf">Đúng/Sai</span>';
-                }
-                html += '</div>';
-                html += '<div class="question-text">' + renderContent(q.question) + '</div>';
-                if (q.image) {
-                    html += '<img src="' + q.image + '" class="question-image" alt="Hình">';
-                }
-                html += '<div class="options">';
-                if (type === 'single') {
-                    html += renderSingleOptions(i, q);
-                } else if (type === 'multi') {
-                    html += renderMultiOptions(i, q);
-                } else if (type === 'truefalse') {
-                    html += renderTrueFalseOptions(i, q);
-                } else {
-                    html += renderSingleOptions(i, q);
-                }
-                html += '</div>';
-                html += '</div>';
-            }
-
-            container.innerHTML = html;
+            container.innerHTML = '';
             document.getElementById('totalCount').textContent = questions.length;
             document.getElementById('totalCount2').textContent = questions.length;
-            updateQuestionNavigation();
+
+            if (questions.length === 0) {
+                if (onDone) onDone();
+                return;
+            }
+
+            var i = 0;
+            var BATCH = 5; // render 5 câu mỗi frame
+
+            function buildCard(idx) {
+                var q = questions[idx];
+                var type = q.type || 'single';
+                var div = document.createElement('div');
+                div.className = 'question-card' + (idx === 0 ? ' active' : '');
+                div.id = 'question' + idx;
+                var inner = '<div class="question-header">';
+                inner += '<span class="question-number">Câu ' + (idx + 1) + '</span>';
+                if (type === 'multi') {
+                    inner += '<span class="type-badge type-multi">Nhiều đáp án</span>';
+                } else if (type === 'truefalse') {
+                    inner += '<span class="type-badge type-tf">Đúng/Sai</span>';
+                }
+                inner += '</div>';
+                inner += '<div class="question-text">' + renderContent(q.question) + '</div>';
+                if (q.image) {
+                    inner += '<img src="' + q.image + '" class="question-image" alt="Hình">';
+                }
+                inner += '<div class="options">';
+                if (type === 'multi') {
+                    inner += renderMultiOptions(idx, q);
+                } else if (type === 'truefalse') {
+                    inner += renderTrueFalseOptions(idx, q);
+                } else {
+                    inner += renderSingleOptions(idx, q);
+                }
+                inner += '</div>';
+                div.innerHTML = inner;
+                return div;
+            }
+
+            function renderBatch() {
+                var end = Math.min(i + BATCH, questions.length);
+                var frag = document.createDocumentFragment();
+                for (; i < end; i++) {
+                    frag.appendChild(buildCard(i));
+                }
+                container.appendChild(frag);
+                if (i < questions.length) {
+                    requestAnimationFrame(renderBatch);
+                } else {
+                    updateQuestionNavigation();
+                    renderKatex(); // render công thức sau khi toàn bộ đã vào DOM
+                    if (onDone) onDone();
+                }
+            }
+
+            requestAnimationFrame(renderBatch);
         }
 
         function renderSingleOptions(qIndex, q) {
@@ -3501,29 +3526,31 @@
         // ==================== EXAM PROGRESS STORAGE ====================
         var EXAM_PROGRESS_KEY = 'quiz_exam_progress';
         var currentExamId = null; // ID bài thi hiện tại
-        
+        var _progressQuestionsCache = null; // Cache JSON của questions để không serialize lại mỗi lần
+
         function saveExamProgress() {
             if (!studentInfo.stt || !currentExamId) return;
-            
-            var progressKey = studentInfo.stt + '_' + currentExamId; // Key theo STT + examId
-            
-            // Dùng thời gian server nếu có, không dùng thời gian máy client
+
+            var progressKey = studentInfo.stt + '_' + currentExamId;
+
             var savedAtTime = cachedServerTime ? cachedServerTime.toISOString() : null;
-            // Nếu chưa có server time, lưu null và sẽ cập nhật sau
             if (!savedAtTime) {
-                // Thử lấy từ localStorage progress cũ
                 try {
                     var oldData = localStorage.getItem(EXAM_PROGRESS_KEY);
                     if (oldData) {
                         var oldProgress = JSON.parse(oldData);
-                        var oldKey = progressKey;
-                        if (oldProgress[oldKey] && oldProgress[oldKey].savedAt) {
-                            savedAtTime = oldProgress[oldKey].savedAt;
+                        if (oldProgress[progressKey] && oldProgress[progressKey].savedAt) {
+                            savedAtTime = oldProgress[progressKey].savedAt;
                         }
                     }
                 } catch(e) {}
             }
-            
+
+            // Chỉ serialize questions một lần (questions không thay đổi trong lúc thi)
+            if (!_progressQuestionsCache) {
+                _progressQuestionsCache = originalQuestions;
+            }
+
             var examTitleEl = document.getElementById('examTitle');
             var progress = {
                 stt: studentInfo.stt,
@@ -3535,25 +3562,32 @@
                 startTime: startTime ? startTime.toISOString() : null,
                 questionOrder: questionOrder,
                 optionOrders: optionOrders,
-                originalQuestions: originalQuestions,
+                originalQuestions: _progressQuestionsCache,
                 timeLimit: timeLimit,
-                practiceMode: practiceMode, // Lưu chế độ ôn tập
+                practiceMode: practiceMode,
                 examTitle: examTitleEl ? examTitleEl.textContent : 'Bài kiểm tra',
                 inExam: true,
-                savedAt: savedAtTime // Dùng thời gian server
+                savedAt: savedAtTime
             };
-            
-            // Get all progress data
+
             var allProgress = {};
             try {
                 var data = localStorage.getItem(EXAM_PROGRESS_KEY);
                 if (data) allProgress = JSON.parse(data);
             } catch (e) {}
-            
-            // Save progress with composite key (stt_examId)
+
             allProgress[progressKey] = progress;
-            
-            localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
+            try {
+                localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(allProgress));
+            } catch(e) {
+                // localStorage đầy (thường do ảnh base64 lớn) — xóa progress cũ rồi thử lại
+                try {
+                    localStorage.removeItem(EXAM_PROGRESS_KEY);
+                    var fresh = {};
+                    fresh[progressKey] = progress;
+                    localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(fresh));
+                } catch(e2) {}
+            }
         }
         
         function getExamProgress(stt, examId) {
@@ -3946,22 +3980,22 @@
                 startTime = new Date(Date.now() - (totalSecs - timeRemaining) * 1000);
             }
 
-            renderQuestions();
             renderNavigation();
-            applyRestoredAnswers();
+            renderQuestions(function() {
+                applyRestoredAnswers();
+                var minutesLeft = Math.floor(timeRemaining / 60);
+                var secondsLeft = timeRemaining % 60;
+                if (practiceMode) {
+                    showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập)');
+                } else {
+                    showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
+                }
+                setTimeout(function() { showCurrentQuestion(); }, 100);
+            });
 
             if (!practiceMode) startTimer();
             startProgressSync();
             initAntiCheat();
-
-            var minutesLeft = Math.floor(timeRemaining / 60);
-            var secondsLeft = timeRemaining % 60;
-            if (practiceMode) {
-                showMessage('success', 'Đã khôi phục bài làm! (Chế độ ôn tập)');
-            } else {
-                showMessage('success', 'Đã khôi phục bài làm! Còn ' + minutesLeft + ':' + (secondsLeft < 10 ? '0' : '') + secondsLeft);
-            }
-            setTimeout(function() { showCurrentQuestion(); }, 100);
         }
 
         // Render navigation
@@ -4660,6 +4694,7 @@
         var fsViolationCount = 0;
         var initialViewportWidth = 0;
         var fsExitBySystem = false; // Flag: thoát fullscreen do hệ thống (nộp bài/hết giờ)
+        var fsListenersSetup = false; // Guard: chỉ đăng ký listener 1 lần
 
         function requestFullscreen() {
             var el = document.documentElement;
@@ -4732,10 +4767,13 @@
             initialViewportWidth = window.innerWidth;
             requestFullscreen();
 
-            document.addEventListener('fullscreenchange', onFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-            document.addEventListener('mozfullscreenchange', onFullscreenChange);
-            document.addEventListener('MSFullscreenChange', onFullscreenChange);
+            if (!fsListenersSetup) {
+                document.addEventListener('fullscreenchange', onFullscreenChange);
+                document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                document.addEventListener('mozfullscreenchange', onFullscreenChange);
+                document.addEventListener('MSFullscreenChange', onFullscreenChange);
+                fsListenersSetup = true;
+            }
         }
 
         function onFullscreenChange() {

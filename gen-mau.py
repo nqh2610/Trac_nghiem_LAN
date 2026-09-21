@@ -30,6 +30,27 @@ th('MẪU CÂU HỎI - HƯỚNG DẪN SOẠN ĐỀ THI', 14)
 th('Hệ thống Trắc Nghiệm LAN', 11)
 blank()
 
+# ===== LƯU Ý QUAN TRỌNG =====
+th('*** LƯU Ý QUAN TRỌNG KHI SOẠN ĐỀ ***', 13, (180, 0, 0))
+blank()
+
+notes = [
+    '1. Mỗi câu hỏi cần ít nhất 2 đáp án (A, B, C, D...).',
+    '2. Câu 1 đáp án: phải có ĐÚNG 1 dấu * ở cuối đáp án đúng.',
+    '3. Câu nhiều đáp án [MULTI]: phải có ÍT NHẤT 2 dấu * ở các đáp án đúng.',
+    '4. Câu đúng/sai [DUNG/SAI]: MỖI phát biểu đều phải có (đúng) hoặc (sai) ở cuối.',
+    '   Cũng chấp nhận: (Đ) / (S) / (dung) / (D) / (d) / (T) / (t)',
+    '5. KHÔNG dùng bullet list hoặc numbered list của Word (Insert > List).',
+    '   Chỉ gõ A. B. C. D. trực tiếp như văn bản thường.',
+    '6. Hỗ trợ hình ảnh: chèn ảnh trực tiếp vào dòng câu hỏi hoặc đáp án trong Word.',
+    '   Ảnh sẽ được nhúng vào hệ thống khi import.',
+    '7. Công thức toán: dùng \\( ... \\) cho LaTeX (xem Phần 4).',
+    '8. Hiển thị code: dùng [CODE] ... [/CODE] (xem Phần 5).',
+]
+for note in notes:
+    doc.add_paragraph(note)
+blank()
+
 # ===== PHẦN 1: CÂU HỎI THÔNG THƯỜNG =====
 th('PHẦN 1. CÂU HỎI MỘT ĐÁP ÁN (SINGLE)', 12, (0, 70, 180))
 blank()

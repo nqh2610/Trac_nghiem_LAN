@@ -1253,6 +1253,17 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
+
+                <div class="setting-row" style="margin-top: 15px;">
+                    <div>
+                        <strong>Trộn đề</strong>
+                        <p style="color: #666; font-size: 0.9em;">Mỗi học sinh có thứ tự câu hỏi và đáp án khác nhau (theo STT)</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="shuffleExam" checked onchange="saveSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
                 
                 <div class="setting-row" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #1976d2; border-radius: 12px; padding: 15px; margin-top: 15px;">
                     <div style="flex: 1;">
@@ -2379,6 +2390,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
             document.getElementById('examOpen').checked = settings.isOpen;
             document.getElementById('showScore').checked = settings.showScore !== false;
             document.getElementById('practiceMode').checked = settings.practiceMode === true;
+            document.getElementById('shuffleExam').checked = settings.shuffleExam !== false;
             document.getElementById('examPassword').value = settings.examPassword || '';
             document.getElementById('requirePassword').checked = settings.requirePassword === true;
             updateExamStatus(settings.isOpen);
@@ -2391,6 +2403,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 isOpen: document.getElementById('examOpen').checked,
                 showScore: document.getElementById('showScore').checked,
                 practiceMode: document.getElementById('practiceMode').checked,
+                shuffleExam: document.getElementById('shuffleExam').checked,
                 examPassword: document.getElementById('examPassword').value,
                 requirePassword: document.getElementById('requirePassword').checked
             };

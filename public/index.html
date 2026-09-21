@@ -2984,11 +2984,22 @@
                             
                             // Luu cau hoi goc va tao thu tu dao theo STT
                             originalQuestions = data.questions;
-                            questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
-                            optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
-                            
-                            // Dao cau hoi VA dap an theo thu tu
-                            questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                            if (data.shuffleExam !== false) {
+                                questionOrder = generateQuestionOrder(selectedStudent.stt, data.questions.length);
+                                optionOrders = generateOptionOrders(selectedStudent.stt, data.questions.length, data.questions);
+                                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                            } else {
+                                // Không trộn đề: giữ nguyên thứ tự gốc
+                                questionOrder = [];
+                                for (var _qi = 0; _qi < data.questions.length; _qi++) questionOrder.push(_qi);
+                                optionOrders = [];
+                                for (var _qi2 = 0; _qi2 < data.questions.length; _qi2++) {
+                                    var _opts = [];
+                                    for (var _oi = 0; _oi < data.questions[_qi2].options.length; _oi++) _opts.push(_oi);
+                                    optionOrders.push(_opts);
+                                }
+                                questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
+                            }
                             timeLimit = data.timeLimit;
                             
                             document.getElementById('examTitle').textContent = data.title;

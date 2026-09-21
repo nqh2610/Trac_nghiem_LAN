@@ -3982,11 +3982,8 @@
             practiceMode = serverPracticeMode;
 
             function applyAndRenderRestore(restoredQuestions) {
-                try {
                 originalQuestions = restoredQuestions;
                 _progressQuestionsCache = null;
-
-                console.log('[RESTORE] originalQuestions.length=' + originalQuestions.length + ' questionOrder.length=' + questionOrder.length + ' optionOrders.length=' + optionOrders.length);
 
                 if (optionOrders.length > 0) {
                     questions = shuffleQuestionsAndOptions(originalQuestions, questionOrder, optionOrders);
@@ -3996,8 +3993,6 @@
                         questions.push(originalQuestions[questionOrder[qi]]);
                     }
                 }
-
-                console.log('[RESTORE] questions.length=' + questions.length + ' timeRemaining=' + timeRemaining);
 
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('examScreen').style.display = 'block';
@@ -4039,16 +4034,10 @@
                 if (!practiceMode) startTimer();
                 startProgressSync();
                 initAntiCheat();
-                } catch(e) {
-                    console.error('[RESTORE ERROR]', e.message, e.stack);
-                    alert('[DEBUG] Lỗi restore: ' + e.message + '\noriginalQ=' + originalQuestions.length + ' qOrder=' + questionOrder.length + ' optOrders=' + optionOrders.length);
-                }
             }
 
             // Nếu localStorage không có originalQuestions (quota exceeded khi lưu), fetch lại từ server
             var localOriginal = activeSession.originalQuestions;
-            console.log('[RESTORE] localOriginal=' + (localOriginal ? localOriginal.length : 'null') + ' remainingTime=' + remainingTime + ' practiceMode=' + serverPracticeMode);
-            console.log('[RESTORE] activeSession.questionOrder=' + JSON.stringify(activeSession.questionOrder ? activeSession.questionOrder.slice(0,5) : null));
             if (!localOriginal || localOriginal.length === 0) {
                 var xhrQ = new XMLHttpRequest();
                 xhrQ.open('GET', '/api/exam', true);

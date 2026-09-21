@@ -6,13 +6,14 @@
     "examName": "D2"
   },
   "examSettings": {
-    "title": "Demo de tin",
+    "title": "D2",
     "timeLimit": 30,
     "isOpen": false,
     "showScore": true,
-    "practiceMode": true,
-    "examPassword": "",
-    "requirePassword": false,
+    "practiceMode": false,
+    "shuffleExam": true,
+    "examPassword": "2378UZ",
+    "requirePassword": true,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",

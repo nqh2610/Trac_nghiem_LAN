@@ -2,18 +2,18 @@
   "currentSession": {
     "classId": "class_1789955237700",
     "className": "10A4",
-    "examId": "exam_1789967727916",
-    "examName": "D2"
+    "examId": "exam_1789957660892",
+    "examName": "Test Đề Toán"
   },
   "examSettings": {
-    "title": "D2",
+    "title": "Test Đề Toán",
     "timeLimit": 30,
     "isOpen": false,
-    "showScore": true,
+    "showScore": false,
     "practiceMode": false,
     "shuffleExam": true,
-    "examPassword": "2378UZ",
-    "requirePassword": true,
+    "examPassword": "",
+    "requirePassword": false,
     "currentSession": {
       "classId": "class_1764766952564",
       "className": "11A4",

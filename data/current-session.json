@@ -1,15 +1,15 @@
 {
   "currentSession": {
-    "classId": "class_1764766952564",
-    "className": "11A4",
-    "examId": "exam_1765906381946",
-    "examName": "Đề kiểm tra HK 1 K11"
+    "classId": "class_1789955237700",
+    "className": "10A4",
+    "examId": "exam_1789967727916",
+    "examName": "D2"
   },
   "examSettings": {
-    "title": "Đề kiểm tra HK 1 K11",
+    "title": "Demo de tin",
     "timeLimit": 30,
-    "isOpen": true,
-    "showScore": false,
+    "isOpen": false,
+    "showScore": true,
     "practiceMode": true,
     "examPassword": "",
     "requirePassword": false,

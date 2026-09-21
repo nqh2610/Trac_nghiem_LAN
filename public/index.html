@@ -1737,6 +1737,9 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
         }
     </style>
+    <link rel="stylesheet" href="/katex/katex.min.css">
+    <script src="/katex/katex.min.js"></script>
+    <script src="/katex/contrib/auto-render.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -4443,9 +4446,24 @@
             }
             
             updateQuestionNavigation();
-            
+
             // Scroll to top
             document.getElementById('questionsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Render công thức toán nếu có
+            renderKatex(document.getElementById('questionsContainer'));
+        }
+
+        function renderKatex(el) {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(el || document.body, {
+                    delimiters: [
+                        { left: '\\(', right: '\\)', display: false },
+                        { left: '\\[', right: '\\]', display: true }
+                    ],
+                    throwOnError: false
+                });
+            }
         }
         
         // Navigate between questions

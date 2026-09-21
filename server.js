@@ -20,6 +20,8 @@ var os = require('os');
 var mammoth = require('mammoth');
 var XLSX = require('xlsx');
 var multer = require('multer');
+var JSZip = require('./node_modules/jszip');
+var xmljs = require('xml-js');
 
 // ========== HELPER FUNCTIONS CHO ES5 ==========
 // Merge objects (thay thế spread operator)
@@ -60,6 +62,9 @@ var PORT = 3456;
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
+
+// Serve KaTeX cho render công thức toán (LAN - không cần internet)
+app.use('/katex', express.static('node_modules/katex/dist'));
 
 // Serve thư mục data để download file mẫu
 app.use('/data', express.static('data'));
@@ -2796,18 +2801,161 @@ function sanitizeHtml(html) {
     return html.trim();
 }
 
+// ========== OMML -> LATEX CONVERTER ==========
+function ommlNodeToLatex(node) {
+    if (!node) return '';
+    if (node.type === 'text') return node.text || '';
+    var name = (node.name || '').replace('m:', '');
+    var children = node.elements || [];
+    function child(n) { return children.find(function(c){ return (c.name||'').replace('m:','') === n; }); }
+    function childrenOf(n) { var c = child(n); return c ? (c.elements || []) : []; }
+    function latex(nodes) { return (nodes||[]).map(ommlNodeToLatex).join(''); }
+    function latexChild(n) { return latex(childrenOf(n)); }
+    switch(name) {
+        case 'oMath': case 'oMathPara': return latex(children);
+        case 'f': return '\\frac{' + latexChild('num') + '}{' + latexChild('den') + '}';
+        case 'sSup': return latexChild('e') + '^{' + latexChild('sup') + '}';
+        case 'sSub': return latexChild('e') + '_{' + latexChild('sub') + '}';
+        case 'sSubSup': return latexChild('e') + '_{' + latexChild('sub') + '}^{' + latexChild('sup') + '}';
+        case 'rad': {
+            var pr = child('radPr');
+            var hide = pr && (pr.elements||[]).find(function(c){ return (c.name||'').replace('m:','') === 'degHide'; });
+            var deg = latexChild('deg'); var e = latexChild('e');
+            if (hide || !deg.trim()) return '\\sqrt{' + e + '}';
+            return '\\sqrt[' + deg + ']{' + e + '}';
+        }
+        case 'nary': {
+            var nPr = child('naryPr');
+            var chrEl = nPr && (nPr.elements||[]).find(function(c){ return (c.name||'').replace('m:','') === 'chr'; });
+            var chr = chrEl && chrEl.attributes && (chrEl.attributes['m:val'] || chrEl.attributes.val);
+            var symMap = {'\u222B':'\\int','\u222C':'\\iint','\u222D':'\\iiint','\u2211':'\\sum','\u220F':'\\prod','\u222E':'\\oint'};
+            var sym = symMap[chr] || '\\int';
+            var sub2 = latexChild('sub'); var sup2 = latexChild('sup'); var e2 = latexChild('e');
+            return sym + (sub2 ? '_{'+sub2+'}' : '') + (sup2 ? '^{'+sup2+'}' : '') + ' ' + e2;
+        }
+        case 'd': {
+            var dPr = child('dPr');
+            function getDPrChr(tag, def) {
+                var el = dPr && (dPr.elements||[]).find(function(c){ return (c.name||'').replace('m:','') === tag; });
+                return el && el.attributes ? (el.attributes['m:val'] || el.attributes.val || def) : def;
+            }
+            var beg = getDPrChr('begChr','('); var end = getDPrChr('endChr',')');
+            var inner = children.filter(function(c){ return (c.name||'').replace('m:','') === 'e'; })
+                .map(function(c){ return latex(c.elements||[]); }).join(', ');
+            if (!beg && !end) return inner;
+            return '\\left' + beg + inner + '\\right' + end;
+        }
+        case 'limLow': return latexChild('e') + '_{' + latexChild('lim') + '}';
+        case 'limUpp': return latexChild('e') + '^{' + latexChild('lim') + '}';
+        case 'm': {
+            var rows = children.filter(function(c){ return (c.name||'').replace('m:','') === 'mr'; });
+            return '\\begin{pmatrix}' + rows.map(function(row){
+                return (row.elements||[]).filter(function(c){ return (c.name||'').replace('m:','') === 'e'; })
+                    .map(function(c){ return latex(c.elements||[]); }).join(' & ');
+            }).join(' \\\\ ') + '\\end{pmatrix}';
+        }
+        case 'func': return latexChild('fName') + ' ' + latexChild('e');
+        case 'acc': {
+            var aPr = child('accPr');
+            var aChrEl = aPr && (aPr.elements||[]).find(function(c){ return (c.name||'').replace('m:','') === 'chr'; });
+            var aChr = aChrEl && aChrEl.attributes ? (aChrEl.attributes['m:val'] || aChrEl.attributes.val) : '';
+            var accMap = {'\u0302':'\\hat','\u0303':'\\tilde','\u0304':'\\bar','\u20D7':'\\vec','\u0307':'\\dot','\u0308':'\\ddot'};
+            return (accMap[aChr]||'\\hat') + '{' + latexChild('e') + '}';
+        }
+        case 'bar': {
+            var bPr = child('barPr');
+            var posEl = bPr && (bPr.elements||[]).find(function(c){ return (c.name||'').replace('m:','') === 'pos'; });
+            var pos2 = posEl && posEl.attributes ? (posEl.attributes['m:val'] || posEl.attributes.val) : 'top';
+            return pos2 === 'bot' ? '\\underline{' + latexChild('e') + '}' : '\\overline{' + latexChild('e') + '}';
+        }
+        case 'eqArr': {
+            var eqs = children.filter(function(c){ return (c.name||'').replace('m:','') === 'e'; });
+            return '\\begin{aligned}' + eqs.map(function(c){ return latex(c.elements||[]); }).join(' \\\\ ') + '\\end{aligned}';
+        }
+        case 'r': case 't': case 'e': case 'num': case 'den': case 'sup': case 'sub':
+        case 'deg': case 'lim': case 'fName': return latex(children);
+        case 'rPr': case 'fPr': case 'sSupPr': case 'sSubPr': case 'sSubSupPr':
+        case 'radPr': case 'naryPr': case 'dPr': case 'mPr': case 'mrPr':
+        case 'limLowPr': case 'limUppPr': case 'funcPr': case 'accPr':
+        case 'ctrlPr': case 'eqArrPr': case 'boxPr': case 'barPr': return '';
+        default: return latex(children);
+    }
+}
+
+function ommlStringToLatex(ommlStr) {
+    try {
+        var obj = xmljs.xml2js(ommlStr, { compact: false, ignoreDeclaration: true });
+        var root = obj.elements && obj.elements[0];
+        return ommlNodeToLatex(root);
+    } catch(e) { return null; }
+}
+
+// Pre-process docx buffer: thay OMML bằng placeholder text để mammoth giữ lại vị trí
+function preprocessDocxMath(buffer) {
+    return JSZip.loadAsync(buffer).then(function(zip) {
+        var docFile = zip.file('word/document.xml');
+        if (!docFile) return { buffer: buffer, mathMap: {} };
+        return docFile.async('string').then(function(xml) {
+            if (xml.indexOf('m:oMath') === -1) return { buffer: buffer, mathMap: {} };
+            var mathMap = {};
+            var counter = 0;
+            var result = '';
+            var i = 0;
+            while (i < xml.length) {
+                var startTag = xml.indexOf('<m:oMath', i);
+                if (startTag === -1) { result += xml.slice(i); break; }
+                result += xml.slice(i, startTag);
+                var tagEnd = xml.indexOf('>', startTag);
+                var tagName = xml.slice(startTag + 1, tagEnd).split(/[\s>]/)[0];
+                var closeTag = '</' + tagName + '>';
+                var depth = 1, pos = tagEnd + 1;
+                while (depth > 0 && pos < xml.length) {
+                    var nextOpen  = xml.indexOf('<' + tagName, pos);
+                    var nextClose = xml.indexOf(closeTag, pos);
+                    if (nextClose === -1) break;
+                    if (nextOpen !== -1 && nextOpen < nextClose) { depth++; pos = nextOpen + 1; }
+                    else { depth--; pos = (depth === 0) ? nextClose + closeTag.length : nextClose + 1; }
+                }
+                var ommlStr = xml.slice(startTag, pos);
+                var latexStr = ommlStringToLatex(ommlStr);
+                if (latexStr !== null) {
+                    var placeholder = 'MATHPLACEHOLDER' + counter + 'END';
+                    mathMap[placeholder] = latexStr;
+                    result += '<w:r><w:t xml:space="preserve"> ' + placeholder + ' </w:t></w:r>';
+                    counter++;
+                } else {
+                    result += ommlStr;
+                }
+                i = pos;
+            }
+            zip.file('word/document.xml', result);
+            return zip.generateAsync({ type: 'nodebuffer' }).then(function(newBuf) {
+                return { buffer: newBuf, mathMap: mathMap };
+            });
+        });
+    });
+}
+
 // ========== MAMMOTH HTML HELPER ==========
 function mammothToHtml(buffer) {
-    return mammoth.convertToHtml(
-        { buffer: buffer },
-        {
-            convertImage: mammoth.images.imgElement(function(image) {
-                return image.read('base64').then(function(imageBase64) {
-                    return { src: 'data:' + image.contentType + ';base64,' + imageBase64 };
-                });
-            })
-        }
-    );
+    return preprocessDocxMath(buffer).then(function(data) {
+        return mammoth.convertToHtml(
+            { buffer: data.buffer },
+            {
+                convertImage: mammoth.images.imgElement(function(image) {
+                    return image.read('base64').then(function(imageBase64) {
+                        return { src: 'data:' + image.contentType + ';base64,' + imageBase64 };
+                    });
+                })
+            }
+        ).then(function(result) {
+            var html = result.value;
+            Object.keys(data.mathMap).forEach(function(placeholder) {
+                html = html.split(placeholder).join('\\(' + data.mathMap[placeholder] + '\\)');
+            });
+            return { value: html, messages: result.messages };
+        });
+    });
 }
 
 // ========== PARSE CÂU HỎI TỪ HTML (mammoth output) ==========

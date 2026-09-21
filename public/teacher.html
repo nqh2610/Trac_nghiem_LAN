@@ -1217,7 +1217,7 @@
                 
                 <div class="form-group">
                     <label>Thời gian làm bài (phút):</label>
-                    <input type="number" id="examTime" value="30" min="1" max="180">
+                    <input type="number" id="examTime" placeholder="Nhập số phút..." min="1" max="180">
                 </div>
                 
                 <div class="setting-row">
@@ -2386,7 +2386,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
             const settings = await res.json();
             
             document.getElementById('examTitle').value = settings.title;
-            document.getElementById('examTime').value = settings.timeLimit;
+            document.getElementById('examTime').value = (settings.timeLimit && settings.timeLimit !== 30) ? settings.timeLimit : '';
             document.getElementById('examOpen').checked = settings.isOpen;
             document.getElementById('showScore').checked = settings.showScore !== false;
             document.getElementById('practiceMode').checked = settings.practiceMode === true;
@@ -2397,9 +2397,15 @@ C. Công thức nước là H₂O. (Đ)</pre>
         }
 
         async function saveSettings() {
+            const timeVal = parseInt(document.getElementById('examTime').value);
+            if (!timeVal || timeVal < 1 || timeVal > 180) {
+                showNotification('Vui lòng nhập thời gian làm bài (1-180 phút)!', 'warning');
+                document.getElementById('examTime').focus();
+                return;
+            }
             const settings = {
                 title: document.getElementById('examTitle').value,
-                timeLimit: parseInt(document.getElementById('examTime').value),
+                timeLimit: timeVal,
                 isOpen: document.getElementById('examOpen').checked,
                 showScore: document.getElementById('showScore').checked,
                 practiceMode: document.getElementById('practiceMode').checked,
@@ -2448,6 +2454,18 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
         async function toggleExam() {
             const isOpen = document.getElementById('examOpen').checked;
+            if (isOpen) {
+                const timeVal = parseInt(document.getElementById('examTime').value);
+                if (!timeVal || timeVal < 1) {
+                    showNotification('Chưa đặt thời gian làm bài! Vui lòng nhập số phút trước khi mở bài.', 'warning');
+                    document.getElementById('examOpen').checked = false;
+                    document.getElementById('examTime').focus();
+                    return;
+                }
+                if (document.getElementById('practiceMode').checked) {
+                    showNotification('⚠️ Đang bật chế độ ÔN TẬP! Học sinh sẽ thấy đáp án ngay. Hãy tắt nếu đây là bài kiểm tra thật.', 'warning');
+                }
+            }
             updateExamStatus(isOpen);
             await saveSettings();
         }

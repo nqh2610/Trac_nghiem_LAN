@@ -3462,13 +3462,20 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 const res = await fetch('/api/import-word', { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.success) {
-                    statusDiv.innerHTML = `<span style="color:#2e7d32;font-weight:bold;">Đã import thành công ${result.imported} câu hỏi! Tổng: ${result.total} câu.</span>`;
+                    let html = `<span style="color:#2e7d32;font-weight:bold;">✔ Import thành công ${result.imported} câu hỏi! Tổng ngân hàng: ${result.total} câu.</span>`;
+                    if (result.warnings && result.warnings.length > 0) {
+                        html += `<div style="margin-top:8px;padding:8px 12px;background:#fff8e1;border-left:4px solid #f9a825;border-radius:4px;">`;
+                        html += `<b style="color:#f57f17;">⚠ ${result.warnings.length} cảnh báo:</b><ul style="margin:4px 0 0 16px;padding:0;">`;
+                        result.warnings.forEach(w => { html += `<li style="color:#795548;">${w}</li>`; });
+                        html += `</ul></div>`;
+                    }
+                    statusDiv.innerHTML = html;
                     document.getElementById('wordPreviewPanel').style.display = 'none';
                     document.getElementById('wordImportFileName').textContent = 'Chưa chọn file';
                     _pendingWordFile = null;
                     loadQuestions();
                 } else {
-                    statusDiv.innerHTML = `<span style="color:#c62828;">${result.error}</span>`;
+                    statusDiv.innerHTML = `<span style="color:#c62828;">✘ ${result.error}</span>`;
                 }
             } catch (err) {
                 statusDiv.innerHTML = `<span style="color:#c62828;">Lỗi: ${err.message}</span>`;
@@ -3504,10 +3511,17 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 const result = await res.json();
                 
                 if (result.success) {
-                    statusDiv.innerHTML = `<span style="color: #28a745;">Đã import ${result.imported} câu hỏi! Tổng: ${result.total} câu</span>`;
+                    let html = `<span style="color:#28a745;">✔ Import thành công ${result.imported} câu hỏi! Tổng: ${result.total} câu.</span>`;
+                    if (result.warnings && result.warnings.length > 0) {
+                        html += `<div style="margin-top:8px;padding:8px 12px;background:#fff8e1;border-left:4px solid #f9a825;border-radius:4px;">`;
+                        html += `<b style="color:#f57f17;">⚠ ${result.warnings.length} cảnh báo:</b><ul style="margin:4px 0 0 16px;padding:0;">`;
+                        result.warnings.forEach(w => { html += `<li style="color:#795548;">${w}</li>`; });
+                        html += `</ul></div>`;
+                    }
+                    statusDiv.innerHTML = html;
                     loadQuestions();
                 } else {
-                    statusDiv.innerHTML = `<span style="color: #dc3545;">${result.error}</span>`;
+                    statusDiv.innerHTML = `<span style="color:#dc3545;">✘ ${result.error}</span>`;
                 }
             } catch (err) {
                 statusDiv.innerHTML = `<span style="color: #dc3545;">Lỗi: ${err.message}</span>`;

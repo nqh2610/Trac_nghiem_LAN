@@ -2731,10 +2731,31 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
             return res.json({ success: false, error: 'Không tìm thấy câu hỏi nào. Kiểm tra lại định dạng file.' });
         }
 
+        var warnings = [];
+        parsedQuestions.forEach(function(q, i) {
+            var num = i + 1;
+            var type = q.type || 'single';
+            if (!q.question || q.question.trim() === '') {
+                warnings.push('Câu ' + num + ': Thiếu nội dung câu hỏi');
+            }
+            if (!q.options || q.options.length < 2) {
+                warnings.push('Câu ' + num + ': Chỉ có ' + (q.options ? q.options.length : 0) + ' đáp án (cần ít nhất 2)');
+            }
+            if (type === 'multi' && (!q.correctList || q.correctList.length < 2)) {
+                warnings.push('Câu ' + num + ': Câu [MULTI] cần ít nhất 2 dấu *');
+            }
+            if (type === 'truefalse' && q.correctTF) {
+                var undecided = q.correctTF.filter(function(v) { return v === undefined || v === null; }).length;
+                if (undecided > 0) {
+                    warnings.push('Câu ' + num + ': ' + undecided + ' phát biểu chưa có (đúng)/(sai)');
+                }
+            }
+        });
+
         questions = questions.concat(parsedQuestions);
         saveQuestions();
         io.emit('questionsUpdated', questions.length);
-        res.json({ success: true, imported: parsedQuestions.length, total: questions.length });
+        res.json({ success: true, imported: parsedQuestions.length, total: questions.length, warnings: warnings });
     }).catch(function(err) {
         console.error('Lỗi đọc file Word:', err);
         res.json({ success: false, error: 'Không thể đọc file Word: ' + err.message });

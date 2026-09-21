@@ -1276,7 +1276,7 @@
                         <p style="color: #e65100; font-size: 0.85em; margin-top: 5px; font-style: italic;">* Không giới hạn thời gian làm bài</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="practiceMode" onchange="saveSettings()">
+                        <input type="checkbox" id="practiceMode" onchange="onPracticeModeChange()">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -2467,6 +2467,13 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 }
             }
             updateExamStatus(isOpen);
+            await saveSettings();
+        }
+
+        async function onPracticeModeChange() {
+            if (document.getElementById('practiceMode').checked) {
+                showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn, không tính điểm!', 'warning');
+            }
             await saveSettings();
         }
 

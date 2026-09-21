@@ -365,6 +365,9 @@ function loadCurrentSession() {
         for (var i = 0; i < keys.length; i++) {
             examSettings[keys[i]] = data.examSettings[keys[i]];
         }
+        // Luôn reset về chế độ thi khi khởi động, không giữ trạng thái ôn tập cũ
+        examSettings.practiceMode = false;
+        examSettings.isOpen = false;
     }
 }
 

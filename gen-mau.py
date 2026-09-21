@@ -33,10 +33,10 @@ def page_break():
     r._r.append(br)
 
 def section_heading(letter, title):
-    """Tiêu đề phần — nền xanh"""
+    """Tiêu đề phần — nền xanh. Dùng 【】thay vì 'X.' để parser không nhầm là đáp án"""
     p = doc.add_paragraph()
     set_shading(p, 'DDEEFF')
-    r = p.add_run(f'  {letter}.  {title.upper()}  ')
+    r = p.add_run(f'  【{letter}】  {title.upper()}  ')
     r.bold = True
     r.font.size = Pt(12)
     r.font.color.rgb = RGBColor(0, 50, 140)

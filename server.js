@@ -464,9 +464,15 @@ function loadStudentsForClass() {
         var workbook = XLSX.readFile(filePath);
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
-        var data = XLSX.utils.sheet_to_json(worksheet);
-        
-        students = parseStudentData(data);
+        // Thử raw rows trước (hỗ trợ file bảng điểm trường có header thừa)
+        var rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+        var parsed = parseStudentDataRaw(rawRows);
+        if (!parsed) {
+            // Fallback: đọc theo header tự động
+            var data = XLSX.utils.sheet_to_json(worksheet);
+            parsed = parseStudentData(data);
+        }
+        students = parsed;
         console.log('[OK] Da tai ' + students.length + ' hoc sinh cho lop ' + currentSession.className);
     } catch (err) {
         console.error('Lỗi đọc file học sinh:', err);
@@ -482,13 +488,17 @@ function loadStudentsFromDefaultFile() {
             students = [];
             return;
         }
-        
+
         var workbook = XLSX.readFile(excelPath);
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
-        var data = XLSX.utils.sheet_to_json(worksheet);
-        
-        students = parseStudentData(data);
+        var rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+        var parsed = parseStudentDataRaw(rawRows);
+        if (!parsed) {
+            var data = XLSX.utils.sheet_to_json(worksheet);
+            parsed = parseStudentData(data);
+        }
+        students = parsed;
         console.log('[OK] Da tai ' + students.length + ' hoc sinh tu file mac dinh');
     } catch (err) {
         console.error('Lỗi đọc file Excel:', err);
@@ -501,31 +511,31 @@ function parseStudentData(data) {
     if (data.length > 0) {
         console.log('[INFO] Cac cot trong file Excel:', Object.keys(data[0]));
     }
-    
+
     var index = 0;
     return data.map(row => {
         index++;
-        
+
         // Hỗ trợ nhiều tên cột STT khác nhau
-        var stt = row['STT'] || row['stt'] || row['Stt'] || row['SỐ TT'] || row['Số TT'] || 
-                  row['TT'] || row['tt'] || row['Số thứ tự'] || row['So thu tu'] || 
+        var stt = row['STT'] || row['stt'] || row['Stt'] || row['SỐ TT'] || row['Số TT'] ||
+                  row['TT'] || row['tt'] || row['Số thứ tự'] || row['So thu tu'] ||
                   row['#'] || row['No'] || row['NO'] || row['no'] || '';
-        
+
         // Hỗ trợ nhiều tên cột Họ
         var ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] ||
                  row['Họ và tên lót'] || row['Ho va ten lot'] || row['Họ tên lót'] || '';
-        
-        // Hỗ trợ nhiều tên cột Tên  
+
+        // Hỗ trợ nhiều tên cột Tên
         var ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] ||
                   row['Họ và tên'] || row['Ho va ten'] || row['Họ tên'] || row['Ho ten'] ||
                   row['HỌ VÀ TÊN'] || row['HO VA TEN'] || row['Hovaten'] || row['hovaten'] ||
                   row['FullName'] || row['fullname'] || row['FULLNAME'] || row['Name'] || row['name'] || '';
-        
+
         // Nữ / Giới tính
         var nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
-                 row['Giới tính'] || row['GioiTinh'] || row['GIOITINH'] || row['Gioi tinh'] || 
+                 row['Giới tính'] || row['GioiTinh'] || row['GIOITINH'] || row['Gioi tinh'] ||
                  row['GT'] || row['gt'] || row['Gender'] || row['gender'] || '';
-        
+
         // Nếu không có cột HO riêng, lấy tên đầy đủ từ cột TEN
         if (!ho && ten) {
             var parts = ten.trim().split(/\s+/);
@@ -534,22 +544,88 @@ function parseStudentData(data) {
                 ho = parts.join(' ');
             }
         }
-        
+
         // Xử lý giới tính
         if (typeof nu === 'string') {
             nu = ['x', 'nữ', 'nu', 'female', 'f', 'n'].includes(nu.toLowerCase()) ? 'X' : '';
         }
-        
+
         // Nếu không có STT nhưng có tên, tự tạo STT
         if (!stt && (ho || ten)) {
             stt = index;
         }
-        
+
         // Chuyển STT về string
         stt = String(stt).trim();
-        
+
         return { stt, ho, ten, nu };
     }).filter(s => s.stt && (s.ho || s.ten)); // Cần có STT và ít nhất họ hoặc tên
+}
+
+// Parse từ raw rows (header:1) — hỗ trợ file bảng điểm trường có nhiều dòng header thừa
+function parseStudentDataRaw(rows) {
+    // Tìm dòng header chứa STT, Họ, Tên
+    var headerRow = -1;
+    var colSTT = -1, colHo = -1, colTen = -1, colNu = -1;
+
+    var sttKeys = ['stt', 'tt', 'số tt', 'so tt', 'số thứ tự', 'so thu tu', '#', 'no'];
+    var hoKeys = ['họ', 'ho', 'họ và tên lót', 'ho va ten lot', 'họ tên lót'];
+    var tenKeys = ['tên', 'ten', 'họ và tên', 'ho va ten', 'họ tên', 'ho ten', 'fullname', 'name'];
+    var nuKeys = ['nữ', 'nu', 'giới tính', 'gioi tinh', 'gt', 'gender'];
+
+    for (var r = 0; r < Math.min(rows.length, 15); r++) {
+        var row = rows[r];
+        var found = false;
+        for (var c = 0; c < row.length; c++) {
+            var cell = String(row[c] || '').trim().toLowerCase();
+            if (sttKeys.indexOf(cell) !== -1) { colSTT = c; found = true; }
+            if (hoKeys.indexOf(cell) !== -1) { colHo = c; found = true; }
+            if (tenKeys.indexOf(cell) !== -1) { colTen = c; found = true; }
+            if (nuKeys.indexOf(cell) !== -1) { colNu = c; }
+        }
+        if (found && (colSTT !== -1 || colTen !== -1)) {
+            headerRow = r;
+            break;
+        }
+    }
+
+    if (headerRow === -1) return null; // Không tìm thấy header → fallback
+
+    var result = [];
+    var autoSTT = 0;
+    for (var i = headerRow + 1; i < rows.length; i++) {
+        var row = rows[i];
+        // Skip sub-header row (giá trị không phải số ở cột STT khi đã có header)
+        var rawSTT = colSTT !== -1 ? row[colSTT] : '';
+        var rawHo  = colHo  !== -1 ? String(row[colHo]  || '').trim() : '';
+        var rawTen = colTen !== -1 ? String(row[colTen] || '').trim() : '';
+        var rawNu  = colNu  !== -1 ? String(row[colNu]  || '').trim() : '';
+
+        // Skip dòng không có STT số hoặc không có tên
+        if (!rawSTT && !rawHo && !rawTen) continue;
+        var sttNum = parseInt(rawSTT, 10);
+        if (isNaN(sttNum)) continue; // bỏ qua dòng sub-header / tổng kết
+
+        autoSTT++;
+        var ho = rawHo;
+        var ten = rawTen;
+
+        // Nếu chỉ có cột Tên (fullname), tách họ/tên
+        if (!ho && ten) {
+            var parts = ten.split(/\s+/);
+            if (parts.length > 1) { ten = parts.pop(); ho = parts.join(' '); }
+        }
+
+        var nu = '';
+        if (rawNu) {
+            nu = ['x', 'nữ', 'nu', 'female', 'f', 'n'].includes(rawNu.toLowerCase()) ? 'X' : '';
+        }
+
+        if (ho || ten) {
+            result.push({ stt: String(sttNum), ho: ho, ten: ten, nu: nu });
+        }
+    }
+    return result.length > 0 ? result : null;
 }
 
 // Migrate câu hỏi cũ sang định dạng mới (thêm type, strip tags thừa)
@@ -1517,18 +1593,19 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
         var workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
-        var data = XLSX.utils.sheet_to_json(worksheet);
-        
-        console.log('[INFO] Sheet: ' + sheetName + ', So dong: ' + data.length);
-        if (data.length > 0) {
-            console.log('[INFO] Cac cot: ' + Object.keys(data[0]).join(', '));
+
+        // Thử raw rows trước (hỗ trợ file bảng điểm trường)
+        var rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+        var parsedStudents = parseStudentDataRaw(rawRows);
+        if (!parsedStudents) {
+            var data = XLSX.utils.sheet_to_json(worksheet);
+            parsedStudents = parseStudentData(data);
         }
-        
-        var parsedStudents = parseStudentData(data);
-        console.log('[OK] Parsed: ' + parsedStudents.length + ' hoc sinh hop le');
-        
+
+        console.log('[INFO] Sheet: ' + sheetName + ', parsed: ' + parsedStudents.length + ' hoc sinh');
+
         if (parsedStudents.length === 0) {
-            return res.json({ success: false, error: 'Không có học sinh hợp lệ' });
+            return res.json({ success: false, error: 'Không có học sinh hợp lệ. Kiểm tra file có cột STT, Họ, Tên không.' });
         }
         
         // Lưu file vào thư mục class-students
@@ -2335,80 +2412,24 @@ app.post('/api/upload-students', express.raw({ type: '*/*', limit: '10mb' }), (r
         var workbook = XLSX.read(req.body, { type: 'buffer' });
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
-        var data = XLSX.utils.sheet_to_json(worksheet);
-        
-        if (!data || data.length === 0) {
-            return res.json({ 
-                success: false, 
-                error: 'File Excel trống hoặc không đọc được dữ liệu.' 
-            });
-        }
-        
-        // Kiểm tra cột bắt buộc
-        var firstRow = data[0];
-        var hasSTT = 'STT' in firstRow || 'stt' in firstRow || 'Stt' in firstRow;
-        var hasTEN = 'TEN' in firstRow || 'Ten' in firstRow || 'ten' in firstRow || 
-                       'Tên' in firstRow || 'TÊN' in firstRow;
-        
-        if (!hasSTT) {
-            return res.json({ 
-                success: false, 
-                error: 'Thiếu cột STT. File phải có cột STT (số thứ tự).' 
-            });
-        }
-        
-        if (!hasTEN) {
-            return res.json({ 
-                success: false, 
-                error: 'Thiếu cột TEN. File phải có cột TEN (tên học sinh).' 
-            });
-        }
-        
-        // Parse dữ liệu học sinh
-        var parsedStudents = [];
+
+        // Thử raw rows trước (hỗ trợ file bảng điểm trường)
+        var rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+        var parsedStudents = parseStudentDataRaw(rawRows);
         var errors = [];
-        
-        data.forEach((row, index) => {
-            var rowNum = index + 2; // Dòng trong Excel (1-indexed + header)
-            var stt = row['STT'] || row['stt'] || row['Stt'] || '';
-            var ho = row['Họ'] || row['Ho'] || row['ho'] || row['HO'] || row['HỌ'] || '';
-            var ten = row['Tên'] || row['Ten'] || row['ten'] || row['TEN'] || row['TÊN'] || '';
-            var nu = row['Nữ'] || row['Nu'] || row['nu'] || row['NU'] || row['NỮ'] ||
-                     row['Giới tính'] || row['GioiTinh'] || row['GIOITINH'] || row['Gioi tinh'] || '';
-            
-            // Kiểm tra lỗi từng dòng
-            if (!stt) {
-                errors.push(`Dòng ${rowNum}: Thiếu STT`);
-                return;
+        if (!parsedStudents) {
+            // Fallback: đọc theo header tự động
+            var data = XLSX.utils.sheet_to_json(worksheet);
+            if (!data || data.length === 0) {
+                return res.json({ success: false, error: 'File Excel trống hoặc không đọc được dữ liệu.' });
             }
-            
-            if (!ten && !ho) {
-                errors.push(`Dòng ${rowNum}: Thiếu tên học sinh`);
-                return;
-            }
-            
-            // Nếu không có cột HO riêng, tách họ tên từ cột TEN
-            if (!ho && ten) {
-                var parts = ten.trim().split(/\s+/);
-                if (parts.length > 1) {
-                    ten = parts.pop();
-                    ho = parts.join(' ');
-                }
-            }
-            
-            // Xử lý giới tính
-            if (typeof nu === 'string') {
-                nu = ['x', 'nữ', 'nu', 'female', 'f'].includes(nu.toLowerCase()) ? 'X' : '';
-            }
-            
-            parsedStudents.push({ stt, ho, ten, nu });
-        });
-        
-        // Nếu có lỗi, trả về danh sách lỗi
-        if (errors.length > 0 && parsedStudents.length === 0) {
+            parsedStudents = parseStudentData(data);
+        }
+
+        if (!parsedStudents || parsedStudents.length === 0) {
             return res.json({
                 success: false,
-                error: 'Không có học sinh hợp lệ trong file.',
+                error: 'Không có học sinh hợp lệ. File cần có cột STT, Họ, Tên (hoặc định dạng bảng điểm trường).',
                 details: errors
             });
         }

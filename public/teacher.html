@@ -1226,7 +1226,7 @@
                         <p style="color: #666; font-size: 0.9em;">Cho phép học sinh bắt đầu làm bài</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="examOpen" onchange="toggleExam()">
+                        <input type="checkbox" id="examOpen">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -1237,7 +1237,7 @@
                         <p style="color: #666; font-size: 0.9em;">Cho học sinh xem điểm sau khi nộp bài</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="showScore" checked onchange="saveSettings()">
+                        <input type="checkbox" id="showScore" checked>
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -1248,7 +1248,7 @@
                         <p style="color: #666; font-size: 0.9em;">Mỗi học sinh có thứ tự câu hỏi và đáp án khác nhau (theo STT)</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="shuffleExam" checked onchange="saveSettings()">
+                        <input type="checkbox" id="shuffleExam" checked>
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -1258,13 +1258,13 @@
                         <strong style="color: #0d47a1;">Mật khẩu bắt đầu làm bài</strong>
                         <p style="color: #1565c0; font-size: 0.9em;">Học sinh phải nhập mật khẩu mới được làm bài (để tất cả bắt đầu cùng lúc)</p>
                         <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
-                            <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;" onchange="saveSettings()">
+                            <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;">
                             <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên">Tao</button>
                             <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu">Copy</button>
                         </div>
                     </div>
                     <label class="toggle-switch" style="margin-left: 15px;">
-                        <input type="checkbox" id="requirePassword" onchange="saveSettings()">
+                        <input type="checkbox" id="requirePassword">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -1276,7 +1276,7 @@
                         <p style="color: #e65100; font-size: 0.85em; margin-top: 5px; font-style: italic;">* Không giới hạn thời gian làm bài</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="practiceMode" onchange="onPracticeModeChange()">
+                        <input type="checkbox" id="practiceMode">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -2403,6 +2403,14 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 document.getElementById('examTime').focus();
                 return;
             }
+
+            const isOpen = document.getElementById('examOpen').checked;
+            const isPractice = document.getElementById('practiceMode').checked;
+
+            if (isOpen && isPractice) {
+                showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn. Hãy tắt nếu đây là bài kiểm tra thật!', 'warning');
+            }
+
             const settings = {
                 title: document.getElementById('examTitle').value,
                 timeLimit: timeVal,
@@ -2421,10 +2429,11 @@ C. Công thức nước là H₂O. (Đ)</pre>
             });
 
             if (res.ok) {
+                updateExamStatus(isOpen);
                 showNotification('Đã lưu cài đặt!');
             }
         }
-        
+
         // Tạo mật khẩu ngẫu nhiên
         function generateRandomPassword() {
             const chars = '0123456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // Bỏ O, I để tránh nhầm
@@ -2450,31 +2459,6 @@ C. Công thức nước là H₂O. (Đ)</pre>
             }).catch(() => {
                 showNotification('Không thể sao chép', 'error');
             });
-        }
-
-        async function toggleExam() {
-            const isOpen = document.getElementById('examOpen').checked;
-            if (isOpen) {
-                const timeVal = parseInt(document.getElementById('examTime').value);
-                if (!timeVal || timeVal < 1) {
-                    showNotification('Chưa đặt thời gian làm bài! Vui lòng nhập số phút trước khi mở bài.', 'warning');
-                    document.getElementById('examOpen').checked = false;
-                    document.getElementById('examTime').focus();
-                    return;
-                }
-                if (document.getElementById('practiceMode').checked) {
-                    showNotification('⚠️ Đang bật chế độ ÔN TẬP! Học sinh sẽ thấy đáp án ngay. Hãy tắt nếu đây là bài kiểm tra thật.', 'warning');
-                }
-            }
-            updateExamStatus(isOpen);
-            await saveSettings();
-        }
-
-        async function onPracticeModeChange() {
-            if (document.getElementById('practiceMode').checked) {
-                showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn, không tính điểm!', 'warning');
-            }
-            await saveSettings();
         }
 
         function updateExamStatus(isOpen) {

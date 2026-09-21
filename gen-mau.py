@@ -1,29 +1,114 @@
-# Tạo file mau-cau-hoi.docx với hướng dẫn đầy đủ
 from docx import Document
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt, RGBColor, Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 doc = Document()
 doc.styles['Normal'].font.name = 'Times New Roman'
 doc.styles['Normal'].font.size = Pt(12)
 
-def th(text, size=13, color=None):
+# ─── helper: set paragraph background color ───
+def set_para_shading(para, fill):
+    pPr = para._p.get_or_add_pPr()
+    shd = OxmlElement('w:shd')
+    shd.set(qn('w:val'), 'clear')
+    shd.set(qn('w:color'), 'auto')
+    shd.set(qn('w:fill'), fill)
+    pPr.append(shd)
+
+def set_para_border(para, color='AAAAAA', sz='4'):
+    pPr = para._p.get_or_add_pPr()
+    pBdr = OxmlElement('w:pBdr')
+    for side in ('top', 'left', 'bottom', 'right'):
+        bdr = OxmlElement(f'w:{side}')
+        bdr.set(qn('w:val'), 'single')
+        bdr.set(qn('w:sz'), sz)
+        bdr.set(qn('w:space'), '4')
+        bdr.set(qn('w:color'), color)
+        pBdr.append(bdr)
+    pPr.append(pBdr)
+
+def set_indent(para, left_twips=360):
+    pPr = para._p.get_or_add_pPr()
+    ind = OxmlElement('w:ind')
+    ind.set(qn('w:left'), str(left_twips))
+    pPr.append(ind)
+
+# ─── header ───
+def heading(text, size=13, color=(0, 70, 180), align=WD_ALIGN_PARAGRAPH.LEFT, shading=None):
     p = doc.add_paragraph()
+    p.alignment = align
+    if shading:
+        set_para_shading(p, shading)
     run = p.add_run(text)
     run.bold = True
     run.font.size = Pt(size)
-    if color:
-        run.font.color.rgb = RGBColor(*color)
+    run.font.color.rgb = RGBColor(*color)
+    return p
 
-def q(text):
-    doc.add_paragraph(text)
-
-def note(label, text):
+def section(letter, title):
+    """Tiêu đề phần A, B, C... — nền xanh nhạt"""
     p = doc.add_paragraph()
-    p.add_run(label).bold = True
+    set_para_shading(p, 'DDEEFF')
+    r = p.add_run(f'  {letter}.  {title.upper()}  ')
+    r.bold = True
+    r.font.size = Pt(12)
+    r.font.color.rgb = RGBColor(0, 50, 140)
+    return p
+
+def subsection(title, color=(0, 120, 0)):
+    p = doc.add_paragraph()
+    set_para_shading(p, 'F0FFF0')
+    r = p.add_run(f'  ▸  {title}  ')
+    r.bold = True
+    r.font.size = Pt(11)
+    r.font.color.rgb = RGBColor(*color)
+    return p
+
+def rule(label, text, indent=True):
+    p = doc.add_paragraph()
+    if indent:
+        set_indent(p, 360)
+    r1 = p.add_run(f'◆ {label}')
+    r1.bold = True
+    r1.font.color.rgb = RGBColor(180, 80, 0)
+    p.add_run(f'  {text}')
+    return p
+
+def warn(text):
+    p = doc.add_paragraph()
+    set_indent(p, 360)
+    set_para_shading(p, 'FFF3CD')
+    r = p.add_run(f'⚠  {text}')
+    r.font.size = Pt(11)
+    r.font.color.rgb = RGBColor(140, 70, 0)
+    return p
+
+def eg(text, indent=True):
+    """Dòng ví dụ — font monospace-like, nền xám nhạt"""
+    p = doc.add_paragraph()
+    if indent:
+        set_indent(p, 540)
+    set_para_shading(p, 'F5F5F5')
+    r = p.add_run(text)
+    r.font.name = 'Courier New'
+    r.font.size = Pt(10)
+    return p
+
+def q(text, indent=360):
+    p = doc.add_paragraph()
+    set_indent(p, indent)
     p.add_run(text)
+    return p
 
 def blank():
     doc.add_paragraph('')
+
+def divider():
+    p = doc.add_paragraph()
+    set_para_border(p, 'CCCCCC', '4')
+    p.add_run('')
 
 def code_block(lines):
     doc.add_paragraph('[CODE]')
@@ -31,222 +116,255 @@ def code_block(lines):
         doc.add_paragraph(line)
     doc.add_paragraph('[/CODE]')
 
-# ===== TIÊU ĐỀ =====
-th('MẪU CÂU HỎI - HƯỚNG DẪN SOẠN ĐỀ THI', 14)
-th('Hệ thống Trắc Nghiệm LAN', 11)
-blank()
-
-# ===== CẤU TRÚC TỔNG QUÁT =====
-th('A. CẤU TRÚC TỔNG QUÁT MỖI CÂU HỎI', 12, (0, 70, 180))
-blank()
-
-q('Mỗi câu hỏi gồm 3 thành phần viết trên các dòng riêng:')
-q('   1. Dòng câu hỏi:   Câu N. [loại] Nội dung câu hỏi')
-q('   2. Các dòng đáp án: A. ...   B. ...   C. ...   D. ...')
-q('   3. Dòng trắng (Enter) để phân cách với câu tiếp theo')
-blank()
-
-note('Prefix câu hỏi: ', 'Chấp nhận "Câu 1.", "Câu 1:", "1.", "1:" (có hoặc không có chữ "Câu")')
-note('Prefix đáp án: ', 'Chấp nhận "A." hoặc "A)" — chỉ dùng chữ cái A B C D E...')
-note('Tối thiểu: ', 'Mỗi câu cần ít nhất 2 đáp án. Không giới hạn số đáp án tối đa.')
-blank()
-
-# ===== LƯU Ý QUAN TRỌNG =====
-th('B. LƯU Ý QUAN TRỌNG', 12, (180, 0, 0))
-blank()
-
-notes = [
-    ('⚠ KHÔNG dùng List của Word: ',
-     'Không Insert > Bullets/Numbering. Chỉ gõ A. B. C. D. như văn bản thường.'),
-    ('⚠ Mỗi dòng là một đoạn riêng: ',
-     'Câu hỏi, mỗi đáp án, [CODE], [/CODE] đều phải là đoạn văn bản riêng (Enter xuống dòng).'),
-    ('⚠ Dòng trắng giữa các câu: ',
-     'Nên có 1 dòng trắng (Enter) giữa các câu để dễ đọc. Không bắt buộc.'),
-    ('⚠ Tiêu đề phần không bị import: ',
-     'Dòng không bắt đầu bằng "Câu N." và không bắt đầu bằng chữ cái + dấu chấm sẽ bị bỏ qua.'),
-    ('⚠ Hình ảnh: ',
-     'Chèn ảnh trực tiếp vào dòng câu hỏi hoặc đáp án trong Word. Ảnh được nhúng base64 khi import.'),
-]
-for label, text in notes:
-    note(label, text)
-blank()
-
-# ===== PHẦN 1: CÂU HỎI MỘT ĐÁP ÁN =====
-th('C. CÁC LOẠI CÂU HỎI', 12, (0, 70, 180))
-blank()
-th('LOẠI 1. MỘT ĐÁP ÁN ĐÚNG (mặc định)', 11, (0, 100, 0))
-blank()
-
-note('Quy tắc: ', 'Thêm dấu * vào cuối đáp án đúng (đúng 1 dấu *). Hoặc viết (đúng) cuối đáp án đúng.')
-note('Không cần: ', 'Không cần thêm từ khóa gì vào đầu câu hỏi.')
-blank()
-
-q('Câu 1. Thủ đô của Việt Nam là thành phố nào?')
-q('A. TP. Hồ Chí Minh')
-q('B. Hà Nội *')
-q('C. Đà Nẵng')
-q('D. Cần Thơ')
-blank()
-
-q('Câu 2. Năm nào Việt Nam thống nhất đất nước?')
-q('A. 1954')
-q('B. 1968')
-q('C. 1975 (đúng)')
-q('D. 1986')
-blank()
-
-# ===== PHẦN 2: NHIỀU ĐÁP ÁN =====
-th('LOẠI 2. NHIỀU ĐÁP ÁN ĐÚNG [MULTI]', 11, (0, 100, 0))
-blank()
-
-note('Quy tắc: ', 'Thêm [MULTI] vào đầu câu hỏi. Đánh dấu * vào cuối MỖI đáp án đúng (ít nhất 2 dấu *).')
-note('Chấp nhận: ', '[MULTI] hoặc [multi] (không phân biệt hoa thường).')
-blank()
-
-q('Câu 3. [MULTI] Chọn các thành phố trực thuộc Trung ương của Việt Nam:')
-q('A. Hà Nội *')
-q('B. Nghệ An')
-q('C. TP. Hồ Chí Minh *')
-q('D. Đà Nẵng *')
-q('E. Cần Thơ *')
-blank()
-
-# ===== PHẦN 3: ĐÚNG/SAI =====
-th('LOẠI 3. ĐÚNG/SAI [DUNG/SAI]', 11, (0, 100, 0))
-blank()
-
-note('Quy tắc: ', 'Thêm [DUNG/SAI] vào đầu câu hỏi. MỖI đáp án phải có marker đúng/sai ở cuối.')
-note('Marker đúng: ', '(đúng)  (dung)  (Đ)  (đ)  (D)  (d)  (T)  (t)  (Y)  (y)')
-note('Marker sai: ', '(sai)  (S)  (s)  (F)  (f)  (N)  (n)')
-note('Chấp nhận: ', '[DUNG/SAI]  [ĐÚNG/SAI]  [DUNGSAI]  (không phân biệt hoa thường)')
-blank()
-
-q('Câu 4. [DUNG/SAI] Xác định tính đúng/sai của các phát biểu:')
-q('A. Hà Nội là thủ đô Việt Nam. (đúng)')
-q('B. Việt Nam không có biên giới với Trung Quốc. (sai)')
-q('C. Sông Hồng chảy qua Hà Nội. (đúng)')
-q('D. Việt Nam có 63 tỉnh thành. (đúng)')
-blank()
-
-# ===== PHẦN 4: CÔNG THỨC TOÁN =====
-th('D. CÔNG THỨC TOÁN (LaTeX / KaTeX)', 12, (0, 70, 180))
-blank()
-
-note('Cú pháp inline: ', '\\( công_thức \\)  — hiển thị trong dòng chữ')
-note('Cú pháp dòng riêng: ', '\\[ công_thức \\]  — hiển thị to, căn giữa')
-note('Lưu ý: ', 'Có thể viết LaTeX trực tiếp trong câu hỏi, đáp án, hoặc dùng công thức Word (OMML) — cả hai đều được nhận.')
-blank()
-
-q('Câu 5. Giá trị của \\(\\sqrt{4} + \\sqrt{9}\\) bằng bao nhiêu?')
-q('A. 2')
-q('B. 3')
-q('C. 5 *')
-q('D. 7')
-blank()
-
-q('Câu 6. Nghiệm của phương trình \\(x^2 - 5x + 6 = 0\\) là:')
-q('A. \\(x = 1\\) hoặc \\(x = 6\\)')
-q('B. \\(x = 2\\) hoặc \\(x = 3\\) *')
-q('C. \\(x = -2\\) hoặc \\(x = -3\\)')
-q('D. \\(x = 0\\) hoặc \\(x = 5\\)')
-blank()
-
-q('Câu 7. [DUNG/SAI] Cho hàm số \\(f(x) = x^2 - 4\\), xác định đúng/sai:')
-q('A. \\(f(0) = -4\\) (đúng)')
-q('B. \\(f(2) = 0\\) (đúng)')
-q('C. \\(f(-2) = 4\\) (sai)')
-q('D. Hàm số đạt cực tiểu tại \\(x = 0\\) (đúng)')
-blank()
+# ══════════════════════════════════════════════
+#  TIÊU ĐỀ
+# ══════════════════════════════════════════════
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+set_para_shading(p, '003087')
+r = p.add_run('  MẪU CÂU HỎI — HƯỚNG DẪN SOẠN ĐỀ THI  ')
+r.bold = True
+r.font.size = Pt(14)
+r.font.color.rgb = RGBColor(255, 255, 255)
 
 p2 = doc.add_paragraph()
-p2.add_run('Bảng ký hiệu LaTeX thường dùng:').bold = True
+p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+set_para_shading(p2, 'E8F0FE')
+p2.add_run('Hệ thống Trắc Nghiệm LAN').font.size = Pt(11)
+
+blank()
+
+# ══════════════════════════════════════════════
+#  A. CẤU TRÚC TỔNG QUÁT
+# ══════════════════════════════════════════════
+section('A', 'Cấu trúc tổng quát mỗi câu hỏi')
+blank()
+
+rule('Dòng câu hỏi:', 'Câu N.  [loại]  Nội dung câu hỏi')
+rule('Dòng đáp án:', 'A. ...    B. ...    C. ...    D. ...')
+rule('Phân cách câu:', 'Để 1 dòng trắng (Enter) giữa các câu')
+blank()
+
+rule('Prefix câu hỏi được chấp nhận:', '')
+eg('Câu 1.  Câu 1:  1.  1:      (có hoặc không có chữ "Câu")')
+blank()
+
+rule('Prefix đáp án được chấp nhận:', '')
+eg('A.  hoặc  A)      (chỉ dùng chữ cái A B C D E...)')
+blank()
+
+rule('Tối thiểu:', 'Mỗi câu cần ít nhất 2 đáp án. Tối đa không giới hạn.')
+blank()
+
+# ══════════════════════════════════════════════
+#  B. LƯU Ý QUAN TRỌNG
+# ══════════════════════════════════════════════
+section('B', 'Lưu ý quan trọng')
+blank()
+
+warn('KHÔNG dùng tính năng Bullets / Numbering của Word.  Chỉ gõ A. B. C. D. như văn bản thường.')
+warn('Câu hỏi, mỗi đáp án, [CODE], [/CODE] đều phải là đoạn văn bản riêng (nhấn Enter xuống dòng).')
+warn('Hình ảnh: Chèn ảnh trực tiếp vào dòng câu hỏi hoặc đáp án trong Word. Ảnh được nhúng tự động khi import.')
+warn('Dòng không bắt đầu bằng "Câu N." hoặc chữ cái + dấu chấm sẽ bị bỏ qua (tiêu đề, mô tả, v.v.).')
+blank()
+
+# ══════════════════════════════════════════════
+#  C. CÁC LOẠI CÂU HỎI
+# ══════════════════════════════════════════════
+section('C', 'Các loại câu hỏi')
+blank()
+
+# ── C1. Một đáp án ──
+subsection('LOẠI 1.  Một đáp án đúng  (mặc định, không cần tag)')
+blank()
+rule('Đánh dấu đáp án đúng:', 'Thêm dấu  *  sau đáp án đúng (đúng 1 dấu *)')
+rule('Hoặc:', 'Viết  (đúng)  hoặc  (dung)  ở cuối đáp án đúng')
+rule('Mặc định:', 'Nếu KHÔNG đánh dấu gì cả → hệ thống tự chọn đáp án A làm đáp án đúng')
+blank()
+
+eg('Câu 1. Thủ đô của Việt Nam là thành phố nào?')
+eg('A. TP. Hồ Chí Minh')
+eg('B. Hà Nội *')
+eg('C. Đà Nẵng')
+eg('D. Cần Thơ')
+blank()
+eg('Câu 2. Năm nào Việt Nam thống nhất đất nước?')
+eg('A. 1954')
+eg('B. 1968')
+eg('C. 1975 (đúng)')
+eg('D. 1986')
+blank()
+eg('Câu 3. Đây là ví dụ KHÔNG đánh dấu → hệ thống chọn A làm đúng')
+eg('A. Đáp án này được chọn tự động là ĐÚNG')
+eg('B. Đáp án sai')
+eg('C. Đáp án sai')
+blank()
+
+divider()
+blank()
+
+# ── C2. Nhiều đáp án ──
+subsection('LOẠI 2.  Nhiều đáp án đúng  [MULTI]')
+blank()
+rule('Tag:', 'Thêm  [MULTI]  vào đầu câu hỏi (không phân biệt hoa thường)')
+rule('Đánh dấu:', 'Thêm  *  vào cuối MỖI đáp án đúng (ít nhất 2 dấu *)')
+blank()
+
+eg('Câu 4. [MULTI] Chọn các thành phố trực thuộc Trung ương của Việt Nam:')
+eg('A. Hà Nội *')
+eg('B. Nghệ An')
+eg('C. TP. Hồ Chí Minh *')
+eg('D. Đà Nẵng *')
+eg('E. Cần Thơ *')
+blank()
+
+divider()
+blank()
+
+# ── C3. Đúng/Sai ──
+subsection('LOẠI 3.  Đúng / Sai  [DUNG/SAI]')
+blank()
+rule('Tag chấp nhận:', '[DUNG/SAI]  [ĐÚNG/SAI]  [DUNGSAI]  (không phân biệt hoa thường)')
+rule('Quy tắc:', 'MỖI đáp án phải có marker đúng/sai ở cuối dòng')
+blank()
+
+rule('Marker ĐÚNG:', '')
+eg('(đúng)   (dung)   (Đ)   (đ)   (D)   (d)   (T)   (t)   (Y)   (y)')
+blank()
+rule('Marker SAI:', '')
+eg('(sai)   (S)   (s)   (F)   (f)   (N)   (n)')
+blank()
+
+eg('Câu 5. [DUNG/SAI] Xác định tính đúng/sai của các phát biểu:')
+eg('A. Hà Nội là thủ đô Việt Nam. (đúng)')
+eg('B. Việt Nam không có biên giới với Trung Quốc. (sai)')
+eg('C. Sông Hồng chảy qua Hà Nội. (D)')
+eg('D. Việt Nam có 63 tỉnh thành. (Y)')
+blank()
+
+# ══════════════════════════════════════════════
+#  D. CÔNG THỨC TOÁN
+# ══════════════════════════════════════════════
+section('D', 'Công thức toán  (LaTeX / KaTeX)')
+blank()
+rule('Inline — trong dòng chữ:', r'\( công_thức \)')
+rule('Display — dòng riêng, căn giữa:', r'\[ công_thức \]')
+rule('Công thức Word (OMML):', 'Chèn công thức bằng Insert > Equation trong Word — cũng được hỗ trợ')
+blank()
+
+eg(r'Câu 6. Giá trị của \(\sqrt{4} + \sqrt{9}\) bằng bao nhiêu?')
+eg('A. 2')
+eg('B. 3')
+eg(r'C. 5 *')
+eg('D. 7')
+blank()
+eg(r'Câu 7. Nghiệm của phương trình \(x^2 - 5x + 6 = 0\) là:')
+eg(r'A. \(x = 1\) hoặc \(x = 6\)')
+eg(r'B. \(x = 2\) hoặc \(x = 3\) *')
+eg(r'C. \(x = -2\) hoặc \(x = -3\)')
+eg(r'D. \(x = 0\) hoặc \(x = 5\)')
+blank()
+
+# Bảng ký hiệu
+p = doc.add_paragraph()
+set_indent(p, 360)
+p.add_run('Bảng ký hiệu LaTeX thường dùng:').bold = True
+blank()
+
 symbols = [
-    ('\\(\\frac{a}{b}\\)', 'phân số'),
-    ('\\(\\sqrt{x}\\)', 'căn bậc hai'),
-    ('\\(\\sqrt[n]{x}\\)', 'căn bậc n'),
-    ('\\(x^{2}\\)', 'lũy thừa'),
-    ('\\(x_{i}\\)', 'chỉ số dưới'),
-    ('\\(\\dfrac{a}{b}\\)', 'phân số cỡ lớn'),
-    ('\\(\\sum_{i=1}^{n} i\\)', 'tổng sigma'),
-    ('\\(\\prod_{i=1}^{n} i\\)', 'tích pi'),
-    ('\\(\\int_{a}^{b} f(x)dx\\)', 'tích phân'),
-    ('\\(\\lim_{x \\to 0} f(x)\\)', 'giới hạn'),
-    ('\\(\\infty\\)', 'vô cực'),
-    ('\\(\\pi, \\alpha, \\beta, \\gamma, \\theta\\)', 'chữ Hy Lạp'),
-    ('\\(\\leq, \\geq, \\neq, \\approx\\)', 'so sánh'),
-    ('\\(\\in, \\notin, \\subset, \\cup, \\cap\\)', 'tập hợp'),
-    ('\\(\\vec{a}, \\overrightarrow{AB}\\)', 'vectơ'),
-    ('\\(\\overline{AB}\\)', 'đoạn thẳng AB'),
-    ('\\(\\angle, \\triangle\\)', 'góc, tam giác'),
-    ('\\(\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\)', 'ma trận'),
+    (r'\(\frac{a}{b}\)',                     'Phân số'),
+    (r'\(\dfrac{a}{b}\)',                    'Phân số cỡ lớn (trong display)'),
+    (r'\(\sqrt{x}\)',                        'Căn bậc hai'),
+    (r'\(\sqrt[n]{x}\)',                     'Căn bậc n'),
+    (r'\(x^{2}\)',                           'Lũy thừa'),
+    (r'\(x_{i}\)',                           'Chỉ số dưới'),
+    (r'\(\sum_{i=1}^{n} i\)',               'Tổng Sigma'),
+    (r'\(\prod_{i=1}^{n} i\)',              'Tích Pi'),
+    (r'\(\int_{a}^{b} f(x)\,dx\)',          'Tích phân'),
+    (r'\(\lim_{x \to 0} f(x)\)',            'Giới hạn'),
+    (r'\(\infty\)',                          'Vô cực'),
+    (r'\(\pi,\ \alpha,\ \beta,\ \theta\)',   'Chữ Hy Lạp'),
+    (r'\(\leq,\ \geq,\ \neq,\ \approx\)',   'So sánh'),
+    (r'\(\in,\ \subset,\ \cup,\ \cap\)',     'Tập hợp'),
+    (r'\(\vec{a},\ \overrightarrow{AB}\)',   'Vectơ'),
+    (r'\(\overline{AB}\)',                   'Đoạn thẳng'),
+    (r'\(\angle,\ \triangle\)',              'Góc, tam giác'),
+    (r'\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)', 'Ma trận'),
 ]
+
 for latex, desc in symbols:
-    doc.add_paragraph('   ' + latex + '   -->   ' + desc)
+    p = doc.add_paragraph()
+    set_indent(p, 540)
+    set_para_shading(p, 'F5F5F5')
+    r1 = p.add_run(f'{latex:<50}')
+    r1.font.name = 'Courier New'
+    r1.font.size = Pt(10)
+    r2 = p.add_run(f'→  {desc}')
+    r2.font.size = Pt(10)
 blank()
 
-# ===== PHẦN 5: CODE =====
-th('E. HIỂN THỊ CODE ([CODE] / [/CODE])', 12, (0, 70, 180))
+# ══════════════════════════════════════════════
+#  E. HIỂN THỊ CODE
+# ══════════════════════════════════════════════
+section('E', 'Hiển thị code  [CODE] / [/CODE]')
+blank()
+rule('Cú pháp:', 'Viết [CODE] trên dòng riêng → các dòng code → [/CODE] trên dòng riêng')
+rule('Vị trí:', 'Đặt block code ngay sau dòng câu hỏi (trước các đáp án)')
+rule('Ngôn ngữ:', 'Tự động nhận dạng: Python, C++, Java, HTML, CSS, JavaScript, SQL, v.v.')
+blank()
+warn('[CODE] và [/CODE] phải là dòng riêng, không có chữ nào khác trên cùng dòng.')
 blank()
 
-note('Cú pháp: ', 'Viết [CODE] trên một dòng riêng, sau đó viết từng dòng code, rồi [/CODE] trên dòng riêng.')
-note('Vị trí: ', 'Đặt block code sau dòng câu hỏi (hoặc sau đáp án nếu muốn code trong đáp án).')
-note('Ngôn ngữ: ', 'Tự động nhận dạng: Python, C++, Java, HTML, CSS, JavaScript, SQL, v.v.')
-note('Lưu ý: ', 'KHÔNG đặt [CODE] ngay sau A. B. C. D. trên cùng dòng — phải là dòng riêng.')
+eg('Câu 8. Xét đoạn code Python sau, kết quả in ra là gì?')
+eg('[CODE]')
+eg('x = 10')
+eg('y = 3')
+eg('print(x // y)')
+eg('[/CODE]')
+eg('A. 3 *')
+eg('B. 3.33')
+eg('C. 4')
+eg('D. 1')
 blank()
 
-q('Câu 8. Xét đoạn code Python sau, kết quả in ra là gì?')
-code_block([
-    'x = 10',
-    'y = 3',
-    'print(x // y)',
-])
-q('A. 3 *')
-q('B. 3.33')
-q('C. 4')
-q('D. 1')
+eg('Câu 9. Đoạn code C++ sau in ra giá trị gì?')
+eg('[CODE]')
+eg('#include <iostream>')
+eg('using namespace std;')
+eg('int main() {')
+eg('    int x = 5;')
+eg('    cout << x * x;')
+eg('}')
+eg('[/CODE]')
+eg('A. 5')
+eg('B. 10')
+eg('C. 25 *')
+eg('D. 55')
 blank()
 
-q('Câu 9. Đoạn code C++ sau in ra giá trị gì?')
-code_block([
-    '#include <iostream>',
-    'using namespace std;',
-    'int main() {',
-    '    int x = 5;',
-    '    cout << x * x;',
-    '}',
-])
-q('A. 5')
-q('B. 10')
-q('C. 25 *')
-q('D. 55')
+# ══════════════════════════════════════════════
+#  F. VÍ DỤ KẾT HỢP
+# ══════════════════════════════════════════════
+section('F', 'Ví dụ kết hợp nhiều tính năng')
 blank()
 
-q('Câu 10. [MULTI] Xét đoạn HTML sau, khẳng định nào đúng?')
-code_block([
-    '<div class="box">',
-    '  <p>Hello World</p>',
-    '</div>',
-])
-q('A. Thẻ div chứa thẻ p *')
-q('B. Thuộc tính class có giá trị "box" *')
-q('C. Thẻ p không cần đóng')
-q('D. Đây là HTML5 hợp lệ *')
+eg(r'Câu 10. [MULTI] Cho \(f(x) = x^2\). Xét đoạn code Python tính f(3):')
+eg('[CODE]')
+eg('def f(x):')
+eg('    return x ** 2')
+eg('print(f(3))')
+eg('[/CODE]')
+eg('A. Kết quả in ra là 9 *')
+eg('B. Hàm f tính bình phương của x *')
+eg('C. Kết quả in ra là 6')
+eg(r'D. x ** 2 tương đương \(x^2\) trong toán học *')
 blank()
 
-# ===== PHẦN 6: VÍ DỤ KẾT HỢP =====
-th('F. VÍ DỤ KẾT HỢP NHIỀU TÍNH NĂNG', 12, (0, 70, 180))
-blank()
-
-q('Câu 11. [MULTI] Cho \\(f(x) = x^2\\). Xét đoạn code Python tính f(3):')
-code_block([
-    'def f(x):',
-    '    return x ** 2',
-    'print(f(3))',
-])
-q('A. Kết quả in ra là 9 *')
-q('B. Hàm f tính bình phương của x *')
-q('C. Kết quả in ra là 6')
-q('D. x ** 2 tương đương \\(x^2\\) trong toán học *')
+eg(r'Câu 11. [DUNG/SAI] Cho \(f(x) = x^2 - 4\), xác định đúng/sai:')
+eg(r'A. \(f(0) = -4\) (đúng)')
+eg(r'B. \(f(2) = 0\) (đúng)')
+eg(r'C. \(f(-2) = 4\) (sai)')
+eg(r'D. Hàm số đạt cực tiểu tại \(x = 0\) (đúng)')
 blank()
 
 doc.save('data/mau-cau-hoi.docx')

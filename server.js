@@ -2745,7 +2745,8 @@ app.post('/api/import-word', upload.single('file'), async (req, res) => {
 var ALLOWED_HTML_TAGS = {
     'b': [], 'strong': [], 'i': [], 'em': [], 'u': [],
     'p': [], 'br': [], 'span': ['style'], 'sub': [], 'sup': [],
-    'img': ['src', 'alt', 'width', 'height', 'style']
+    'img': ['src', 'alt', 'width', 'height', 'style'],
+    'pre': [], 'code': []
 };
 
 function sanitizeStyleAttr(style) {
@@ -2942,6 +2943,9 @@ function mammothToHtml(buffer) {
         return mammoth.convertToHtml(
             { buffer: data.buffer },
             {
+                styleMap: [
+                    "p[style-name='Code'] => pre"
+                ],
                 convertImage: mammoth.images.imgElement(function(image) {
                     return image.read('base64').then(function(imageBase64) {
                         return { src: 'data:' + image.contentType + ';base64,' + imageBase64 };
@@ -2952,6 +2956,19 @@ function mammothToHtml(buffer) {
             var html = result.value;
             Object.keys(data.mathMap).forEach(function(placeholder) {
                 html = html.split(placeholder).join('\\(' + data.mathMap[placeholder] + '\\)');
+            });
+            // Escape HTML inside <pre> so code is displayed as text, not rendered as HTML
+            html = html.replace(/<pre>([\s\S]*?)<\/pre>/gi, function(match, inner) {
+                var escaped = inner
+                    .replace(/&amp;/g, '&')   // decode any double-encoding first
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&quot;/g, '"')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/<br\s*\/?>/gi, '\n');  // convert <br> back to newlines
+                return '<pre>' + escaped + '</pre>';
             });
             return { value: html, messages: result.messages };
         });
@@ -3010,12 +3027,82 @@ function buildQuestionObj(type, question, options, correctAnswer, correctList, c
 function parseQuestionsFromHtml(html) {
     var parsedQuestions = [];
     var paragraphs = [];
-    var pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
-    var match;
-    while ((match = pRegex.exec(html)) !== null) {
-        var inner = match[1].replace(/<br\s*\/?>/gi, ' ').trim();
-        if (inner) paragraphs.push(inner);
+
+    // Merge <pre> blocks into the preceding <p> so code stays attached to its question/option
+    // Split HTML into tokens: either a <pre>...</pre> block or a <p>...</p> block
+    var tokens = [];
+    var remaining = html;
+    var preRe = /<pre>([\s\S]*?)<\/pre>/i;
+    var pRe = /<p[^>]*>([\s\S]*?)<\/p>/i;
+    while (remaining.length > 0) {
+        var preIdx = remaining.search(/<pre>/i);
+        var pIdx = remaining.search(/<p[^>]*>/i);
+        if (preIdx === -1 && pIdx === -1) break;
+        if (pIdx === -1 || (preIdx !== -1 && preIdx < pIdx)) {
+            // next token is a <pre>
+            var pm = remaining.match(/<pre>([\s\S]*?)<\/pre>/i);
+            if (!pm) break;
+            tokens.push({ type: 'pre', content: pm[1], raw: pm[0] });
+            remaining = remaining.slice(remaining.indexOf(pm[0]) + pm[0].length);
+        } else {
+            // next token is a <p>
+            var pm2 = remaining.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+            if (!pm2) break;
+            tokens.push({ type: 'p', content: pm2[1], raw: pm2[0] });
+            remaining = remaining.slice(remaining.indexOf(pm2[0]) + pm2[0].length);
+        }
     }
+
+    // Merge each <pre> into the previous <p> token
+    var merged = [];
+    for (var ti = 0; ti < tokens.length; ti++) {
+        if (tokens[ti].type === 'pre') {
+            if (merged.length > 0) {
+                merged[merged.length - 1].content += '<pre>' + tokens[ti].content + '</pre>';
+            }
+            // else: orphan <pre> at start, skip
+        } else {
+            merged.push({ content: tokens[ti].content });
+        }
+    }
+
+    for (var mi = 0; mi < merged.length; mi++) {
+        // For <p> content: replace <br> with space for plain-text detection
+        // but keep the full HTML (including any appended <pre>) for storage
+        var inner = merged[mi].content.replace(/<br\s*\/?>/gi, ' ').trim();
+        if (inner) paragraphs.push(merged[mi].content);
+    }
+
+    // Gom các dòng giữa [CODE] và [/CODE] thành <pre> block gắn vào paragraph trước đó
+    var mergedParagraphs = [];
+    var codeBuffer = [];
+    var inCode = false;
+    for (var pi = 0; pi < paragraphs.length; pi++) {
+        var plainLine = stripHtmlTags(paragraphs[pi]).trim();
+        if (plainLine === '[CODE]') {
+            inCode = true;
+            codeBuffer = [];
+        } else if (plainLine === '[/CODE]') {
+            inCode = false;
+            var preBlock = '<pre>' + codeBuffer.join('\n') + '</pre>';
+            if (mergedParagraphs.length > 0) {
+                mergedParagraphs[mergedParagraphs.length - 1] += preBlock;
+            } else {
+                mergedParagraphs.push(preBlock);
+            }
+            codeBuffer = [];
+        } else if (inCode) {
+            // Dòng code: escape HTML
+            var codeLine = plainLine
+                .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            codeBuffer.push(codeLine);
+        } else {
+            mergedParagraphs.push(paragraphs[pi]);
+        }
+    }
+    paragraphs = mergedParagraphs;
+
     // Fallback nếu không có thẻ <p>
     if (paragraphs.length === 0) {
         return parseQuestionsFromText(html.replace(/<[^>]+>/g, '\n'));

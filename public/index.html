@@ -712,7 +712,36 @@
             margin-bottom: 20px;
             line-height: 1.7;
         }
-        
+
+        .question-text pre, .option-text pre {
+            background: #f4f4f4;
+            border-left: 3px solid #4a90d9;
+            border-radius: 4px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.92em;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .question-text .katex, .option-text .katex {
+            font-size: 1.1em;
+        }
+
+        .question-text, .option-text {
+            overflow: visible;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            line-height: 1.8;
+            overflow: visible;
+        }
+
         .question-image {
             max-width: 100%;
             max-height: 300px;
@@ -728,7 +757,7 @@
         
         .option {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 14px 18px;
             border: 2px solid #e8e8e8;
             border-radius: 12px;
@@ -1736,10 +1765,23 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
         }
+        /* Fix KaTeX bị cắt và cỡ chữ không đồng đều */
+        .katex { font-size: 1em !important; }
+        .katex-display { font-size: 1em !important; overflow-x: auto; overflow-y: visible; padding: 4px 0; }
+        .question-text, .option-text, .tf-stmt {
+            line-height: 2;
+            overflow: visible;
+        }
+        .option {
+            overflow: visible;
+            align-items: flex-start;
+        }
+        .question-card {
+            overflow: visible;
+        }
     </style>
-    <link rel="stylesheet" href="/katex/katex.min.css">
-    <script src="/katex/katex.min.js"></script>
-    <script src="/katex/contrib/auto-render.min.js"></script>
+    <link rel="stylesheet" href="/highlight.min.css">
+    <script src="/highlight.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -2103,7 +2145,8 @@
             var ALLOWED = {
                 'B': [], 'STRONG': [], 'I': [], 'EM': [], 'U': [],
                 'P': [], 'BR': [], 'SPAN': ['style'], 'SUB': [], 'SUP': [],
-                'IMG': ['src', 'alt', 'width', 'height', 'style']
+                'IMG': ['src', 'alt', 'width', 'height', 'style'],
+                'PRE': [], 'CODE': []
             };
             var div = document.createElement('div');
             div.innerHTML = html;
@@ -4463,6 +4506,12 @@
                     ],
                     throwOnError: false
                 });
+            }
+            if (typeof hljs !== 'undefined') {
+                var blocks = (el || document.body).querySelectorAll('pre');
+                for (var i = 0; i < blocks.length; i++) {
+                    hljs.highlightElement(blocks[i]);
+                }
             }
         }
         

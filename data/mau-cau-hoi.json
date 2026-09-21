@@ -1,32 +1,59 @@
 [
   {
-    "question": "Thủ đô của Việt Nam là gì?",
-    "options": ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Huế"],
-    "correct": 0
+    "type": "single",
+    "question": "Thủ đô của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là thành phố nào?",
+    "options": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"],
+    "correct": 1,
+    "correctList": null,
+    "correctTF": null
   },
   {
-    "question": "1 + 1 = ?",
-    "options": ["1", "2", "3", "4"],
-    "correct": 1
+    "type": "single",
+    "question": "Năm nào Việt Nam chính thức thống nhất đất nước?",
+    "options": ["1954", "1968", "1975", "1986"],
+    "correct": 2,
+    "correctList": null,
+    "correctTF": null
   },
   {
-    "question": "Thẻ HTML nào dùng để tạo tiêu đề lớn nhất?",
-    "options": ["<h6>", "<h1>", "<header>", "<title>"],
-    "correct": 1
+    "type": "multi",
+    "question": "Chọn tất cả các tỉnh/thành phố trực thuộc Trung ương của Việt Nam:",
+    "options": ["Hà Nội", "Nghệ An", "TP. Hồ Chí Minh", "Đà Nẵng", "Cần Thơ"],
+    "correct": 0,
+    "correctList": [0, 2, 3, 4],
+    "correctTF": null
   },
   {
-    "question": "Ngôn ngữ lập trình nào được sử dụng phổ biến nhất cho web?",
-    "options": ["Python", "Java", "JavaScript", "C++"],
-    "correct": 2
+    "type": "multi",
+    "question": "Chọn các ngôn ngữ lập trình hướng đối tượng:",
+    "options": ["Python", "HTML", "Java", "CSS", "C++"],
+    "correct": 0,
+    "correctList": [0, 2, 4],
+    "correctTF": null
   },
   {
-    "question": "CSS là viết tắt của gì?",
+    "type": "truefalse",
+    "question": "Xác định tính đúng/sai của các phát biểu sau về địa lý Việt Nam:",
     "options": [
-      "Computer Style Sheets",
-      "Cascading Style Sheets", 
-      "Creative Style Sheets",
-      "Colorful Style Sheets"
+      "Hà Nội là thủ đô và là thành phố lớn nhất Việt Nam.",
+      "Việt Nam có đường bờ biển dài hơn 3.000 km.",
+      "Sông Hồng chảy qua Hà Nội.",
+      "Việt Nam không có chung biên giới với Trung Quốc."
     ],
-    "correct": 1
+    "correct": 0,
+    "correctList": null,
+    "correctTF": [false, true, true, false]
+  },
+  {
+    "type": "truefalse",
+    "question": "Cho biết các mệnh đề vật lý sau đúng hay sai:",
+    "options": [
+      "Nước tinh khiết sôi ở 100°C ở áp suất 1 atm.",
+      "Ánh sáng trong chân không di chuyển chậm hơn âm thanh.",
+      "Công thức hóa học của nước là H2O."
+    ],
+    "correct": 0,
+    "correctList": null,
+    "correctTF": [true, false, true]
   }
 ]

@@ -2275,7 +2275,7 @@
         function shuffleQuestionsAndOptions(originalQs, qOrder, optOrders) {
             return qOrder.map(function(origIndex, newIndex) {
                 var origQ = originalQs[origIndex];
-                var optOrder = optOrders[origIndex];
+                var optOrder = optOrders[newIndex];
                 var type = origQ.type || 'single';
 
                 // Loại truefalse không đảo thứ tự đáp án

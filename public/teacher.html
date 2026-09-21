@@ -2398,8 +2398,8 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
         async function saveSettings() {
             const timeVal = parseInt(document.getElementById('examTime').value);
-            if (!timeVal || timeVal < 1 || timeVal > 180) {
-                showNotification('Vui lòng nhập thời gian làm bài (1-180 phút)!', 'warning');
+            if (!timeVal || timeVal < 1) {
+                showNotification('Vui lòng nhập thời gian làm bài trước khi lưu!', 'warning');
                 document.getElementById('examTime').focus();
                 return;
             }

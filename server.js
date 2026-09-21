@@ -562,63 +562,109 @@ function parseStudentData(data) {
     }).filter(s => s.stt && (s.ho || s.ten)); // Cần có STT và ít nhất họ hoặc tên
 }
 
-// Parse từ raw rows (header:1) — hỗ trợ file bảng điểm trường có nhiều dòng header thừa
+// Parse từ raw rows (header:1) — hỗ trợ nhiều mẫu file danh sách lớp:
+//   Mẫu 1: STT | Họ | Tên                          (tách riêng)
+//   Mẫu 2: STT | Họ | Tên | Giới tính
+//   Mẫu 3: STT | Họ và tên                          (gộp họ tên)
+//   Mẫu 4: STT | Họ và tên | Giới tính
+//   Mẫu 5: STT | Họ | Tên lót | Tên                 (3 cột tên)
+//   Và file bảng điểm trường (nhiều dòng tiêu đề phía trên)
 function parseStudentDataRaw(rows) {
-    // Tìm dòng header chứa STT, Họ, Tên
     var headerRow = -1;
-    var colSTT = -1, colHo = -1, colTen = -1, colNu = -1;
+    var colSTT = -1, colHoVaTen = -1, colHo = -1, colTenLot = -1, colTen = -1, colGioiTinh = -1;
 
-    var sttKeys = ['stt', 'tt', 'số tt', 'so tt', 'số thứ tự', 'so thu tu', '#', 'no'];
-    var hoKeys = ['họ', 'ho', 'họ và tên lót', 'ho va ten lot', 'họ tên lót'];
-    var tenKeys = ['tên', 'ten', 'họ và tên', 'ho va ten', 'họ tên', 'ho ten', 'fullname', 'name'];
-    var nuKeys = ['nữ', 'nu', 'giới tính', 'gioi tinh', 'gt', 'gender'];
+    // Các từ khoá nhận diện từng loại cột (lowercase, đã bỏ dấu tương đương)
+    var sttKeys     = ['stt', 'tt', 'số tt', 'so tt', 'số thứ tự', 'so thu tu', 'tт', '#', 'no.', 'no'];
+    var hoVaTenKeys = ['họ và tên', 'ho va ten', 'họ tên', 'ho ten', 'họ & tên', 'ho & ten',
+                       'fullname', 'full name', 'name', 'họvàtên', 'họtên'];
+    var hoKeys      = ['họ', 'ho', 'họ và tên lót', 'ho va ten lot', 'họ tên lót', 'ho ten lot',
+                       'họ, tên lót', 'last name', 'surname'];
+    var tenLotKeys  = ['tên lót', 'ten lot', 'tên đệm', 'ten dem', 'middle name'];
+    var tenKeys     = ['tên', 'ten', 'first name', 'given name'];
+    var gtKeys      = ['giới tính', 'gioi tinh', 'gt', 'gender', 'phái', 'phai', 'nữ', 'nu', 'sex'];
 
     for (var r = 0; r < Math.min(rows.length, 15); r++) {
         var row = rows[r];
+        // Reset mỗi lần thử dòng mới
+        var fSTT = -1, fHoVaTen = -1, fHo = -1, fTenLot = -1, fTen = -1, fGT = -1;
         var found = false;
+
         for (var c = 0; c < row.length; c++) {
-            var cell = String(row[c] || '').trim().toLowerCase();
-            if (sttKeys.indexOf(cell) !== -1) { colSTT = c; found = true; }
-            if (hoKeys.indexOf(cell) !== -1) { colHo = c; found = true; }
-            if (tenKeys.indexOf(cell) !== -1) { colTen = c; found = true; }
-            if (nuKeys.indexOf(cell) !== -1) { colNu = c; }
+            var cell = String(row[c] || '').trim().toLowerCase()
+                // bỏ khoảng trắng thừa giữa các từ
+                .replace(/\s+/g, ' ');
+            if (sttKeys.indexOf(cell) !== -1)     { fSTT = c;     found = true; }
+            // Ưu tiên "họ và tên" trước "họ" để tránh nhầm
+            else if (hoVaTenKeys.indexOf(cell) !== -1) { fHoVaTen = c; found = true; }
+            else if (tenLotKeys.indexOf(cell) !== -1)  { fTenLot = c;  found = true; }
+            else if (hoKeys.indexOf(cell) !== -1)      { fHo = c;      found = true; }
+            else if (tenKeys.indexOf(cell) !== -1)     { fTen = c;     found = true; }
+            if (gtKeys.indexOf(cell) !== -1)      { fGT = c; }
         }
-        if (found && (colSTT !== -1 || colTen !== -1)) {
-            headerRow = r;
+
+        // Dòng hợp lệ: phải có STT hoặc ít nhất 1 cột tên
+        var hasName = fHoVaTen !== -1 || fHo !== -1 || fTen !== -1;
+        if (found && (fSTT !== -1 || hasName)) {
+            headerRow    = r;
+            colSTT       = fSTT;
+            colHoVaTen   = fHoVaTen;
+            colHo        = fHo;
+            colTenLot    = fTenLot;
+            colTen       = fTen;
+            colGioiTinh  = fGT;
             break;
         }
     }
 
-    if (headerRow === -1) return null; // Không tìm thấy header → fallback
+    if (headerRow === -1) return null;
 
     var result = [];
-    var autoSTT = 0;
     for (var i = headerRow + 1; i < rows.length; i++) {
         var row = rows[i];
-        // Skip sub-header row (giá trị không phải số ở cột STT khi đã có header)
+
         var rawSTT = colSTT !== -1 ? row[colSTT] : '';
-        var rawHo  = colHo  !== -1 ? String(row[colHo]  || '').trim() : '';
-        var rawTen = colTen !== -1 ? String(row[colTen] || '').trim() : '';
-        var rawNu  = colNu  !== -1 ? String(row[colNu]  || '').trim() : '';
-
-        // Skip dòng không có STT số hoặc không có tên
-        if (!rawSTT && !rawHo && !rawTen) continue;
         var sttNum = parseInt(rawSTT, 10);
-        if (isNaN(sttNum)) continue; // bỏ qua dòng sub-header / tổng kết
+        if (isNaN(sttNum)) continue; // sub-header hoặc dòng tổng kết
 
-        autoSTT++;
-        var ho = rawHo;
-        var ten = rawTen;
+        // Đọc các cột tên
+        var hoVaTen = colHoVaTen !== -1 ? String(row[colHoVaTen] || '').trim() : '';
+        var ho      = colHo      !== -1 ? String(row[colHo]      || '').trim() : '';
+        var tenLot  = colTenLot  !== -1 ? String(row[colTenLot]  || '').trim() : '';
+        var ten     = colTen     !== -1 ? String(row[colTen]     || '').trim() : '';
+        var rawGT   = colGioiTinh !== -1 ? String(row[colGioiTinh] || '').trim() : '';
 
-        // Nếu chỉ có cột Tên (fullname), tách họ/tên
-        if (!ho && ten) {
-            var parts = ten.split(/\s+/);
-            if (parts.length > 1) { ten = parts.pop(); ho = parts.join(' '); }
+        // Bỏ dòng hoàn toàn trống
+        if (!hoVaTen && !ho && !ten) continue;
+
+        // Mẫu "Họ và tên" gộp: tách lấy tên (từ cuối) và họ (phần còn lại)
+        if (hoVaTen && !ho && !ten) {
+            var parts = hoVaTen.split(/\s+/);
+            ten = parts.pop() || '';
+            ho  = parts.join(' ');
         }
 
+        // Mẫu "Họ | Tên lót | Tên": ghép tên lót vào họ
+        if (tenLot && ho) {
+            ho = ho + ' ' + tenLot;
+        } else if (tenLot && !ho) {
+            ho = tenLot;
+        }
+
+        // Nếu vẫn thiếu họ nhưng có tên đủ → tách
+        if (!ho && ten && ten.indexOf(' ') !== -1) {
+            var parts2 = ten.split(/\s+/);
+            ten = parts2.pop() || '';
+            ho  = parts2.join(' ');
+        }
+
+        // Giới tính: nhận dạng nữ theo nhiều cách
         var nu = '';
-        if (rawNu) {
-            nu = ['x', 'nữ', 'nu', 'female', 'f', 'n'].includes(rawNu.toLowerCase()) ? 'X' : '';
+        if (rawGT) {
+            var gtLower = rawGT.toLowerCase();
+            if (['x', 'nữ', 'nu', 'female', 'f', 'n', '1'].indexOf(gtLower) !== -1) {
+                nu = 'X';
+            }
+            // "Nam"/"M"/"0" → để trống (mặc định nam)
         }
 
         if (ho || ten) {
@@ -1602,9 +1648,9 @@ app.post('/api/classes/:classId/students', upload.single('file'), (req, res) => 
             parsedStudents = parseStudentData(data);
         }
 
-        console.log('[INFO] Sheet: ' + sheetName + ', parsed: ' + parsedStudents.length + ' hoc sinh');
+        console.log('[INFO] Sheet: ' + sheetName + ', parsed: ' + (parsedStudents ? parsedStudents.length : 0) + ' hoc sinh');
 
-        if (parsedStudents.length === 0) {
+        if (!parsedStudents || parsedStudents.length === 0) {
             return res.json({ success: false, error: 'Không có học sinh hợp lệ. Kiểm tra file có cột STT, Họ, Tên không.' });
         }
         

@@ -55,19 +55,23 @@ var upload = multer({ storage: multer.memoryStorage() });
 
 var app = express();
 var server = http.createServer(app);
-var io = socketIO(server);
+var io = socketIO(server, {
+    transports: ['websocket'],
+    pingTimeout: 60000,
+    pingInterval: 25000
+});
 
 var PORT = 3456;
 
 // Middleware
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('public', { maxAge: '1h' }));
 
 // Serve KaTeX cho render công thức toán (LAN - không cần internet)
-app.use('/katex', express.static('node_modules/katex/dist'));
+app.use('/katex', express.static('node_modules/katex/dist', { maxAge: '7d' }));
 
 // Serve thư mục data để download file mẫu
-app.use('/data', express.static('data'));
+app.use('/data', express.static('data', { maxAge: '0' }));
 
 // Middleware kiểm tra quyền truy cập trang giáo viên
 function isLocalhost(req) {
@@ -881,6 +885,11 @@ function loadStudentStatus() {
     }
 }
 
+// Debounce saveStudentStatus cho tabLeave/fullscreenExit (gọi liên tục khi học sinh chuyển tab)
+var _saveStudentStatusDebounced = makeDebouncedSaver(function() {
+    saveStudentStatus();
+}, 1500);
+
 // Lưu server progress (backup bài làm dở) — debounce 2s vì gọi rất thường xuyên
 var _saveProgressDebounced = makeDebouncedSaver(function() {
     writeFileAsync(path.join(__dirname, 'data', 'progress', 'server-progress.json'), JSON.stringify(serverProgress, null, 2));
@@ -889,11 +898,26 @@ function saveServerProgress() {
     _saveProgressDebounced();
 }
 
-// Load server progress
+// Load server progress (và dọn dẹp các entry cũ hơn 24 giờ)
 function loadServerProgress() {
     try {
         var filePath = path.join(__dirname, 'data', 'progress', 'server-progress.json');
         serverProgress = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        // TTL cleanup: xóa progress cũ hơn 24 giờ để tránh tích tụ
+        var cutoff = Date.now() - 24 * 60 * 60 * 1000;
+        var keys = Object.keys(serverProgress);
+        var cleaned = 0;
+        for (var i = 0; i < keys.length; i++) {
+            var entry = serverProgress[keys[i]];
+            if (entry && entry.savedAt && new Date(entry.savedAt).getTime() < cutoff) {
+                delete serverProgress[keys[i]];
+                cleaned++;
+            }
+        }
+        if (cleaned > 0) {
+            console.log('[INFO] TTL cleanup: da xoa ' + cleaned + ' progress cu');
+            saveServerProgress();
+        }
     } catch (err) {
         serverProgress = {};
     }
@@ -3358,11 +3382,11 @@ io.on('connection', function(socket) {
     socket.on('tabLeave', function(data) {
         console.log('[WARN] Hoc sinh ' + data.name + ' (STT ' + data.stt + ') roi khoi trang lan ' + data.count);
 
-        // Lưu vào student status
+        // Lưu vào student status (debounce để không ghi disk liên tục)
         if (studentStatus[data.stt]) {
             studentStatus[data.stt].tabLeaveCount = data.count;
             studentStatus[data.stt].lastTabLeave = data.time;
-            saveStudentStatus();
+            _saveStudentStatusDebounced();
         }
 
         // Thông báo cho giáo viên (teacher dashboard)
@@ -3381,7 +3405,7 @@ io.on('connection', function(socket) {
         if (studentStatus[data.stt]) {
             studentStatus[data.stt].fullscreenExitCount = data.count;
             studentStatus[data.stt].lastFullscreenExit = data.time;
-            saveStudentStatus();
+            _saveStudentStatusDebounced();
         }
 
         io.emit('studentFullscreenExit', {

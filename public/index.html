@@ -90,7 +90,7 @@
             height: 12px;
             border-radius: 50%;
             background: #e0e0e0;
-            transition: all 0.3s;
+            transition: background 0.3s;
         }
         
         .step-dot.active {
@@ -115,7 +115,7 @@
             border-radius: 12px;
             font-size: 0.95em;
             background: #fafafa;
-            transition: all 0.3s;
+            transition: border-color 0.3s, background 0.3s;
         }
         
         .search-box input:focus {
@@ -153,7 +153,7 @@
             border: 2px solid #e8e8e8;
             border-radius: 12px;
             font-size: 1em;
-            transition: all 0.3s;
+            transition: border-color 0.3s, background 0.3s;
             background: #fafafa;
         }
         
@@ -170,7 +170,7 @@
             border: 2px solid #e8e8e8;
             border-radius: 12px;
             font-size: 1em;
-            transition: all 0.3s;
+            transition: border-color 0.3s, background 0.3s;
             background: #fafafa;
             cursor: pointer;
         }
@@ -298,7 +298,7 @@
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, background 0.3s;
             width: 100%;
         }
         
@@ -535,7 +535,6 @@
             align-items: center;
             gap: 8px;
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85em;
@@ -602,8 +601,8 @@
         }
         
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.75; }
         }
         
         .student-name {
@@ -762,7 +761,7 @@
             border: 2px solid #e8e8e8;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: border-color 0.2s, background 0.2s;
             background: #fafafa;
             position: relative;
         }
@@ -857,7 +856,7 @@
             cursor: pointer;
             font-size: 0.85em;
             font-weight: 600;
-            transition: all 0.15s;
+            transition: border-color 0.15s, background 0.15s, color 0.15s;
             margin: 0 4px;
         }
         .tf-btn:hover { border-color: #667eea; background: #f0f2ff; }
@@ -877,7 +876,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s;
+            transition: border-color 0.15s, background 0.15s;
             background: white;
         }
         .option-multi.selected .option-checkbox {
@@ -988,8 +987,8 @@
         }
         
         @keyframes pulse-correct {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
         
         /* Practice toast */
@@ -1127,7 +1126,7 @@
             font-weight: 600;
             font-size: 0.8em;
             color: #666;
-            transition: all 0.2s;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
         }
         
         .nav-btn:hover {
@@ -1161,7 +1160,7 @@
             font-size: 0.8em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, background 0.3s;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -1209,7 +1208,7 @@
             font-size: 0.8em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, background 0.3s;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -1357,7 +1356,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.2s, border-color 0.2s;
         }
         
         .saved-result-item:hover {
@@ -1604,7 +1603,7 @@
             cursor: pointer;
             font-size: 1em;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: opacity 0.2s, background 0.2s;
         }
         
         .nav-arrow-btn.prev {
@@ -1754,7 +1753,7 @@
             font-size: 0.9em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, background 0.3s;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -2104,9 +2103,12 @@
         try {
             if (typeof io !== 'undefined') {
                 socket = io({
+                    transports: ['websocket'],
                     reconnection: true,
                     reconnectionAttempts: 5,
                     reconnectionDelay: 1000,
+                    reconnectionDelayMax: 5000,
+                    randomizationFactor: 0.5,
                     timeout: 10000
                 });
                 
@@ -2339,7 +2341,20 @@
             }
         });
 
-        socket.on('studentStatusUpdated', function() { loadStudents(); });
+        socket.on('studentStatusUpdated', function(data) {
+            // Cập nhật trực tiếp từ data thay vì gọi lại API — tránh HTTP request không cần thiết
+            if (data && data.stt !== undefined && data.status) {
+                for (var _i = 0; _i < students.length; _i++) {
+                    if (students[_i].stt === data.stt) {
+                        students[_i].status = data.status;
+                        break;
+                    }
+                }
+                filterStudents();
+            } else {
+                loadStudents();
+            }
+        });
         
         socket.on('allStudentsReset', function() {
             showMessage('info', 'Danh sách đã được reset!');
@@ -4010,10 +4025,22 @@
 
         // Update progress
         function updateProgress() {
+            // Đếm từ answers object thay vì query DOM — nhanh hơn O(1) vs O(N)
             var answered = 0;
-            for (var i = 0; i < questions.length; i++) {
-                var card = document.getElementById('question' + i);
-                if (card && card.classList.contains('answered')) answered++;
+            var keys = Object.keys(answers);
+            for (var _k = 0; _k < keys.length; _k++) {
+                var _v = answers[keys[_k]];
+                if (_v === undefined || _v === null) continue;
+                if (Array.isArray(_v)) {
+                    // multi: có ít nhất 1 phần tử; truefalse: không có null nào
+                    var _hasNull = false;
+                    for (var _j = 0; _j < _v.length; _j++) {
+                        if (_v[_j] === null) { _hasNull = true; break; }
+                    }
+                    if (_v.length > 0 && !_hasNull) answered++;
+                } else {
+                    answered++;
+                }
             }
             var total = questions.length;
             var percent = total > 0 ? (answered / total) * 100 : 0;
@@ -4510,18 +4537,21 @@
         var tabLeaveCount = 0;
         
         // Show current question (always single question mode)
+        var _prevQuestionIndex = -1;
         function showCurrentQuestion() {
-            var cards = document.querySelectorAll('.question-card');
-            for (var i = 0; i < cards.length; i++) {
-                cards[i].classList.toggle('active', i === currentQuestionIndex);
+            // Chỉ toggle 2 element thay vì loop toàn bộ
+            if (_prevQuestionIndex !== -1 && _prevQuestionIndex !== currentQuestionIndex) {
+                var prevCard = document.getElementById('question' + _prevQuestionIndex);
+                if (prevCard) prevCard.classList.remove('active');
+                var prevNav = document.getElementById('nav' + _prevQuestionIndex);
+                if (prevNav) prevNav.classList.remove('current');
             }
-            
-            // Update nav buttons highlight
-            var navBtns = document.querySelectorAll('.nav-btn');
-            for (var j = 0; j < navBtns.length; j++) {
-                navBtns[j].classList.toggle('current', j === currentQuestionIndex);
-            }
-            
+            var curCard = document.getElementById('question' + currentQuestionIndex);
+            if (curCard) curCard.classList.add('active');
+            var curNav = document.getElementById('nav' + currentQuestionIndex);
+            if (curNav) curNav.classList.add('current');
+            _prevQuestionIndex = currentQuestionIndex;
+
             updateQuestionNavigation();
 
             // Scroll to top
@@ -4544,6 +4574,9 @@
             if (typeof hljs !== 'undefined') {
                 var blocks = (el || document.body).querySelectorAll('pre');
                 for (var i = 0; i < blocks.length; i++) {
+                    // Skip nếu đã highlight — tránh chạy lại mỗi lần chuyển câu
+                    if (blocks[i].dataset && blocks[i].dataset.highlighted) continue;
+                    if (blocks[i].getAttribute('data-highlighted')) continue;
                     hljs.highlightElement(blocks[i]);
                 }
             }
@@ -4688,6 +4721,7 @@
             setupFullscreen();
             setupAISidebarDetection();
             currentQuestionIndex = 0;
+            _prevQuestionIndex = -1;
         }
 
         // ==================== FULLSCREEN ====================

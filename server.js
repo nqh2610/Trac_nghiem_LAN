@@ -368,6 +368,8 @@ function loadCurrentSession() {
         // Luôn reset về chế độ thi khi khởi động, không giữ trạng thái ôn tập cũ
         examSettings.practiceMode = false;
         examSettings.isOpen = false;
+        examSettings.showScore = false;
+        examSettings.shuffleExam = true;
     }
 }
 

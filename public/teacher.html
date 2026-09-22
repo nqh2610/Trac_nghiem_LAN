@@ -2240,20 +2240,20 @@ C. Công thức nước là H₂O. (Đ)</pre>
                     studentAnswerHtml = '<em style="color:#ff9800;font-weight:bold;">Không chọn đáp án</em>';
                 } else if (type === 'single') {
                     const letter = typeof d.studentAnswer === 'number' ? String.fromCharCode(65 + d.studentAnswer) : '?';
-                    studentAnswerHtml = `<strong>${letter}.</strong> ${escapeHtml(d.studentAnswerText || '')}`;
+                    studentAnswerHtml = `<strong>${letter}.</strong> ${sanitizeHtmlClient(d.studentAnswerText || '')}`;
                 } else if (type === 'multi') {
-                    studentAnswerHtml = escapeHtml(d.studentAnswerText || (Array.isArray(d.studentAnswer) ? d.studentAnswer.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
+                    studentAnswerHtml = sanitizeHtmlClient(d.studentAnswerText || (Array.isArray(d.studentAnswer) ? d.studentAnswer.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
                 } else if (type === 'truefalse') {
-                    studentAnswerHtml = escapeHtml(d.studentAnswerText || '?');
+                    studentAnswerHtml = sanitizeHtmlClient(d.studentAnswerText || '?');
                 }
 
                 if (type === 'single') {
                     const cLetter = typeof d.correctAnswer === 'number' ? String.fromCharCode(65 + d.correctAnswer) : '?';
-                    correctAnswerHtml = `<strong>${cLetter}.</strong> ${escapeHtml(d.correctAnswerText || '')}`;
+                    correctAnswerHtml = `<strong>${cLetter}.</strong> ${sanitizeHtmlClient(d.correctAnswerText || '')}`;
                 } else if (type === 'multi') {
-                    correctAnswerHtml = escapeHtml(d.correctAnswerText || (Array.isArray(d.correctList) ? d.correctList.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
+                    correctAnswerHtml = sanitizeHtmlClient(d.correctAnswerText || (Array.isArray(d.correctList) ? d.correctList.map(i => String.fromCharCode(65+i)).join(', ') : '?'));
                 } else if (type === 'truefalse') {
-                    correctAnswerHtml = escapeHtml(d.correctAnswerText || (Array.isArray(d.correctTF) ? d.correctTF.map((v,j) => String.fromCharCode(65+j)+':'+(v?'Đúng':'Sai')).join(', ') : '?'));
+                    correctAnswerHtml = sanitizeHtmlClient(d.correctAnswerText || (Array.isArray(d.correctTF) ? d.correctTF.map((v,j) => String.fromCharCode(65+j)+':'+(v?'Đúng':'Sai')).join(', ') : '?'));
                 }
 
                 const isPartial = type === 'truefalse' && !d.isCorrect && !studentDidNotAnswer && d.questionScore > 0;
@@ -2303,6 +2303,23 @@ C. Công thức nước là H₂O. (Đ)</pre>
             `;
 
             document.getElementById('detailModal').classList.add('active');
+
+            // Render công thức toán và syntax highlight
+            const detailContent = document.getElementById('detailContent');
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(detailContent, {
+                    delimiters: [
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '$$', right: '$$', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+            if (typeof hljs !== 'undefined') {
+                detailContent.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+            }
         }
 
         function closeModal() {

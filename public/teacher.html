@@ -1207,30 +1207,33 @@
 
         <!-- Panel Cài đặt -->
         <div id="settings" class="panel">
+            <!-- Card Mở/Đóng bài thi - tách riêng, hiệu lực ngay -->
+            <div class="settings-card" id="examOpenCard">
+                <h3>Trạng thái bài thi</h3>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+                    <div>
+                        <div id="examStatusText" style="font-size:1.1em; font-weight:600; color:#666;">Đang tải...</div>
+                        <p style="color:#666; font-size:0.9em; margin-top:4px;">Bật để học sinh có thể vào làm bài</p>
+                    </div>
+                    <button id="examOpenBtn" onclick="toggleExamOpen()" style="padding:14px 32px; font-size:1.05em; font-weight:700; border:none; border-radius:10px; cursor:pointer; min-width:160px; transition: background 0.2s;">
+                        Đang tải...
+                    </button>
+                </div>
+            </div>
+
             <div class="settings-card">
                 <h3>Cài đặt bài thi</h3>
-                
+
                 <div class="form-group">
                     <label>Tiêu đề bài thi:</label>
                     <input type="text" id="examTitle" value="Bài kiểm tra trắc nghiệm">
                 </div>
-                
+
                 <div class="form-group">
                     <label>Thời gian làm bài (phút):</label>
                     <input type="number" id="examTime" placeholder="Nhập số phút..." min="1">
                 </div>
-                
-                <div class="setting-row">
-                    <div>
-                        <strong>Mở bài thi</strong>
-                        <p style="color: #666; font-size: 0.9em;">Cho phép học sinh bắt đầu làm bài</p>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="examOpen">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
+
                 <div class="setting-row">
                     <div>
                         <strong>Hiển thị điểm</strong>
@@ -1242,7 +1245,7 @@
                     </label>
                 </div>
 
-                <div class="setting-row" style="margin-top: 15px;">
+                <div class="setting-row">
                     <div>
                         <strong>Trộn đề</strong>
                         <p style="color: #666; font-size: 0.9em;">Mỗi học sinh có thứ tự câu hỏi và đáp án khác nhau (theo STT)</p>
@@ -1259,8 +1262,8 @@
                         <p style="color: #1565c0; font-size: 0.9em;">Học sinh phải nhập mật khẩu mới được làm bài (để tất cả bắt đầu cùng lúc)</p>
                         <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
                             <input type="text" id="examPassword" placeholder="Nhập mật khẩu..." style="flex: 1; padding: 10px 15px; border: 2px solid #90caf9; border-radius: 8px; font-size: 1em;">
-                            <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Tạo mật khẩu ngẫu nhiên">Tao</button>
-                            <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;" title="Sao chép mật khẩu">Copy</button>
+                            <button onclick="generateRandomPassword()" style="padding: 10px 15px; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;">Tạo ngẫu nhiên</button>
+                            <button onclick="copyPassword()" style="padding: 10px 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em;">Copy</button>
                         </div>
                     </div>
                     <label class="toggle-switch" style="margin-left: 15px;">
@@ -1280,7 +1283,7 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                
+
                 <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px;">Lưu cài đặt</button>
             </div>
 
@@ -2384,10 +2387,9 @@ C. Công thức nước là H₂O. (Đ)</pre>
         async function loadSettings() {
             const res = await fetch('/api/settings');
             const settings = await res.json();
-            
+
             document.getElementById('examTitle').value = settings.title;
             document.getElementById('examTime').value = (settings.timeLimit && settings.timeLimit !== 30) ? settings.timeLimit : '';
-            document.getElementById('examOpen').checked = settings.isOpen;
             document.getElementById('showScore').checked = settings.showScore !== false;
             document.getElementById('practiceMode').checked = settings.practiceMode === true;
             document.getElementById('shuffleExam').checked = settings.shuffleExam !== false;
@@ -2404,19 +2406,20 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 return;
             }
 
-            const isOpen = document.getElementById('examOpen').checked;
             const isPractice = document.getElementById('practiceMode').checked;
-
-            if (isOpen && isPractice) {
+            if (isPractice) {
                 showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn. Hãy tắt nếu đây là bài kiểm tra thật!', 'warning');
             }
+
+            // isOpen giữ nguyên trạng thái hiện tại, không thay đổi khi lưu cài đặt
+            const currentlyOpen = document.getElementById('examOpenBtn').textContent.trim() === 'Đóng bài thi';
 
             const settings = {
                 title: document.getElementById('examTitle').value,
                 timeLimit: timeVal,
-                isOpen: document.getElementById('examOpen').checked,
+                isOpen: currentlyOpen,
                 showScore: document.getElementById('showScore').checked,
-                practiceMode: document.getElementById('practiceMode').checked,
+                practiceMode: isPractice,
                 shuffleExam: document.getElementById('shuffleExam').checked,
                 examPassword: document.getElementById('examPassword').value,
                 requirePassword: document.getElementById('requirePassword').checked
@@ -2463,12 +2466,64 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
         function updateExamStatus(isOpen) {
             const badge = document.getElementById('examStatus');
+            if (badge) {
+                badge.textContent = isOpen ? 'Đang mở thi' : 'Chưa mở thi';
+                badge.className = 'status-badge ' + (isOpen ? 'status-open' : 'status-closed');
+            }
+            const btn = document.getElementById('examOpenBtn');
+            const txt = document.getElementById('examStatusText');
+            const card = document.getElementById('examOpenCard');
             if (isOpen) {
-                badge.textContent = 'Đang mở thi';
-                badge.className = 'status-badge status-open';
+                btn.textContent = 'Đóng bài thi';
+                btn.style.background = '#e53935';
+                btn.style.color = 'white';
+                txt.textContent = 'Bài thi đang MỞ';
+                txt.style.color = '#2e7d32';
+                card.style.borderLeft = '4px solid #43a047';
             } else {
-                badge.textContent = 'Chưa mở thi';
-                badge.className = 'status-badge status-closed';
+                btn.textContent = 'Mở bài thi';
+                btn.style.background = '#43a047';
+                btn.style.color = 'white';
+                txt.textContent = 'Bài thi đang ĐÓNG';
+                txt.style.color = '#c62828';
+                card.style.borderLeft = '4px solid #e53935';
+            }
+        }
+
+        async function toggleExamOpen() {
+            const btn = document.getElementById('examOpenBtn');
+            const currentlyOpen = btn.textContent.trim() === 'Đóng bài thi';
+            const newOpen = !currentlyOpen;
+
+            if (newOpen) {
+                const timeVal = parseInt(document.getElementById('examTime').value);
+                if (!timeVal || timeVal < 1) {
+                    showNotification('Chưa đặt thời gian làm bài! Vui lòng nhập và lưu cài đặt trước.', 'warning');
+                    return;
+                }
+                if (document.getElementById('practiceMode').checked) {
+                    showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn. Hãy tắt nếu đây là bài kiểm tra thật!', 'warning');
+                }
+            }
+
+            const res = await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: document.getElementById('examTitle').value,
+                    timeLimit: parseInt(document.getElementById('examTime').value) || 30,
+                    isOpen: newOpen,
+                    showScore: document.getElementById('showScore').checked,
+                    practiceMode: document.getElementById('practiceMode').checked,
+                    shuffleExam: document.getElementById('shuffleExam').checked,
+                    examPassword: document.getElementById('examPassword').value,
+                    requirePassword: document.getElementById('requirePassword').checked
+                })
+            });
+
+            if (res.ok) {
+                updateExamStatus(newOpen);
+                showNotification(newOpen ? 'Đã mở bài thi! Học sinh có thể vào làm bài.' : 'Đã đóng bài thi.');
             }
         }
 
@@ -2511,7 +2566,8 @@ C. Công thức nước là H₂O. (Đ)</pre>
             `;
             
             container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            const duration = type === 'warning' ? 8000 : type === 'error' ? 6000 : 4000;
+            setTimeout(() => toast.remove(), duration);
         }
 
         // Alert modal đẹp - thay thế alert() mặc định

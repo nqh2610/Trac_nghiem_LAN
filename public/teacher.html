@@ -366,12 +366,12 @@
             border-radius: 10px;
             margin-bottom: 20px;
         }
-        
+
         .settings-card h3 {
             margin-bottom: 20px;
             color: #333;
         }
-        
+
         .setting-row {
             display: flex;
             justify-content: space-between;
@@ -379,11 +379,11 @@
             padding: 15px 0;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .setting-row:last-child {
             border-bottom: none;
         }
-        
+
         .toggle-switch {
             position: relative;
             width: 60px;
@@ -1278,7 +1278,6 @@
                     <div>
                         <strong style="color: #e65100;">Chế độ ÔN TẬP</strong>
                         <p style="color: #bf360c; font-size: 0.9em;">Hiển thị đúng/sai ngay khi học sinh chọn đáp án (không tính điểm)</p>
-                        <p style="color: #e65100; font-size: 0.85em; margin-top: 5px; font-style: italic;">* Không giới hạn thời gian làm bài</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="practiceMode">
@@ -1287,6 +1286,7 @@
                 </div>
 
                 <button id="saveSettingsBtn" class="btn btn-primary" onclick="saveSettings()" style="margin-top: 20px; transition: background 0.2s, color 0.2s;">Lưu cài đặt</button>
+                <div id="saveStatusText" style="display:none; color:#2e7d32; font-size:0.9em; margin-top:10px; font-weight:500;"></div>
             </div>
 
             <div class="settings-card">
@@ -2429,7 +2429,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
             const isPractice = document.getElementById('practiceMode').checked;
             if (isPractice) {
-                showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn. Hãy tắt nếu đây là bài kiểm tra thật!', 'warning');
+
             }
 
             const currentlyOpen = document.getElementById('examOpenBtn').textContent.trim() === 'Đóng bài thi';
@@ -2452,7 +2452,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
             });
 
             if (res.ok) {
-                updateExamStatus(isOpen);
+                updateExamStatus(currentlyOpen);
                 markSettingsSaved();
                 showNotification('Đã lưu cài đặt!');
             }
@@ -2464,15 +2464,24 @@ C. Công thức nước là H₂O. (Đ)</pre>
             btn.textContent = 'Có thay đổi — Lưu ngay';
             btn.style.background = '#f57c00';
             btn.style.borderColor = '#f57c00';
+            const statusText = document.getElementById('saveStatusText');
+            if (statusText) statusText.style.display = 'none';
         }
 
         function markSettingsSaved() {
             const btn = document.getElementById('saveSettingsBtn');
             if (!btn) return;
-            btn.textContent = 'Đã lưu ✓';
-            btn.style.background = '#43a047';
-            btn.style.borderColor = '#43a047';
-            // Giữ trạng thái "Đã lưu" cho đến khi có thay đổi mới (không tự reset)
+            btn.textContent = 'Lưu cài đặt';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            const statusText = document.getElementById('saveStatusText');
+            if (statusText) {
+                const now = new Date();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mm = String(now.getMinutes()).padStart(2, '0');
+                statusText.textContent = '✓ Đã lưu lúc ' + hh + ':' + mm;
+                statusText.style.display = 'block';
+            }
         }
 
         // Tạo mật khẩu ngẫu nhiên
@@ -2540,7 +2549,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
                     return;
                 }
                 if (document.getElementById('practiceMode').checked) {
-                    showNotification('⚠️ Chế độ ÔN TẬP đang BẬT — học sinh sẽ thấy đáp án ngay khi chọn. Hãy tắt nếu đây là bài kiểm tra thật!', 'warning');
+    
                 }
             }
 

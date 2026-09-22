@@ -3488,22 +3488,8 @@
             }));
         }
         
-        // Hiển thị toast thông báo cho chế độ ôn tập
         function showPracticeToast(message, type) {
-            // Xóa toast cũ nếu có
-            var oldToast = document.querySelector('.practice-toast');
-            if (oldToast) oldToast.remove();
-            
-            var toast = document.createElement('div');
-            toast.className = 'practice-toast practice-toast-' + type;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            
-            // Tự động ẩn sau 2 giây
-            setTimeout(function() {
-                toast.classList.add('fade-out');
-                setTimeout(function() { toast.remove(); }, 300);
-            }, 2000);
+            // Toast tắt theo yêu cầu
         }
         
         // Hiển thị thông báo chế độ ôn tập

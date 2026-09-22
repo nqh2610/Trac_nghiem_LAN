@@ -153,13 +153,13 @@ var classesData = {};  // { classId: { id, name, studentFile, studentCount, crea
 
 var examSettings = {
     title: 'Bài kiểm tra trắc nghiệm',
-    timeLimit: 30, // phút
+    timeLimit: 30,
     isOpen: false,
-    showScore: true, // Cho học sinh xem điểm sau khi nộp bài
-    practiceMode: false, // Chế độ ôn tập - hiển thị đúng/sai ngay khi chọn đáp án
-    shuffleExam: true, // Trộn thứ tự câu hỏi và đáp án theo STT học sinh
-    examPassword: '', // Mật khẩu để bắt đầu làm bài (để trống = không cần mật khẩu)
-    requirePassword: false // Yêu cầu nhập mật khẩu trước khi làm bài
+    showScore: false,
+    practiceMode: false,
+    shuffleExam: false,
+    examPassword: '',
+    requirePassword: false
 };
 
 // ========== QUẢN LÝ LỚP ==========

@@ -2472,11 +2472,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
             btn.textContent = 'Đã lưu ✓';
             btn.style.background = '#43a047';
             btn.style.borderColor = '#43a047';
-            setTimeout(function() {
-                btn.textContent = 'Lưu cài đặt';
-                btn.style.background = '';
-                btn.style.borderColor = '';
-            }, 2000);
+            // Giữ trạng thái "Đã lưu" cho đến khi có thay đổi mới (không tự reset)
         }
 
         // Tạo mật khẩu ngẫu nhiên

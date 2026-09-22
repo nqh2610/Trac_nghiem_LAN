@@ -2106,7 +2106,7 @@
         try {
             if (typeof io !== 'undefined') {
                 socket = io({
-                    transports: ['websocket'],
+                    transports: ['websocket', 'polling'],
                     reconnection: true,
                     reconnectionAttempts: 5,
                     reconnectionDelay: 1000,
@@ -4707,22 +4707,31 @@
             // Disable text selection via CSS is already applied
         }
         
-        // Tab visibility detection
+        // Tab visibility detection — chỉ setup một lần
+        var _tabDetectionSetup = false;
+        var _tabLeaveDebounceTimer = null;
         function setupTabDetection() {
+            if (_tabDetectionSetup) return;
+            _tabDetectionSetup = true;
             document.addEventListener('visibilitychange', function() {
                 if (document.getElementById('examScreen').style.display !== 'block') return;
-                
+
                 if (document.hidden) {
+                    // Debounce: chỉ đếm 1 lần cho mỗi lần rời, bỏ qua các fire liên tiếp
+                    if (_tabLeaveDebounceTimer) return;
+                    _tabLeaveDebounceTimer = setTimeout(function() {
+                        _tabLeaveDebounceTimer = null;
+                    }, 2000);
+
                     tabLeaveCount++;
                     document.getElementById('tabLeaveCount').textContent = tabLeaveCount;
                     document.getElementById('tabWarning').style.display = 'block';
-                    
-                    // Report to server - dùng server time
+
                     socket.emit('tabLeave', {
                         stt: studentInfo.stt,
                         name: studentInfo.name,
                         count: tabLeaveCount,
-                        time: getServerTimeSync().toISOString() // Dùng server time
+                        time: getServerTimeSync().toISOString()
                     });
                 }
             });
@@ -4863,6 +4872,7 @@
         var sidebarWarningTimer = null;
 
         function setupAISidebarDetection() {
+            if (sidebarCheckInterval) return; // đã setup rồi
             // Ghi lại chiều rộng ban đầu sau khi fullscreen ổn định
             setTimeout(function() {
                 initialViewportWidth = window.innerWidth;

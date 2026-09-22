@@ -2,13 +2,13 @@
   "currentSession": {
     "classId": "class_1789955237700",
     "className": "10A4",
-    "examId": "exam_1789957660892",
-    "examName": "Test Đề Toán"
+    "examId": "exam_1789959558444",
+    "examName": "Demo toan 2"
   },
   "examSettings": {
-    "title": "Test Đề Toán",
-    "timeLimit": 30,
-    "isOpen": false,
+    "title": "Demo toan 2",
+    "timeLimit": 15,
+    "isOpen": true,
     "showScore": false,
     "practiceMode": false,
     "shuffleExam": true,

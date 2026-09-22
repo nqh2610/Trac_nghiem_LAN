@@ -4856,11 +4856,10 @@
                 // Fallback cho trình duyệt không fire fullscreenchange đúng (Cốc Cốc, v.v.)
                 window.addEventListener('resize', function() {
                     if (document.getElementById('examScreen').style.display !== 'block') return;
-                    // Nếu viewport nhỏ hơn màn hình đáng kể → có thể đã thoát fullscreen
+                    if (fsExitBySystem) return; // Thoát do hệ thống (nộp bài/hết giờ) — bỏ qua
                     var isFS = isFullscreen();
                     var screenH = window.screen.height;
                     var winH = window.innerHeight;
-                    // Thoát fullscreen khi chiều cao window nhỏ hơn 90% screen height và không còn fullscreenElement
                     if (!isFS && winH < screenH * 0.9) {
                         onFullscreenChange();
                     }

@@ -56,7 +56,7 @@ var upload = multer({ storage: multer.memoryStorage() });
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server, {
-    transports: ['websocket'],
+    transports: ['websocket', 'polling'],
     pingTimeout: 60000,
     pingInterval: 25000
 });
@@ -65,7 +65,7 @@ var PORT = 3456;
 
 // Middleware
 app.use(express.json());
-app.use(express.static('public', { maxAge: '1h' }));
+app.use(express.static('public', { maxAge: '0' }));
 
 // Serve KaTeX cho render công thức toán (LAN - không cần internet)
 app.use('/katex', express.static('node_modules/katex/dist', { maxAge: '7d' }));

@@ -3370,8 +3370,8 @@
             var q = questions[questionIndex];
             var type = q ? (q.type || 'single') : 'single';
 
-            // Tìm đáp án gốc
-            var optionOrder = optionOrders[originalIndex];
+            // Tìm đáp án gốc — optionOrders indexed by questionIndex (shuffled position)
+            var optionOrder = optionOrders[questionIndex];
             var originalAnswer;
             if (type === 'single') {
                 originalAnswer = optionOrder ? optionOrder[selectedOption] : selectedOption;
@@ -4227,7 +4227,7 @@
                 if (answers[shuffledIndex] === undefined) continue;
                 var originalQIndex = questionOrder[shuffledIndex];
                 var type = originalQuestions[originalQIndex].type || 'single';
-                var optionOrder = optionOrders[originalQIndex];
+                var optionOrder = optionOrders[shuffledIndex]; // optionOrders indexed by shuffledIndex, not originalQIndex
 
                 if (type === 'single') {
                     var shuffledOpt = answers[shuffledIndex];

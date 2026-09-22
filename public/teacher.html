@@ -1492,6 +1492,16 @@ C. Công thức nước là H₂O. (Đ)</pre>
         // ========== END CUSTOM ALERT ==========
         
         const socket = io();
+
+        socket.on('connect', () => {
+            console.log('[SOCKET] Đã kết nối:', socket.id);
+        });
+        socket.on('disconnect', () => {
+            console.log('[SOCKET] Mất kết nối');
+        });
+        socket.on('connect_error', (err) => {
+            console.error('[SOCKET] Lỗi kết nối:', err.message);
+        });
         let questions = [];
         let results = [];
         let students = [];

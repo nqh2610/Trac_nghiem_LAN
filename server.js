@@ -768,6 +768,10 @@ function loadQuestions() {
         if (exam) {
             questions = (exam.questions || []).map(migrateQuestion);
             examSettings = mergeObjects(examSettings, exam.settings);
+            examSettings.practiceMode = false;
+            examSettings.showScore = false;
+            examSettings.shuffleExam = true;
+            examSettings.isOpen = false;
             console.log('[OK] Da tai ' + questions.length + ' cau hoi tu bai "' + currentSession.examName + '"');
             return;
         }
@@ -1522,6 +1526,11 @@ app.post('/api/session', (req, res) => {
         // Load câu hỏi từ exam
         questions = exam.questions || [];
         examSettings = mergeObjects(examSettings, exam.settings, { isOpen: false });
+        // Reset về mặc định khi chuyển đề
+        examSettings.practiceMode = false;
+        examSettings.showScore = false;
+        examSettings.shuffleExam = true;
+        examSettings.isOpen = false;
     }
     
     saveCurrentSession();
@@ -1895,6 +1904,11 @@ app.post('/api/exams/switch', (req, res) => {
     // Load câu hỏi và cài đặt từ bài kiểm tra
     questions = exam.questions || [];
     examSettings = mergeObjects(examSettings, exam.settings, { isOpen: false });
+    // Reset về mặc định khi chuyển đề
+    examSettings.practiceMode = false;
+    examSettings.showScore = false;
+    examSettings.shuffleExam = true;
+    examSettings.isOpen = false;
     
     // Cập nhật session
     currentSession.examId = examId;

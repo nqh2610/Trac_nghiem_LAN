@@ -799,11 +799,34 @@ function makeDebouncedSaver(fn, delay) {
 }
 
 // Ghi file async an toàn (không block event loop)
+// Hàng đợi ghi file: mỗi đường dẫn có một promise chain riêng để tránh đồng thời ghi cùng file
+var _writeQueues = {};
+
 function writeFileAsync(filePath, data) {
     var dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFile(filePath, data, 'utf8', function(err) {
-        if (err) console.error('[ERR] Ghi file thất bại:', filePath, err.message);
+
+    // Nối vào queue của file này (atomic: ghi .tmp → rename)
+    var prev = _writeQueues[filePath] || Promise.resolve();
+    var next = prev.then(function() {
+        return new Promise(function(resolve) {
+            var tmpPath = filePath + '.tmp';
+            fs.writeFile(tmpPath, data, 'utf8', function(err) {
+                if (err) {
+                    console.error('[ERR] Ghi file tạm thất bại:', tmpPath, err.message);
+                    return resolve();
+                }
+                fs.rename(tmpPath, filePath, function(err2) {
+                    if (err2) console.error('[ERR] Đổi tên file thất bại:', tmpPath, '->', filePath, err2.message);
+                    resolve();
+                });
+            });
+        });
+    });
+    _writeQueues[filePath] = next;
+    // Dọn entry khi chain này xong (chỉ xóa nếu vẫn là entry mới nhất)
+    next.then(function() {
+        if (_writeQueues[filePath] === next) delete _writeQueues[filePath];
     });
 }
 

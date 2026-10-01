@@ -1611,10 +1611,15 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
         // Load questions
         async function loadQuestions() {
-            const res = await fetch('/api/questions');
-            questions = await res.json();
-            document.getElementById('totalQuestions').textContent = questions.length;
-            renderQuestions();
+            try {
+                const res = await fetch('/api/questions');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                questions = await res.json();
+                document.getElementById('totalQuestions').textContent = questions.length;
+                renderQuestions();
+            } catch (err) {
+                showNotification('Lỗi tải câu hỏi: ' + err.message, 'error');
+            }
         }
 
         // Render questions
@@ -1877,11 +1882,13 @@ C. Công thức nước là H₂O. (Đ)</pre>
         // Delete question
         async function deleteQuestion(id) {
             if (!confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
-            
-            const res = await fetch(`/api/questions/${id}`, { method: 'DELETE' });
-            if (res.ok) {
+            try {
+                const res = await fetch(`/api/questions/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 showNotification('️ Đã xóa câu hỏi!');
                 loadQuestions();
+            } catch (err) {
+                showNotification('Lỗi xóa câu hỏi: ' + err.message, 'error');
             }
         }
 
@@ -2165,11 +2172,16 @@ C. Công thức nước là H₂O. (Đ)</pre>
 
         // Load results
         async function loadResults() {
-            const res = await fetch('/api/results');
-            results = await res.json();
-            document.getElementById('totalSubmitted').textContent = results.length;
-            renderResults();
-            updateStats();
+            try {
+                const res = await fetch('/api/results');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                results = await res.json();
+                document.getElementById('totalSubmitted').textContent = results.length;
+                renderResults();
+                updateStats();
+            } catch (err) {
+                showNotification('Lỗi tải kết quả: ' + err.message, 'error');
+            }
         }
 
         // Render results
@@ -2404,27 +2416,34 @@ C. Công thức nước là H₂O. (Đ)</pre>
         // Clear results
         async function clearResults() {
             if (!confirm('Bạn có chắc muốn xóa TẤT CẢ kết quả?')) return;
-            
-            const res = await fetch('/api/results', { method: 'DELETE' });
-            if (res.ok) {
+            try {
+                const res = await fetch('/api/results', { method: 'DELETE' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 showNotification('️ Đã xóa tất cả kết quả!');
                 loadResults();
+            } catch (err) {
+                showNotification('Lỗi xóa kết quả: ' + err.message, 'error');
             }
         }
 
         // Settings
         async function loadSettings() {
-            const res = await fetch('/api/settings');
-            const settings = await res.json();
+            try {
+                const res = await fetch('/api/settings');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const settings = await res.json();
 
-            document.getElementById('examTitle').value = settings.title;
-            document.getElementById('examTime').value = (settings.timeLimit && settings.timeLimit !== 30) ? settings.timeLimit : '';
-            document.getElementById('showScore').checked = settings.showScore !== false;
-            document.getElementById('practiceMode').checked = settings.practiceMode === true;
-            document.getElementById('shuffleExam').checked = settings.shuffleExam !== false;
-            document.getElementById('examPassword').value = settings.examPassword || '';
-            document.getElementById('requirePassword').checked = settings.requirePassword === true;
-            updateExamStatus(settings.isOpen);
+                document.getElementById('examTitle').value = settings.title;
+                document.getElementById('examTime').value = (settings.timeLimit && settings.timeLimit !== 30) ? settings.timeLimit : '';
+                document.getElementById('showScore').checked = settings.showScore !== false;
+                document.getElementById('practiceMode').checked = settings.practiceMode === true;
+                document.getElementById('shuffleExam').checked = settings.shuffleExam !== false;
+                document.getElementById('examPassword').value = settings.examPassword || '';
+                document.getElementById('requirePassword').checked = settings.requirePassword === true;
+                updateExamStatus(settings.isOpen);
+            } catch (err) {
+                showNotification('Lỗi tải cài đặt: ' + err.message, 'error');
+            }
         }
 
         async function saveSettings() {
@@ -2472,16 +2491,18 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 requirePassword: document.getElementById('requirePassword').checked
             };
 
-            const res = await fetch('/api/settings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
-            });
-
-            if (res.ok) {
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 updateExamStatus(currentlyOpen);
                 markSettingsSaved();
                 showNotification('Đã lưu cài đặt!');
+            } catch (err) {
+                showNotification('Lỗi lưu cài đặt: ' + err.message, 'error');
             }
         }
 
@@ -2580,24 +2601,26 @@ C. Công thức nước là H₂O. (Đ)</pre>
                 }
             }
 
-            const res = await fetch('/api/settings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: document.getElementById('examTitle').value,
-                    timeLimit: parseInt(document.getElementById('examTime').value) || 30,
-                    isOpen: newOpen,
-                    showScore: document.getElementById('showScore').checked,
-                    practiceMode: document.getElementById('practiceMode').checked,
-                    shuffleExam: document.getElementById('shuffleExam').checked,
-                    examPassword: document.getElementById('examPassword').value,
-                    requirePassword: document.getElementById('requirePassword').checked
-                })
-            });
-
-            if (res.ok) {
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: document.getElementById('examTitle').value,
+                        timeLimit: parseInt(document.getElementById('examTime').value) || 30,
+                        isOpen: newOpen,
+                        showScore: document.getElementById('showScore').checked,
+                        practiceMode: document.getElementById('practiceMode').checked,
+                        shuffleExam: document.getElementById('shuffleExam').checked,
+                        examPassword: document.getElementById('examPassword').value,
+                        requirePassword: document.getElementById('requirePassword').checked
+                    })
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 updateExamStatus(newOpen);
                 showNotification(newOpen ? 'Đã mở bài thi! Học sinh có thể vào làm bài.' : 'Đã đóng bài thi.');
+            } catch (err) {
+                showNotification('Lỗi mở/đóng bài thi: ' + err.message, 'error');
             }
         }
 
@@ -3273,9 +3296,15 @@ C. Công thức nước là H₂O. (Đ)</pre>
         
         function updateCurrentExamDisplay() {
             fetch('/api/questions')
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
                 .then(qs => {
                     document.getElementById('currentExamInfo').textContent = qs.length + ' câu hỏi';
+                })
+                .catch(err => {
+                    showNotification('Lỗi tải thông tin đề: ' + err.message, 'error');
                 });
             // Cập nhật thống kê session
             updateStudentStats();

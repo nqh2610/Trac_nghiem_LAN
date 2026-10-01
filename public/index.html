@@ -2275,7 +2275,7 @@
         function shuffleQuestionsAndOptions(originalQs, qOrder, optOrders) {
             return qOrder.map(function(origIndex, newIndex) {
                 var origQ = originalQs[origIndex];
-                var optOrder = optOrders[newIndex];
+                var optOrder = optOrders[origIndex]; // dùng origIndex vì optOrders được tạo theo thứ tự gốc
                 var type = origQ.type || 'single';
 
                 // Loại truefalse không đảo thứ tự đáp án
@@ -3370,8 +3370,8 @@
             var q = questions[questionIndex];
             var type = q ? (q.type || 'single') : 'single';
 
-            // Tìm đáp án gốc — optionOrders indexed by questionIndex (shuffled position)
-            var optionOrder = optionOrders[questionIndex];
+            // Tìm đáp án gốc — optionOrders indexed by originalIndex (thứ tự gốc)
+            var optionOrder = optionOrders[originalIndex];
             var originalAnswer;
             if (type === 'single') {
                 originalAnswer = optionOrder ? optionOrder[selectedOption] : selectedOption;
@@ -4227,7 +4227,7 @@
                 if (answers[shuffledIndex] === undefined) continue;
                 var originalQIndex = questionOrder[shuffledIndex];
                 var type = originalQuestions[originalQIndex].type || 'single';
-                var optionOrder = optionOrders[shuffledIndex]; // optionOrders indexed by shuffledIndex, not originalQIndex
+                var optionOrder = optionOrders[originalQIndex]; // optionOrders indexed by originalQIndex
 
                 if (type === 'single') {
                     var shuffledOpt = answers[shuffledIndex];

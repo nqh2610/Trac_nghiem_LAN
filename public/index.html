@@ -3042,6 +3042,7 @@
 
         // Start exam
         function startExam() {
+            examEndServerMs = null;
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('examScreen').style.display = 'block';
 
@@ -3078,6 +3079,7 @@
 
             // Gọi server để lưu startTime (hoặc lấy startTime cũ nếu restore)
             var xhrStart = new XMLHttpRequest();
+            var startExamRequestAt = Date.now();
             xhrStart.open('POST', '/api/start-exam', true);
             xhrStart.setRequestHeader('Content-Type', 'application/json');
             xhrStart.onreadystatechange = function() {
@@ -3087,7 +3089,12 @@
                             var data = JSON.parse(xhrStart.responseText);
                             if (data.success) {
                                 var serverStartTime = data.startTime;
-                                var elapsed = Math.floor((Date.now() - serverStartTime) / 1000);
+                                // Dùng đồng hồ server (bù nửa RTT) thay vì đồng hồ máy học sinh
+                                if (data.serverNow) {
+                                    serverTimeOffset = data.serverNow + (Date.now() - startExamRequestAt) / 2 - Date.now();
+                                }
+                                if (!practiceMode) examEndServerMs = serverStartTime + timeLimit * 60000;
+                                var elapsed = Math.floor((Date.now() + serverTimeOffset - serverStartTime) / 1000);
                                 var serverTimeRemaining = Math.max(0, timeLimit * 60 - elapsed);
                                 if (!practiceMode) {
                                     timeRemaining = serverTimeRemaining;
@@ -3662,10 +3669,12 @@
         // Biến lưu thời gian server (được cập nhật khi gọi API)
         var cachedServerTime = null;
         var serverTimeOffset = 0; // Chênh lệch giữa server và client (ms)
+        var examEndServerMs = null; // Mốc kết thúc bài thi theo giờ server (ms)
         
         // Lấy thời gian server (dùng callback) - KHÔNG BAO GIỜ dùng thời gian máy client
         function getServerTime(callback) {
             var xhr = new XMLHttpRequest();
+            var requestAt = Date.now();
             xhr.open('GET', '/api/settings', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -3673,8 +3682,8 @@
                         try {
                             var data = JSON.parse(xhr.responseText);
                             cachedServerTime = new Date(data.serverTime);
-                            // Tính offset để có thể ước lượng thời gian server sau này
-                            serverTimeOffset = cachedServerTime.getTime() - Date.now();
+                            // Tính offset (bù nửa RTT) để có thể ước lượng thời gian server sau này
+                            serverTimeOffset = cachedServerTime.getTime() + (Date.now() - requestAt) / 2 - Date.now();
                             if (callback) callback(cachedServerTime);
                         } catch(e) {
                             if (callback) callback(getServerTimeSync());
@@ -3966,6 +3975,9 @@
             timeLimit = activeSession.timeLimit || 30;
             timeRemaining = remainingTime;
             practiceMode = serverPracticeMode;
+            examEndServerMs = (!serverPracticeMode && serverProg && serverProg.found && serverProg.startTime)
+                ? serverProg.startTime + (serverProg.timeLimit || timeLimit) * 60000
+                : null;
 
             function applyAndRenderRestore(restoredQuestions) {
                 originalQuestions = restoredQuestions;
@@ -4123,21 +4135,24 @@
             
             updateTimerDisplay();
             
-            // Sử dụng timestamp để đảm bảo timing chính xác
-            var lastTick = Date.now();
+            // Tính theo mốc kết thúc tuyệt đối để không bị trôi/lệch khi setInterval bị trễ hoặc throttle
+            var deadline = Date.now() + timeRemaining * 1000;
+            var lastSavedAt = timeRemaining;
             
             timerInterval = setInterval(function() {
-                var now = Date.now();
-                var elapsed = Math.floor((now - lastTick) / 1000);
+                // Ưu tiên mốc kết thúc theo giờ server (offset được đồng bộ lại định kỳ);
+                // nếu đổi giờ máy giữa chừng thì lần đồng bộ kế tiếp sẽ sửa lại
+                var newRemaining = examEndServerMs
+                    ? Math.max(0, Math.ceil((examEndServerMs - (Date.now() + serverTimeOffset)) / 1000))
+                    : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
                 
-                // Chỉ giảm 1 giây mỗi lần, bỏ qua nếu elapsed > 1 (do browser throttling)
-                if (elapsed >= 1) {
-                    timeRemaining--;
-                    lastTick = now;
+                if (newRemaining !== timeRemaining) {
+                    timeRemaining = newRemaining;
                     updateTimerDisplay();
                     
                     // Save progress every 10 seconds
-                    if (timeRemaining % 10 === 0) {
+                    if (lastSavedAt - timeRemaining >= 10) {
+                        lastSavedAt = timeRemaining;
                         saveExamProgress();
                     }
                     
@@ -4149,7 +4164,7 @@
                         setTimeout(function() { submitExam(true); }, 1000);
                     }
                 }
-            }, 1000);
+            }, 250);
         }
 
         function updateTimerDisplay() {
@@ -4999,10 +5014,10 @@
             }
         }, 3000);
         
-        // Đồng bộ lại thời gian server mỗi 5 phút để đảm bảo chính xác
+        // Đồng bộ lại thời gian server mỗi 30 giây để đảm bảo chính xác
         setInterval(function() {
             getServerTime(function() {});
-        }, 5 * 60 * 1000);
+        }, 30 * 1000);
     </script>
 </body>
 </html>

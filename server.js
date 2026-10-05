@@ -1314,7 +1314,7 @@ app.post('/api/start-exam', (req, res) => {
 
     // Nếu đã có progress và cùng examId → giữ startTime cũ (restore sau restart)
     if (serverProgress[stt] && serverProgress[stt].examId === examId) {
-        return res.json({ success: true, startTime: serverProgress[stt].startTime, restored: true });
+        return res.json({ success: true, startTime: serverProgress[stt].startTime, serverNow: Date.now(), restored: true });
     }
 
     serverProgress[stt] = {
@@ -1327,7 +1327,7 @@ app.post('/api/start-exam', (req, res) => {
         savedAt: new Date().toISOString()
     };
     saveServerProgress();
-    res.json({ success: true, startTime: serverProgress[stt].startTime, restored: false });
+    res.json({ success: true, startTime: serverProgress[stt].startTime, serverNow: Date.now(), restored: false });
 });
 
 // Sync answers lên server (gọi mỗi 30s)

@@ -47,5 +47,12 @@
     "studentCount": 43,
     "studentFile": "class_1789955560779.xlsx",
     "createdAt": "2026-09-21T01:52:40.779Z"
+  },
+  "class_1790315339615": {
+    "id": "class_1790315339615",
+    "name": "5435",
+    "studentCount": 5,
+    "studentFile": "class_1790315339615.xlsx",
+    "createdAt": "2026-09-25T05:48:59.615Z"
   }
 }

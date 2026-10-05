@@ -1,0 +1,74 @@
+[
+  {
+    "studentSTT": "1",
+    "studentName": "Bùi Hoàng Anh",
+    "studentClass": "11A4",
+    "score": 0,
+    "correctCount": 0,
+    "totalQuestions": 8,
+    "timeSpent": "35 phút 1 giây",
+    "submittedAt": "18:20:17 20/9/2026",
+    "details": [
+      {
+        "question": "Thủ đô của Việt Nam là thành phố nào?",
+        "studentAnswer": null,
+        "correctAnswer": 1,
+        "correctAnswerText": "Hà Nội",
+        "isCorrect": false
+      },
+      {
+        "question": "Quan sát hình bên và cho biết hình dưới đây có màu gì?",
+        "studentAnswer": null,
+        "correctAnswer": 1,
+        "correctAnswerText": "Màu đỏ",
+        "isCorrect": false
+      },
+      {
+        "question": "[MULTI] Chọn các thành phố trực thuộc Trung ương của Việt Nam:",
+        "studentAnswer": null,
+        "correctAnswer": 3,
+        "correctAnswerText": "Đà Nẵng",
+        "isCorrect": false
+      },
+      {
+        "question": "[MULTI] Chọn các hình có màu đỏ trong danh sách dưới:",
+        "studentAnswer": 0,
+        "studentAnswerText": "",
+        "correctAnswer": 2,
+        "correctAnswerText": "",
+        "isCorrect": false
+      },
+      {
+        "question": "[ĐÚNG/SAI] Xác định tính đúng/sai của các phát biểu sau:",
+        "studentAnswer": 2,
+        "studentAnswerText": "Đà Nẵng nằm ở miền Bắc Việt Nam. (sai)",
+        "correctAnswer": 3,
+        "correctAnswerText": "Sông Mê Kông chảy qua miền Nam Việt Nam.",
+        "isCorrect": false
+      },
+      {
+        "question": "[ĐÚNG/SAI] Dùng ký hiệu tắt - cho biết các phát biểu sau:",
+        "studentAnswer": 3,
+        "studentAnswerText": "Phân tử nước gồm 2 nguyên tử H và 1 nguyên tử O. (Đ)",
+        "correctAnswer": 0,
+        "correctAnswerText": "Nước sôi ở 100 độ C ở điều kiện tiêu chuẩn. (Đ)",
+        "isCorrect": false
+      },
+      {
+        "question": "[ĐÚNG/SAI] Nhìn vào hình sau và xác định đúng/sai:",
+        "studentAnswer": null,
+        "correctAnswer": 0,
+        "correctAnswerText": "Hình trên có màu xanh. (Đ)",
+        "isCorrect": false
+      },
+      {
+        "question": "Năm bao nhiêu Việt Nam thống nhất đất nước?",
+        "studentAnswer": 1,
+        "studentAnswerText": "1968",
+        "correctAnswer": 2,
+        "correctAnswerText": "1975",
+        "isCorrect": false
+      }
+    ]
+  }
+]

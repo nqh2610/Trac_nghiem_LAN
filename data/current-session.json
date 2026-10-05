@@ -1,16 +1,16 @@
 {
   "currentSession": {
-    "classId": "class_1789955237700",
-    "className": "10A4",
-    "examId": "exam_1789959558444",
-    "examName": "Demo toan 2"
+    "classId": "class_1789955560779",
+    "className": "11A9",
+    "examId": "exam_1789953544663",
+    "examName": "KTTX_K11_Lan1"
   },
   "examSettings": {
-    "title": "Demo toan 2",
+    "title": "KTTX_K11_Lan1",
     "timeLimit": 15,
     "isOpen": true,
     "showScore": false,
-    "practiceMode": false,
+    "practiceMode": true,
     "shuffleExam": true,
     "examPassword": "",
     "requirePassword": false,

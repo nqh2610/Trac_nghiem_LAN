@@ -1,0 +1,28 @@
+{
+  "2": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  },
+  "4": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "tabLeaveCount": 1,
+    "lastTabLeave": "2026-09-20T14:59:30.092Z",
+    "fullscreenExitCount": 4,
+    "lastFullscreenExit": "2026-09-20T14:59:26.808Z"
+  },
+  "28": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "fullscreenExitCount": 2,
+    "lastFullscreenExit": "2026-09-20T14:34:44.686Z",
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2026-09-20T14:34:46.213Z"
+  }
+}

@@ -1,0 +1,354 @@
+[
+  {
+    "studentSTT": "28",
+    "studentName": "Nguyễn Thị Quỳnh Như",
+    "studentClass": "11A4",
+    "score": 0.9,
+    "correctCount": 0,
+    "partialCount": 2,
+    "wrongCount": 7,
+    "unansweredCount": 0,
+    "totalQuestions": 9,
+    "timeSpent": "0 phút 42 giây",
+    "submittedAt": "21:35:11 20/9/2026",
+    "details": [
+      {
+        "question": "Thủ đô của Việt Nam là thành phố nào?",
+        "type": "single",
+        "studentAnswer": 0,
+        "studentAnswerText": "TP. Hồ Chí Minh",
+        "correctAnswer": 1,
+        "correctAnswerText": "Hà Nội",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "Chọn các thành phố trực thuộc Trung ương:",
+        "type": "multi",
+        "studentAnswer": [
+          1,
+          0
+        ],
+        "studentAnswerText": "Huế, Hà Nội",
+        "correctAnswer": 0,
+        "correctAnswerText": "Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Cần Thơ",
+        "correctList": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "Xác định tính đúng/sai của các phát biểu:",
+        "type": "truefalse",
+        "studentAnswer": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "studentAnswerText": "A: Sai, B: Đúng, C: Sai, D: Sai",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Đúng, C: Sai, D: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          true,
+          false,
+          true
+        ],
+        "isCorrect": false,
+        "questionScore": 0.5
+      },
+      {
+        "question": "Cho biết các mệnh đề sau đúng hay sai:",
+        "type": "truefalse",
+        "studentAnswer": [
+          false,
+          null,
+          null
+        ],
+        "studentAnswerText": "A: Sai, B: ?, C: ?",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Sai, C: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          false,
+          true
+        ],
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "<strong>Câu 1: Thủ đô của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là thành phố nào?</strong>",
+        "type": "single",
+        "studentAnswer": 3,
+        "studentAnswerText": "Huế",
+        "correctAnswer": 1,
+        "correctAnswerText": "Hà Nội",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "<strong>Câu 2:  Chọn tất cả các tỉnh/thành phố trực thuộc Trung ương của Việt Nam:</strong>",
+        "type": "multi",
+        "studentAnswer": [
+          2,
+          4,
+          1
+        ],
+        "studentAnswerText": "TP. Hồ Chí Minh, Cần Thơ, Nghệ An",
+        "correctAnswer": 0,
+        "correctAnswerText": "Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Cần Thơ",
+        "correctList": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "<strong>Câu 3:  Xác định tính đúng/sai của các phát biểu sau về địa lý Việt Nam:</strong>",
+        "type": "truefalse",
+        "studentAnswer": [
+          true,
+          null,
+          null,
+          null
+        ],
+        "studentAnswerText": "A: Đúng, B: ?, C: ?, D: ?",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Sai, B: Đúng, C: Đúng, D: Sai",
+        "correctList": null,
+        "correctTF": [
+          false,
+          true,
+          true,
+          false
+        ],
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "<strong>Câu 4:  Dùng ký hiệu tắt — cho biết các mệnh đề vật lý sau đúng hay sai:</strong>",
+        "type": "truefalse",
+        "studentAnswer": [
+          true,
+          null,
+          null
+        ],
+        "studentAnswerText": "A: Đúng, B: ?, C: ?",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Sai, C: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          false,
+          true
+        ],
+        "isCorrect": false,
+        "questionScore": 0.3333333333333333
+      },
+      {
+        "question": "<strong>Câu 5: Năm nào Việt Nam chính thức thống nhất đất nước?</strong>",
+        "type": "single",
+        "studentAnswer": 0,
+        "studentAnswerText": "1954",
+        "correctAnswer": 2,
+        "correctAnswerText": "1975",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      }
+    ]
+  },
+  {
+    "studentSTT": "2",
+    "studentName": "Nguyễn Trần Trâm Anh",
+    "studentClass": "11A4",
+    "score": 4.4,
+    "correctCount": 2,
+    "partialCount": 3,
+    "wrongCount": 4,
+    "unansweredCount": 0,
+    "totalQuestions": 9,
+    "timeSpent": "1 phút 13 giây",
+    "submittedAt": "21:52:57 20/9/2026",
+    "details": [
+      {
+        "question": "Thủ đô của Việt Nam là thành phố nào?",
+        "type": "single",
+        "studentAnswer": 0,
+        "studentAnswerText": "TP. Hồ Chí Minh",
+        "correctAnswer": 1,
+        "correctAnswerText": "Hà Nội",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "Chọn các thành phố trực thuộc Trung ương:",
+        "type": "multi",
+        "studentAnswer": [
+          0,
+          3
+        ],
+        "studentAnswerText": "Hà Nội, Đà Nẵng",
+        "correctAnswer": 0,
+        "correctAnswerText": "Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Cần Thơ",
+        "correctList": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "Xác định tính đúng/sai của các phát biểu:",
+        "type": "truefalse",
+        "studentAnswer": [
+          false,
+          true,
+          false,
+          true
+        ],
+        "studentAnswerText": "A: Sai, B: Đúng, C: Sai, D: Đúng",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Đúng, C: Sai, D: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          true,
+          false,
+          true
+        ],
+        "isCorrect": false,
+        "questionScore": 0.75
+      },
+      {
+        "question": "Cho biết các mệnh đề sau đúng hay sai:",
+        "type": "truefalse",
+        "studentAnswer": [
+          true,
+          false,
+          true
+        ],
+        "studentAnswerText": "A: Đúng, B: Sai, C: Đúng",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Sai, C: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          false,
+          true
+        ],
+        "isCorrect": true,
+        "questionScore": 1
+      },
+      {
+        "question": "<strong>Câu 1: Thủ đô của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là thành phố nào?</strong>",
+        "type": "single",
+        "studentAnswer": 1,
+        "studentAnswerText": "Hà Nội",
+        "correctAnswer": 1,
+        "correctAnswerText": "Hà Nội",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": true,
+        "questionScore": 1
+      },
+      {
+        "question": "<strong>Câu 2:  Chọn tất cả các tỉnh/thành phố trực thuộc Trung ương của Việt Nam:</strong>",
+        "type": "multi",
+        "studentAnswer": [
+          1,
+          4,
+          2
+        ],
+        "studentAnswerText": "Nghệ An, Cần Thơ, TP. Hồ Chí Minh",
+        "correctAnswer": 0,
+        "correctAnswerText": "Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Cần Thơ",
+        "correctList": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      },
+      {
+        "question": "<strong>Câu 3:  Xác định tính đúng/sai của các phát biểu sau về địa lý Việt Nam:</strong>",
+        "type": "truefalse",
+        "studentAnswer": [
+          false,
+          true,
+          false,
+          true
+        ],
+        "studentAnswerText": "A: Sai, B: Đúng, C: Sai, D: Đúng",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Sai, B: Đúng, C: Đúng, D: Sai",
+        "correctList": null,
+        "correctTF": [
+          false,
+          true,
+          true,
+          false
+        ],
+        "isCorrect": false,
+        "questionScore": 0.5
+      },
+      {
+        "question": "<strong>Câu 4:  Dùng ký hiệu tắt — cho biết các mệnh đề vật lý sau đúng hay sai:</strong>",
+        "type": "truefalse",
+        "studentAnswer": [
+          true,
+          false,
+          false
+        ],
+        "studentAnswerText": "A: Đúng, B: Sai, C: Sai",
+        "correctAnswer": 0,
+        "correctAnswerText": "A: Đúng, B: Sai, C: Đúng",
+        "correctList": null,
+        "correctTF": [
+          true,
+          false,
+          true
+        ],
+        "isCorrect": false,
+        "questionScore": 0.6666666666666666
+      },
+      {
+        "question": "<strong>Câu 5: Năm nào Việt Nam chính thức thống nhất đất nước?</strong>",
+        "type": "single",
+        "studentAnswer": 3,
+        "studentAnswerText": "1986",
+        "correctAnswer": 2,
+        "correctAnswerText": "1975",
+        "correctList": null,
+        "correctTF": null,
+        "isCorrect": false,
+        "questionScore": 0
+      }
+    ]
+  }
+]

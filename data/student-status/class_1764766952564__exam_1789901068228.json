@@ -1,0 +1,20 @@
+{
+  "1": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "fullscreenExitCount": 1,
+    "lastFullscreenExit": "2026-09-20T10:45:31.335Z",
+    "tabLeaveCount": 1,
+    "lastTabLeave": "2026-09-20T11:20:13.984Z"
+  },
+  "4": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2026-09-20T11:25:07.986Z"
+  }
+}

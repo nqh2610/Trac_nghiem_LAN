@@ -1,0 +1,42 @@
+{
+  "2": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "fullscreenExitCount": 2,
+    "lastFullscreenExit": "2026-09-22T03:32:29.902Z",
+    "tabLeaveCount": 3,
+    "lastTabLeave": "2026-09-22T03:45:25.062Z"
+  },
+  "3": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "fullscreenExitCount": 3,
+    "lastFullscreenExit": "2026-09-22T03:44:52.640Z",
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2026-09-22T03:41:46.073Z"
+  },
+  "4": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "fullscreenExitCount": 22,
+    "lastFullscreenExit": "2026-09-22T04:11:21.689Z",
+    "tabLeaveCount": 13,
+    "lastTabLeave": "2026-09-22T04:11:24.412Z"
+  },
+  "7": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "fullscreenExitCount": 14,
+    "lastFullscreenExit": "2026-09-25T04:50:37.409Z",
+    "tabLeaveCount": 4,
+    "lastTabLeave": "2026-09-25T04:50:39.984Z"
+  }
+}

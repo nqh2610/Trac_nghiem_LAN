@@ -1,0 +1,602 @@
+<?xml version='1.0'?>
+<?mso-application progid='Excel.Sheet'?>
+<Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet'
+xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:x='urn:schemas-microsoft-com:office:excel'
+xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'
+xmlns:html='http://www.w3.org/TR/REC-html40'>
+<DocumentProperties xmlns='urn:schemas-microsoft-com:office:office'>
+     <Author>VietSchool</Author>
+     <LastAuthor>VietSchool</LastAuthor>
+     <Created>2026-09-21T08:26:03Z</Created>
+     <Version>14.00</Version>
+</DocumentProperties>
+<ExcelWorkbook xmlns='urn:schemas-microsoft-com:office:excel'>
+    <WindowHeight>9300</WindowHeight>
+    <WindowWidth>15135</WindowWidth>
+    <WindowTopX>120</WindowTopX>
+    <WindowTopY>120</WindowTopY>
+    <AcceptLabelsInFormulas/>
+    <ProtectStructure>False</ProtectStructure>
+    <ProtectWindows>False</ProtectWindows>
+</ExcelWorkbook>
+<Styles>
+<Style ss:ID='Default' ss:Name='Normal'>
+  <Alignment ss:Vertical='Bottom'/>
+  <Borders/>
+  <Font/>
+  <Interior/>
+  <NumberFormat/>
+  <Protection/>
+</Style>
+<Style ss:ID='style1' ss:Name='mainHeaderStyle'>
+<Alignment ss:Horizontal='Center' ss:Vertical='Center' ss:WrapText='1'/>
+<Borders>
+<Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='2'/>
+<Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='2'/>
+<Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='2'/>
+<Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='2'/>
+</Borders>
+<Font ss:FontName='Arial' ss:Size='10'/>
+<Interior ss:Color='#808080' ss:Pattern='Solid'/>
+<NumberFormat />
+<Protection ss:Protected='0'/></Style>
+<Style ss:ID='style2' ss:Name='style2'>
+<Alignment ss:Horizontal='Center' ss:Vertical='Center'/>
+<Borders>
+<Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>
+</Borders>
+<Font ss:FontName='Times New Roman' ss:Size='12' ss:Color='#000000'/>
+<Interior ss:Color='#FFFFFF' ss:Pattern='Solid'/>
+<NumberFormat />
+<Protection ss:Protected='0'/></Style>
+<Style ss:ID='style3' ss:Name='style3'>
+<Alignment ss:Horizontal='Left' ss:Vertical='Center'/>
+<Borders>
+<Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>
+</Borders>
+<Font ss:FontName='Times New Roman' ss:Size='12' ss:Color='#000000'/>
+<Interior ss:Color='#FFFFFF' ss:Pattern='Solid'/>
+<NumberFormat />
+<Protection ss:Protected='0'/></Style>
+<Style ss:ID='style4' ss:Name='style4'>
+<Alignment ss:Horizontal='Center' ss:Vertical='Center'/>
+<Borders>
+<Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>
+</Borders>
+<Font ss:FontName='Times New Roman' ss:Size='12' ss:Color='#000000' ss:Bold='1'/>
+<Interior ss:Color='#FFFFFF' ss:Pattern='Solid'/>
+<NumberFormat />
+<Protection ss:Protected='0'/></Style>
+<Style ss:ID='style5' ss:Name='style5'>
+<Alignment ss:Horizontal='Center' ss:Vertical='Center' ss:WrapText='1'/>
+<Borders>
+<Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>
+<Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>
+</Borders>
+<Font ss:FontName='Times New Roman' ss:Size='12' ss:Color='#000000'/>
+<Interior ss:Color='#FFFFFF' ss:Pattern='Solid'/>
+<NumberFormat />
+<Protection ss:Protected='0'/></Style>
+</Styles>
+<Worksheet ss:Name='DSHS'>
+<Table ss:ExpandedColumnCount='20' ss:ExpandedRowCount='52' x:FullColumns='1' x:FullRows='1'>
+<Column ss:Index='1' ss:AutoFitWidth='0' ss:Width='30' ss:Span='0'/>
+<Column ss:Index='2' ss:AutoFitWidth='0' ss:Width='101' ss:Span='0'/>
+<Column ss:Index='3' ss:AutoFitWidth='0' ss:Width='42' ss:Span='0'/>
+<Column ss:Index='4' ss:AutoFitWidth='0' ss:Width='45' ss:Span='3'/>
+<Column ss:Index='8' ss:AutoFitWidth='0' ss:Width='47' ss:Span='0'/>
+<Column ss:Index='9' ss:AutoFitWidth='0' ss:Width='50' ss:Span='11'/>
+
+<Row ss:Index='1' ss:AutoFitHeight='0' ss:Height='26'>
+<Cell ss:Index='1' ss:MergeAcross='4' ss:StyleID='style5'><Data ss:Type='String' >Sở Giáo dục và Đào tạo Thành phố Hồ Chí Minh
+Trường THPT Vĩnh Lộc</Data></Cell>
+<Cell ss:Index='6'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='9'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='10'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='11'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='12'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='13'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='14' ss:StyleID='style2'><Data ss:Type='String' >Sĩ số: 43</Data></Cell>
+</Row>
+<Row ss:Index='2' ss:AutoFitHeight='0' ss:Height='34'>
+<Cell ss:Index='1' ss:MergeAcross='14' ss:StyleID='style5'><Data ss:Type='String' >BẢNG ĐIỂM HỌC KỲ 1
+LỚP: 10A4, Môn: TIN HỌC - NĂM HỌC: 2024-2025</Data></Cell>
+</Row>
+<Row ss:Index='3' ss:AutoFitHeight='0' ss:Height='18'>
+</Row>
+<Row ss:Index='4' ss:AutoFitHeight='0' ss:Height='18'>
+</Row>
+<Row ss:Index='5' ss:AutoFitHeight='0' ss:Height='18'>
+</Row>
+<Row ss:Index='6' ss:AutoFitHeight='0' ss:Height='19'>
+<Cell ss:Index='1' ss:MergeDown='1' ss:StyleID='style2'><Data ss:Type='String' >STT</Data></Cell>
+<Cell ss:Index='2' ss:MergeDown='1' ss:StyleID='style2'><Data ss:Type='String' >Họ</Data></Cell>
+<Cell ss:Index='3' ss:MergeDown='1' ss:StyleID='style2'><Data ss:Type='String' >Tên</Data></Cell>
+<Cell ss:Index='4' ss:MergeAcross='2' ss:StyleID='style2'><Data ss:Type='String' >ĐGTX</Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' >ĐGGK</Data></Cell>
+<Cell ss:Index='8' ss:MergeDown='1' ss:StyleID='style2'><Data ss:Type='String' >ĐTB</Data></Cell>
+</Row>
+<Row ss:Index='7' ss:AutoFitHeight='0' ss:Height='19'>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' >1</Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' >2</Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' >3</Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' >1</Data></Cell>
+</Row>
+<Row ss:Index='8' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >1</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Kim</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Anh</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='9' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >2</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Trần Mỹ</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Anh</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='10' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >3</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Phạm Gia</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Bảo</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='11' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >4</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Nguyễn Kiều</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Duyên</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='12' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >5</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lư Thị Thùy</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Dương</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='13' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >6</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Thành</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Đạt</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='14' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >7</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Hồ Minh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Đức</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='15' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >8</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Cao Duy</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Hải</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='16' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >9</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Vũ Kim</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Hân</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='17' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >10</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Đinh Văn</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Hiếu</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='18' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >11</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Trần Văn</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Hoàng</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='19' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >12</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Huỳnh Bá</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Huy</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='20' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >13</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Võ Đình</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Huy</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='21' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >15</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Phạm Tuấn</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Khang</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='22' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >16</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Quang</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Khoa</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='23' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >17</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Hoàng Minh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Kiệt</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='24' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >18</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Hà</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Lâm</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='25' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >19</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Phạm Hữu</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Lộc</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='26' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >20</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Đoàn Lê Thiên</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Lý</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='27' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >21</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Phạm Lê</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Minh</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='28' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >22</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Hữu</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Nam</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='29' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >23</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Trần Ngọc Bảo</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Ngân</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='30' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >24</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Châu Nguyễn Bảo</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Ngọc</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='31' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >25</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Đỗ Đặng Thành</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Nhân</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='32' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >26</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Trịnh Thị Yến</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Nhi</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='33' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >27</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Võ Văn</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Phát</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='34' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >28</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Hoàng</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Phúc</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='35' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >29</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Hà Minh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Quân</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='36' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >30</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Võ Ngọc</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Quỳnh</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='37' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >31</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Tấn</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Tài</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='38' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >32</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Giang Thanh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Tâm</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='39' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >33</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Ngọc</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Thảo</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='40' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >34</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Hoàng Gia</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Thịnh</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='41' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >35</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Võ Ngọc</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Thư</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='42' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >36</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Vũ Trọng</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Tín</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='43' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >37</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Trần Bảo</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Trân</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='44' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >38</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Minh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Triết</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='45' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >39</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Nguyễn Chí</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Trung</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='46' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >40</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Cao Mạnh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Tường</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='47' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >41</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lê Hoàng</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Việt</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='48' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >42</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Lưu Khánh</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Vy</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='49' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >43</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Trần Thị Tường</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Vy</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='50' ss:AutoFitHeight='0' ss:Height='18'>
+<Cell ss:Index='1' ss:StyleID='style2'><Data ss:Type='Number' >44</Data></Cell>
+<Cell ss:Index='2' ss:StyleID='style3'><Data ss:Type='String' >Trần Ngọc Như</Data></Cell>
+<Cell ss:Index='3' ss:StyleID='style3'><Data ss:Type='String' >Ý</Data></Cell>
+<Cell ss:Index='4' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7' ss:StyleID='style2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8' ss:StyleID='style4'><Data ss:Type='String' ></Data></Cell>
+</Row>
+<Row ss:Index='51' ss:AutoFitHeight='0' ss:Height='18'>
+</Row>
+<Row ss:Index='52' ss:AutoFitHeight='0' ss:Height='90'>
+<Cell ss:Index='1'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='2'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='3'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='4'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='5'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='6'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='7'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='8'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='9'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='10'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='11'><Data ss:Type='String' ></Data></Cell>
+<Cell ss:Index='12' ss:MergeAcross='3' ss:StyleID='style5'><Data ss:Type='String' >Bình Tân, ngày 21 tháng 09 năm 2026
+Hiệu Trưởng
+
+
+
+Ca Thanh Tòng</Data></Cell>
+</Row>
+
+</Table>
+<WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>
+
+<Selected/>
+<ProtectObjects>False</ProtectObjects>
+<ProtectScenarios>False</ProtectScenarios>
+</WorksheetOptions>
+
+
+
+</Worksheet>
+</Workbook>

@@ -1,0 +1,40 @@
+{
+  "1": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  },
+  "2": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false,
+    "tabLeaveCount": 14,
+    "lastTabLeave": "2026-09-25T05:54:49.271Z",
+    "fullscreenExitCount": 5,
+    "lastFullscreenExit": "2026-09-25T05:54:38.929Z"
+  },
+  "3": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false
+  },
+  "4": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": true,
+    "canRetry": false
+  },
+  "5": {
+    "selected": false,
+    "selectedBy": null,
+    "completed": false,
+    "canRetry": false,
+    "fullscreenExitCount": 2,
+    "lastFullscreenExit": "2026-09-25T05:55:57.128Z",
+    "tabLeaveCount": 2,
+    "lastTabLeave": "2026-09-25T06:04:01.341Z"
+  }
+}

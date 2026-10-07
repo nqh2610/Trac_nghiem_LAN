@@ -3186,9 +3186,9 @@ function parseQuestionsFromHtml(html) {
             }
             codeBuffer = [];
         } else if (inCode) {
-            // Dòng code: escape HTML
-            var codeLine = plainLine
-                .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+            // Dòng code: lấy plain text (strip tất cả tags kể cả <strong> từ Word bold), rồi escape HTML
+            var codeLine = stripHtmlTags(paragraphs[pi])
+                .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             codeBuffer.push(codeLine);
         } else {

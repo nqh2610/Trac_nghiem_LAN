@@ -277,6 +277,41 @@
             color: #333;
         }
 
+        /* Ảnh nhúng trong nội dung câu hỏi */
+        .question-text img {
+            display: block;
+            max-width: 100%;
+            max-height: 360px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            margin: 8px auto;
+        }
+
+        /* Ảnh nhúng trong đáp án */
+        .option-label img, .question-option img {
+            display: inline-block;
+            max-width: 180px;
+            max-height: 110px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            vertical-align: middle;
+            border-radius: 6px;
+            margin: 2px 0;
+        }
+
+        /* Ảnh câu hỏi cũ (field image riêng) */
+        .question-card > img {
+            display: block;
+            max-width: 100%;
+            max-height: 360px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin: 8px auto 15px;
+        }
+
         .question-text pre, .option-label pre {
             background: #f4f4f4;
             border-left: 3px solid #4a90d9;
@@ -1685,7 +1720,7 @@ C. Công thức nước là H₂O. (Đ)</pre>
                         </div>
                     </div>
                     <div class="question-text">${sanitizeHtmlClient(q.question)}</div>
-                    ${q.image ? `<img src="${q.image}" style="max-width: 300px; margin-bottom: 15px; border-radius: 8px;">` : ''}
+                    ${q.image ? `<img src="${q.image}" style="display:block;max-width:100%;max-height:360px;object-fit:contain;border-radius:8px;margin:8px auto 15px;">` : ''}
                     <div class="question-options${type === 'truefalse' ? ' options-single-col' : ''}">${optionsHtml}</div>
                 </div>`;
             }).join('');

@@ -742,10 +742,39 @@
         }
 
         .question-image {
+            display: block;
             max-width: 100%;
-            max-height: 300px;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto;
+        }
+
+        /* Ảnh nhúng trong nội dung câu hỏi (base64 từ Word) */
+        .question-text img {
+            display: block;
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            margin: 8px auto;
+        }
+
+        /* Ảnh nhúng trong đáp án */
+        .option-text img {
+            display: inline-block;
+            max-width: 200px;
+            max-height: 120px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            vertical-align: middle;
+            border-radius: 6px;
+            margin: 2px 0;
         }
         
         .options {
